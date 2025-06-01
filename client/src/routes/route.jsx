@@ -1,32 +1,40 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
-import Home from '../Page/Home';
-import MainPanel from '../Page/Admin/MainPanel';
-import AdminLogin from '../Page/Admin/AdminLogin';
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import App from "../App";
+import Home from "../Page/Home";
+import MainPanel from "../Page/Admin/MainPanel";
+import AdminLogin from "../Page/Admin/AdminLogin";
+import Dashboard from "../Page/Admin/Dashboard";
 
 const routes = createBrowserRouter([
-    {
-        path: '/',
-        element: <App/>,
-        children: [
-            {
-                path: '',
-                element: <Home/>
-            }
-        ]
-    },
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+    ],
+  },
 
-    {
-        path: "admin",
-        element: <MainPanel/>,
-        children: [
-            {
-                path: 'login',
-                element: <AdminLogin/>
-            }
-        ]
-    }
-])
-
+  {
+    path: "admin",
+    element: <MainPanel />,
+    children: [
+      {
+        index: true, 
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "login",
+        element: <AdminLogin />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+    ],
+  },
+]);
 
 export default routes;
