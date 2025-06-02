@@ -10,6 +10,7 @@ import { typeDefs } from './graphql/typeDefs.js';
 import resolvers from './graphql/Resolver.js';
 import { ConnectDB } from './config/db.js';
 import User from './models/user.model.js';
+import { graphqlUploadExpress } from 'graphql-upload';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
 }));
+
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
