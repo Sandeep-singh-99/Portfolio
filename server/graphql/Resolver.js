@@ -1,6 +1,7 @@
 import { login } from "../controller/user.controller.js"
 import { createIntro, deleteIntro, getIntro, updateIntro } from "../controller/intro.controller.js";
 import { GraphQLUpload } from 'graphql-upload';
+import { createAbout, deleteAbout, getAbout, updateAbout } from "../controller/about.controller.js";
 
 
 export default {
@@ -17,6 +18,11 @@ export default {
         getIntro: async () => {
             const intro = await getIntro()
             return intro;
+        },
+
+        getAbout: async () => {
+            const about = await getAbout()
+            return about;
         }
     },
 
@@ -52,6 +58,25 @@ export default {
             const updatedIntro = await updateIntro(_id, name, techStack, description, image, file);
             console.log('Intro updated:', updatedIntro);
             return updatedIntro;
+        },
+
+
+        createAbout: async (_, { description, image }) => {
+            const newAbout = await createAbout(description, image);
+            console.log('About created:', newAbout);
+            return newAbout;
+        },
+
+        updateAbout: async (_, { _id, description, image }) => {
+            const updatedAbout = await updateAbout(_id, description, image);
+            console.log('About updated:', updatedAbout);
+            return updatedAbout;
+        },
+
+        deleteAbout: async (_, { _id }) => {
+            const deletedAbout = await deleteAbout(_id);
+            console.log('About deleted:', deletedAbout);
+            return deletedAbout;
         }
     }
 }
