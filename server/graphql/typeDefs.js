@@ -29,6 +29,13 @@ export const typeDefs = `#graphql
     public_id: String
    }
 
+   type Skill {
+    _id: ID!
+    skillName: String!
+    skillImage: String!
+    public_id: String
+   }
+
    type LogoutResponse {
     message: String!
    }
@@ -41,6 +48,7 @@ export const typeDefs = `#graphql
     checkAuth: User!,
     getIntro: [Intro!]!
     getAbout: [About!]!
+    getSkills: [Skill!]!
    }
 
     type Mutation {
@@ -52,5 +60,8 @@ export const typeDefs = `#graphql
      createAbout(description: String!, image: Upload!): About
      updateAbout(_id: ID!, description: String, image: Upload): About
      deleteAbout(_id: ID!): DeleteResponse
+     createSkill(skillName: String!, skillImage: Upload!): Skill
+     updateSkill(_id: ID!, skillName: String, skillImage: Upload): Skill
+     deleteSkill(_id: ID!): DeleteResponse
     }
 `

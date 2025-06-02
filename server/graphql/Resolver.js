@@ -2,6 +2,7 @@ import { login } from "../controller/user.controller.js"
 import { createIntro, deleteIntro, getIntro, updateIntro } from "../controller/intro.controller.js";
 import { GraphQLUpload } from 'graphql-upload';
 import { createAbout, deleteAbout, getAbout, updateAbout } from "../controller/about.controller.js";
+import { createSkill, deleteSkill, fetchSkills, updateSkill } from "../controller/skill.controller.js";
 
 
 export default {
@@ -23,6 +24,11 @@ export default {
         getAbout: async () => {
             const about = await getAbout()
             return about;
+        },
+
+        getSkills: async () => {
+            const skills  = await fetchSkills()
+            return skills;
         }
     },
 
@@ -77,6 +83,21 @@ export default {
             const deletedAbout = await deleteAbout(_id);
             console.log('About deleted:', deletedAbout);
             return deletedAbout;
+        },
+
+        createSkill: async (_, { skillName, skillImage }) => {
+            const newSkill = await createSkill(skillName, skillImage);
+            return newSkill;
+        },
+
+        updateSkill: async (_ ,  { _id, skillName, skillImage }) => {
+            const updatedSkill = await updateSkill(_id, skillName, skillImage);
+            return updatedSkill;
+        },
+
+        deleteSkill: async (_ , { _id }) => {
+            const deletedSkill = await deleteSkill(_id);
+            return deletedSkill;
         }
     }
 }
