@@ -36,6 +36,17 @@ export const typeDefs = `#graphql
     public_id: String
    }
 
+   type Project {
+    _id: ID!
+    projectName: String!
+    projectDescription: String!
+    projectTechStack: [String!]!
+    projectImage: [String!]!
+    public_id: [String!]!
+    liveLink: String!
+    githubLink: String!
+   }
+
    type LogoutResponse {
     message: String!
    }
@@ -49,6 +60,7 @@ export const typeDefs = `#graphql
     getIntro: [Intro!]!
     getAbout: [About!]!
     getSkills: [Skill!]!
+    getProjects: [Project!]!
    }
 
     type Mutation {
@@ -63,5 +75,8 @@ export const typeDefs = `#graphql
      createSkill(skillName: String!, skillImage: Upload!): Skill
      updateSkill(_id: ID!, skillName: String, skillImage: Upload): Skill
      deleteSkill(_id: ID!): DeleteResponse
+     createProject(projectName: String!, projectDescription: String!, projectTechStack: [String!]!, projectImage: Upload!, liveLink: String!, githubLink: String!): Project
+     updateProject(_id: ID!, projectName: String, projectDescription: String, projectTechStack: [String], projectImage: Upload, liveLink: String, githubLink: String): Project
+     deleteProject(_id: ID!): DeleteResponse
     }
 `

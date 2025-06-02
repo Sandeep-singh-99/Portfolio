@@ -3,6 +3,7 @@ import { createIntro, deleteIntro, getIntro, updateIntro } from "../controller/i
 import { GraphQLUpload } from 'graphql-upload';
 import { createAbout, deleteAbout, getAbout, updateAbout } from "../controller/about.controller.js";
 import { createSkill, deleteSkill, fetchSkills, updateSkill } from "../controller/skill.controller.js";
+import { createProject, deleteProject, fetchProject, updateProject } from "../controller/product.controller.js";
 
 
 export default {
@@ -29,6 +30,11 @@ export default {
         getSkills: async () => {
             const skills  = await fetchSkills()
             return skills;
+        },
+
+        getProjects: async () => {
+            const projects = await fetchProject()
+            return projects;
         }
     },
 
@@ -98,6 +104,21 @@ export default {
         deleteSkill: async (_ , { _id }) => {
             const deletedSkill = await deleteSkill(_id);
             return deletedSkill;
+        },
+
+        createProject: async (_ ,  { projectName, projectDescription, projectTechStack, projectImage, liveLink, githubLink }) => {
+            const newProject = await createProject(projectName, projectDescription, projectTechStack, projectImage, liveLink, githubLink);
+            return newProject;
+        },
+
+        deleteProject: async (_ , { id }) => {
+            const deletedProject = await deleteProject(id);
+            return deletedProject;
+        },
+
+        updateProject: async (_ ,  { id, projectName, projectDescription, projectTechStack, projectImage, liveLink, githubLink }) => {
+            const updatedProject = await updateProject(id, projectName, projectDescription, projectTechStack, projectImage, liveLink, githubLink);
+            return updatedProject;
         }
     }
 }

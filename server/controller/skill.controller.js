@@ -1,5 +1,5 @@
 import Skill from "../models/skill.model.js";
-import { DeleteImage } from "../utils/delete-image";
+import { DeleteImage } from "../utils/delete-image.js";
 import { UploadImage } from "../utils/upload-image.js";
 
 export const createSkill = async (skillName, skillImage) => {
