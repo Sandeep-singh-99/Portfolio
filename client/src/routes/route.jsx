@@ -4,6 +4,7 @@ import Home from "../Page/Home";
 import MainPanel from "../Page/Admin/MainPanel";
 import AdminLogin from "../Page/Admin/AdminLogin";
 import Dashboard from "../Page/Admin/Dashboard";
+import AdminAbout from "../Page/Admin/AdminAbout";
 
 const routes = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const routes = createBrowserRouter([
         path: "dashboard",
         element: <Dashboard />,
       },
+      {
+        path: "about",
+        element: <AdminAbout/>
+      }
     ],
   },
 ]);

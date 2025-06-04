@@ -18,11 +18,11 @@ export default function DashboardHeader() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const navLinks = [
-    { name: "Hero", to: "/hero" },
-    { name: "About", to: "/about" },
-    { name: "Skill", to: "/skill" },
-    { name: "Project", to: "/project" },
-    { name: "Contact", to: "/contact" },
+    { id: 1, name: "Hero", to: "/admin/dashboard" },
+    { id: 2, name: "About", to: "/admin/about" },
+    { id: 3, name: "Skill", to: "/admin/skill" },
+    { id: 4, name: "Project", to: "/admin/project" },
+    { id: 5, name: "Contact", to: "/admin/contact" },
   ];
 
   const handleLogout = async () => {
@@ -44,9 +44,9 @@ export default function DashboardHeader() {
   };
 
   return (
-    <header className="bg-white px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between shadow-sm sticky top-0 z-50">
+    <header className=" px-4 bg-gray-100 sm:px-6 lg:px-8 py-4 flex items-center justify-between shadow-sm sticky top-0 z-50">
       {/* Logo/Name */}
-      <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
+      <h1 className="text-xl font-bold text-gray-800 md:text-2xl">
         {user?.username || "Dashboard"}
       </h1>
 
@@ -54,9 +54,9 @@ export default function DashboardHeader() {
       <nav className="hidden md:flex items-center space-x-4">
         {navLinks.map((link) => (
           <Link
-            key={link.name}
+            key={link.id}
             to={link.to}
-            className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 font-medium"
+            className="px-3 py-2 text-gray-800 hover:bg-gray-100 rounded-md transition-colors duration-200 font-medium"
           >
             {link.name}
           </Link>
@@ -85,14 +85,14 @@ export default function DashboardHeader() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-lg md:hidden">
+        <div className="absolute top-full bg-gray-100 left-0 right-0 shadow-lg md:hidden">
           <nav className="flex flex-col p-4 space-y-2">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.id}
                 to={link.to}
                 onClick={() => setIsMenuOpen(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 font-medium"
+                className="px-4 py-2 text-gray-600 hover:text-white hover:bg-gray-900 rounded-md transition-colors duration-200 font-medium"
               >
                 {link.name}
               </Link>
