@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import { ModeToggle } from "./ModeToggle";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,6 +90,9 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
           <Settings className="mr-2 h-4 w-4" />
           Settings
         </Button>
+        <div>
+          <ModeToggle />
+        </div>
       </nav>
     </div>
   );
