@@ -46,7 +46,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
         </Link>
       </div>
       <nav className="space-y-1">
-        <Link to={"/dashboard"}>
+        <Link to={"/"}>
           <Button
             variant="ghost"
             className="w-full justify-start"
