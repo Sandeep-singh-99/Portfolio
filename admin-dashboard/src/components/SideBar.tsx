@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  BarChart,
+  AppWindowIcon,
+  ContactIcon,
   FileText,
+  Info,
+  KanbanSquareDashed,
   LayoutDashboard,
-  MessageCircle,
-  Settings,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
@@ -41,7 +42,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
     <div className="h-full px-4 py-6">
       <div className="flex items-center gap-2 mb-8 px-2">
         <Link to={"/"}>
-        <span className="text-xl font-bold">Blog App</span>
+        <span className="text-xl font-bold">Portfolio AdminDashboard</span>
         </Link>
       </div>
       <nav className="space-y-1">
@@ -52,18 +53,18 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             onClick={closeSheet}
           >
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            Overview
+            Dashboard
           </Button>
         </Link>
 
-        <Link to={"/dashboard/articles/create"}>
+        <Link to={"/hero"}>
           <Button
             variant="ghost"
             className="w-full justify-start"
             onClick={closeSheet}
           >
             <FileText className="mr-2 h-4 w-4" />
-            Articles
+            Hero
           </Button>
         </Link>
         <Button
@@ -71,24 +72,32 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
           className="w-full justify-start"
           onClick={closeSheet}
         >
-          <MessageCircle className="mr-2 h-4 w-4" />
-          Comments
+          <Info className="mr-2 h-4 w-4" />
+          About
         </Button>
         <Button
           variant="ghost"
           className="w-full justify-start"
           onClick={closeSheet}
         >
-          <BarChart className="mr-2 h-4 w-4" />
-          Analytics
+          <KanbanSquareDashed className="mr-2 h-4 w-4" />
+          Skill
         </Button>
         <Button
           variant="ghost"
           className="w-full justify-start"
           onClick={closeSheet}
         >
-          <Settings className="mr-2 h-4 w-4" />
-          Settings
+          <AppWindowIcon className="mr-2 h-4 w-4" />
+          Projects
+        </Button>
+         <Button
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={closeSheet}
+        >
+          <ContactIcon className="mr-2 h-4 w-4" />
+          Contact
         </Button>
         <div>
           <ModeToggle />
