@@ -6,11 +6,13 @@ import SkillSection from "./page/SkillSection";
 import ProjectSection from "./page/ProjectSection";
 import ContactSection from "./page/ContactSection";
 import Dashboard from "./page/Dashboard";
+import Login from "./page/Login";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />}>
           <Route index element={<Dashboard />} />
           <Route path="hero" element={<HeroSection />} />
