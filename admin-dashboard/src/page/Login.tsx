@@ -3,8 +3,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { LOGIN_MUTATION } from '@/graphql/mutation';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+
+interface FormDataProps {
+  username: string;
+  password: string;
+}
 
 export default function Login() {
+  const [formData, setFormData] = useState<FormDataProps>({ username: '', password: '' });
+  const [ login ] = useMutation(LOGIN_MUTATION);
+  const {isLoggedIn, user } = useAuthStore()
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { data } = await login({ variables: formData })
+      if (data && data.login.user) {
+        console.log("Login successful:", user);
+        
+        isLoggedIn(data.login.user);
+        navigate('/'); 
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  }
+ 
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex items-center space-x-8">
@@ -18,14 +48,16 @@ export default function Login() {
             <CardDescription>Enter your credentials to access your account.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="grid gap-4">
                 {/* Email Field */}
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
-                    id="email"
-                    type="email"
+                    id="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     placeholder="you@example.com"
                     required
                   />
@@ -37,6 +69,8 @@ export default function Login() {
                   <Input
                     id="password"
                     type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="••••••••"
                     required
                   />
