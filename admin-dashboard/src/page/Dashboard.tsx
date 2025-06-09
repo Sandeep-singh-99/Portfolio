@@ -43,7 +43,7 @@ const stats = [
 
 export default function Dashboard() {
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 min-h-screen">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {stats.map((stat, index) => (

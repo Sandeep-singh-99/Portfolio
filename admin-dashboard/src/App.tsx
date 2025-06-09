@@ -12,13 +12,7 @@ import { useQuery } from "@apollo/client";
 import { CHECK_AUTH } from "./graphql/queries";
 import { useEffect } from "react";
 import ProtectedRoute from "./components/protectedRoutes";
-// import { Toaster } from "@/components/ui/sonner"
 
-interface IAuth {
-  __typename: string;
-  _id: string;
-  username: string;
-}
 
 export default function App() {
 
