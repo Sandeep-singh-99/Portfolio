@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
-import HeroSection from "./page/HeroSection";
+import IntroSection from "./page/IntroSection";
 import AboutSection from "./page/AboutSection";
 import SkillSection from "./page/SkillSection";
 import ProjectSection from "./page/ProjectSection";
@@ -12,6 +12,13 @@ import { useQuery } from "@apollo/client";
 import { CHECK_AUTH } from "./graphql/queries";
 import { useEffect } from "react";
 import ProtectedRoute from "./components/protectedRoutes";
+// import { Toaster } from "@/components/ui/sonner"
+
+interface IAuth {
+  __typename: string;
+  _id: string;
+  username: string;
+}
 
 export default function App() {
 
@@ -49,13 +56,14 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={ <ProtectedRoute> <Home /> </ProtectedRoute> }>
           <Route index element={<Dashboard />} />
-          <Route path="hero" element={<HeroSection />} />
+          <Route path="intro" element={<IntroSection />} />
           <Route path="about" element={<AboutSection />} />
           <Route path="skill" element={<SkillSection />} />
           <Route path="project" element={<ProjectSection />} />
           <Route path="contact" element={<ContactSection />} />
         </Route>
       </Routes>
+       {/* <Toaster /> */}
     </BrowserRouter>
   );
 }

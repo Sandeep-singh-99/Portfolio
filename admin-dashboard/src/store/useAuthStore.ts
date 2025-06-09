@@ -15,6 +15,6 @@ export const useAuthStore = create((set) => ({
 
     isLoggedIn: (data: IAuth) => set({ user: data, isError: false, isLoading: false }),
 
-    getUser: () => set((state) => ({ user: state.user })),
+    getUser: () => set((state: { user: IAuth | null }) => ({ user: state.user })),
 
 }))
