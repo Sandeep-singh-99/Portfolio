@@ -1,4 +1,4 @@
-import { AboutSectionForm } from "@/components/about/aboutSectionForm";
+import { AboutSectionForm } from "@/components/about/AboutSectionForm";
 
 
 

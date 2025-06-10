@@ -77,14 +77,16 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             About
           </Button>
         </Link>
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={closeSheet}
-        >
-          <KanbanSquareDashed className="mr-2 h-4 w-4" />
-          Skill
-        </Button>
+        <Link to={"/skill"}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={closeSheet}
+          >
+            <KanbanSquareDashed className="mr-2 h-4 w-4" />
+            Skill
+          </Button>
+        </Link>
         <Button
           variant="ghost"
           className="w-full justify-start"
