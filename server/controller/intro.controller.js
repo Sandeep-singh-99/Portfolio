@@ -13,9 +13,8 @@ export const createIntro = async (req, res) => {
             return res.status(400).json({ error: "Name, description, and tech stack are required." });
         }
 
-        const imageUpload = await UploadImage(image, "portfolio")
-
-        const fileUpload = await UploadImage(file, "portfolio")
+        const imageUpload = image ? await UploadImage(image, "portfolio") : null;
+        const fileUpload = file ? await UploadImage(file, "portfolio") : null;
 
         const newIntro = await Intro.create({
             name,
@@ -79,62 +78,6 @@ export const deleteIntro = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
-
-
-// export const updateIntro = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const { name, description, techStack } = req.body;
-
-//         if (!id) {
-//             return res.status(400).json({ error: "ID is required." });
-//         }
-
-//         const image = req.files['image']?.[0];
-//         const file = req.files['file']?.[0];
-
-//         if (!name || !description || !techStack) {
-//             return res.status(400).json({ error: "Name, description, and tech stack are required." });
-//         }
-
-//         const intro = await Intro.findById(id);
-//         if (!intro) {
-//             return res.status(404).json({ error: "Intro not found." });
-//         }
-
-//         let imageUpload, fileUpload;
-//         if (image) {
-//             // Delete old image if it exists
-//             if (intro.image_id) {
-//                 await DeleteImage(intro.image_id);
-//             }
-//             imageUpload = await UploadImage(image, "portfolio");
-//         }
-
-//         if (file) {
-//             // Delete old file if it exists
-//             if (intro.file_id) {
-//                 await DeleteImage(intro.file_id);
-//             }
-//             fileUpload = await UploadImage(file, "portfolio");
-//         }
-
-//         const updatedIntro = await Intro.findByIdAndUpdate(id, {
-//             name,
-//             description,
-//             techStack: techStack.split(',').map((tech) => tech.trim()),
-//             image: imageUpload ? imageUpload.secure_url : intro.image,
-//             image_id: imageUpload ? imageUpload.public_id : intro.image_id,
-//             file: fileUpload ? fileUpload.secure_url : intro.file,
-//             file_id: fileUpload ? fileUpload.public_id : intro.file_id
-//         });
-
-
-//         res.status(200).json({ data: updatedIntro, message: "Intro updated successfully!" });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// }
 
 
 export const updateIntro = async (req, res) => {

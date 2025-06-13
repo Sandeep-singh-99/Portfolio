@@ -38,7 +38,7 @@ const introSchema = new Schema({
     file_id: {
         type: String,
     },
-})
+}, {timestamps: true});
 
 
 const Intro = model('Intro', introSchema);
