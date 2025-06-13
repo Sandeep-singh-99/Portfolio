@@ -6,7 +6,6 @@ const router = express.Router();
 
 const uploadFields = upload.fields([
     { name: 'image', maxCount: 1 },
-    { name: 'file', maxCount: 1 }
 ])
 
 router.route("/create-about").post(uploadFields, createAbout)

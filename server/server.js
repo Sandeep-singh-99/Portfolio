@@ -10,6 +10,7 @@ import { ConnectDB } from './config/db.js';
 import userRouter from './router/user.router.js'
 import introRouter from './router/intro.router.js';
 import aboutRouter from './router/about.router.js';
+import skillRouter from './router/skill.router.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -24,6 +25,7 @@ app.use(morgan('dev'));
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/intro', introRouter);
 app.use('/api/v1/about', aboutRouter);
+app.use('/api/v1/skill', skillRouter);
 
 app.listen(PORT, () => {
     ConnectDB()
