@@ -134,7 +134,7 @@ export const updateIntro = async (req, res) => {
             updatedData.file_id = fileUpload.public_id;
         }
 
-        const updatedIntro = await Intro.findByIdAndUpdate(id, updatedData, { new: true });
+        const updatedIntro = await Intro.findByIdAndUpdate(id, updatedData);
 
         res.status(200).json({ data: updatedIntro, message: "Intro updated successfully!" });
     } catch (error) {
