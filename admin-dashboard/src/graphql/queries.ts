@@ -8,3 +8,17 @@ export const CHECK_AUTH = gql`
     }
   }
 `;
+
+
+export const GET_INTRO = gql`
+  query GetIntro {
+    getIntro {
+      _id
+      name
+      techStack
+      description
+      image
+      file
+    }
+  }
+`;

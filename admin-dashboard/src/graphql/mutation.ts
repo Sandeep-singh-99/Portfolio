@@ -19,4 +19,27 @@ export const LOGOUT_MUTATION = gql`
       message
     }
   }
-`; 
+`;
+
+
+export const DELETE_INTRO = gql`
+  mutation DeleteIntro($_id: ID!) {
+    deleteIntro(_id: $_id) {
+      message
+    }
+  }
+`;
+
+
+export const ADD_INTRO = gql`
+  mutation createIntro($name: String!, $description: String!, $techStack: [String!]!, $image: String!, $file: String!) {
+    createIntro(name: $name, description: $description, techStack: $techStack, image: $image, file: $file) {
+      _id
+      name
+      description
+      techStack
+      image
+      file
+    }
+  }
+`;
