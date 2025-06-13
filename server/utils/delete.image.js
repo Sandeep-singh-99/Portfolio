@@ -1,4 +1,4 @@
-import cloudinary from "./cloudinary";
+import cloudinary from "./cloudinary.js";
 
 export const DeleteImage = async (publicId) => {
     return new Promise((resolve, reject) => {
