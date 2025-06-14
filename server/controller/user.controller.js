@@ -17,8 +17,8 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "Invalid password" });
         }
 
-        const token = generateToken(user._id, res);
-        res.status(200).json({ message: "Login successful", token });
+         generateToken(user._id, res);
+         res.status(200).json({ _id: user._id, username: user.username })
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -28,7 +28,11 @@ export const login = async (req, res) => {
 export const checkAuth = async (req, res) => {
     try {
         const user = req.user;
-        res.status(200).json({ message: "User is authenticated", user });
+        if (!user) {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+
+        res.status(200).json({ message: "User is authenticated", data: user });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

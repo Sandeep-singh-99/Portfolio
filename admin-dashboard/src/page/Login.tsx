@@ -4,8 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { LOGIN_MUTATION } from '@/graphql/mutation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,20 +14,16 @@ interface FormDataProps {
 
 export default function Login() {
   const [formData, setFormData] = useState<FormDataProps>({ username: '', password: '' });
-  const [ login ] = useMutation(LOGIN_MUTATION);
-  const {isLoggedIn, user } = useAuthStore()
+  const { login, user } = useAuthStore()
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await login({ variables: formData })
-      if (data && data.login.user) {
-        console.log("Login successful:", user);
-        
-        isLoggedIn(data.login.user);
-        navigate('/'); 
-      }
+       login(formData);
+       console.log("Login successful:", user);
+       
+      navigate('/');
     } catch (error) {
       console.error("Login failed:", error);
     }

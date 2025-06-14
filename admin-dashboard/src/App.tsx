@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import IntroSection from "./page/IntroSection";
 import AboutSection from "./page/AboutSection";
@@ -8,47 +8,31 @@ import ContactSection from "./page/ContactSection";
 import Dashboard from "./page/Dashboard";
 import Login from "./page/Login";
 import { useAuthStore } from "./store/useAuthStore";
-import { useQuery } from "@apollo/client";
-import { CHECK_AUTH } from "./graphql/queries";
 import { useEffect } from "react";
-import ProtectedRoute from "./components/protectedRoutes";
 
 
 export default function App() {
-
-  const { checkAuth, user, getUser } = useAuthStore();
-
-  const { data, loading } = useQuery(CHECK_AUTH, {
-    fetchPolicy: "no-cache",
-    onError: (err) => {
-      console.error("Error fetching auth data:", err);
-    },
-  });
+  const { checkAuth, user } = useAuthStore();
 
   useEffect(() => {
-    if (data?.checkAuth) {
-      checkAuth(data.checkAuth);
-      console.log("User authenticated:", data.checkAuth);
-      console.log("User ID:", user);
-      getUser();
-    }
-  }, [data, checkAuth]);
-
-   if (loading) {
-    return <div>Loading authentication...</div>;
-  }
-
-  if (!user) {
-    return <div>Unauthorized access. Please log in.</div>;
-  }
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (error) {
+        console.error('Error during authentication check:', error);
+      }
+    };
+    verifyAuth();
+  }, [checkAuth]);
 
  
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={ <ProtectedRoute> <Home /> </ProtectedRoute> }>
+        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+        <Route path="/" element={user ? <Home/> : <Navigate to="/login" />}>
+          {/* Nested routes for the main sections of the home page */}
           <Route index element={<Dashboard />} />
           <Route path="intro" element={<IntroSection />} />
           <Route path="about" element={<AboutSection />} />

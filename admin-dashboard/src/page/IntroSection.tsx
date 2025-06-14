@@ -1,8 +1,6 @@
-import { IntroSectionForm } from "@/components/intro/IntroSectionForm";
+
+import IntroSectionForm from "@/components/intro/IntroSectionForm";
 import { Button } from "@/components/ui/button";
-import { DELETE_INTRO } from "@/graphql/mutation";
-import { GET_INTRO } from "@/graphql/queries";
-import { useMutation, useQuery } from "@apollo/client";
 
 interface IIntroProps {
   _id: string; 
@@ -14,39 +12,17 @@ interface IIntroProps {
 }
 
 export default function HeroSection() {
-  const { data, loading, error } = useQuery(GET_INTRO);
-
-  const [deleteData] = useMutation(DELETE_INTRO, {
-    update(cache, { data: { deleteIntro } }, { variables: { _id } }) {
-      const { getIntro } = cache.readQuery({ query: GET_INTRO }) || { getIntro: [] };
-      cache.writeQuery({
-        query: GET_INTRO,
-        data: {
-          getIntro: getIntro.filter((item: IIntroProps) => item._id !== _id),
-        },
-      });
-    },
-    onError: (error) => {
-      console.error('Delete mutation failed:', error);
-      alert('Failed to delete intro: ' + error.message);
-    },
-  });
+ 
 
   const handleDelete = async (_id: string) => {
-    try {
-      await deleteData({ variables: { _id } });
-    } catch (error) {
-      console.error('Delete error:', error);
-      alert('Failed to delete intro: ' + (error as Error).message);
-    }
+   
   };
 
   const handleEdit = (_id: string) => {
     alert(`Edit functionality for intro id: ${_id} (to be implemented)`);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+ 
 
   return (
     <div className="p-5">
