@@ -1,9 +1,10 @@
-
-import IntroSectionForm from "@/components/intro/IntroSectionForm";
+import { IntroSectionForm } from "@/components/intro/IntroSectionForm";
 import { Button } from "@/components/ui/button";
+import { useIntroStore } from "@/store/useIntroStore";
+import { useEffect } from "react";
 
 interface IIntroProps {
-  _id: string; 
+  _id: string;
   name: string;
   description: string;
   techStack: string[];
@@ -12,17 +13,21 @@ interface IIntroProps {
 }
 
 export default function HeroSection() {
- 
+  const { introData, fetchIntroData, deleteIntro, isDeleteLoading } =
+    useIntroStore();
+
+  useEffect(() => {
+    fetchIntroData();
+  }, [fetchIntroData]);
 
   const handleDelete = async (_id: string) => {
-   
+    deleteIntro(_id);
+    alert(`Intro with id: ${_id} has been deleted.`);
   };
 
   const handleEdit = (_id: string) => {
     alert(`Edit functionality for intro id: ${_id} (to be implemented)`);
   };
-
- 
 
   return (
     <div className="p-5">
@@ -39,7 +44,7 @@ export default function HeroSection() {
       <div className="border border-gray-800 dark:border-gray-700 my-5"></div>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data?.getIntro?.map((item: IIntroProps) => (
+        {introData?.map((item: IIntroProps) => (
           <div key={item._id} className="border rounded-lg p-4 shadow-sm">
             <div className="flex items-center gap-4">
               <img
@@ -72,9 +77,10 @@ export default function HeroSection() {
               </Button>
               <Button
                 variant="destructive"
+                disabled={isDeleteLoading}
                 onClick={() => handleDelete(item._id)}
               >
-                Delete
+                {isDeleteLoading ? "Deleting..." : "Delete"}
               </Button>
             </div>
           </div>

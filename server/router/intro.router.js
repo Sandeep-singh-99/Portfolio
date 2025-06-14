@@ -5,8 +5,8 @@ import upload from '../middleware/uploadMiddleware.js';
 const router = express.Router();
 
 const uploadFields = upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'file', maxCount: 1 }
+    { name: 'image', maxCount: 5 },
+    { name: 'file', maxCount: 5 }
 ])
 
 router.route("/create-intro").post(uploadFields, createIntro)
