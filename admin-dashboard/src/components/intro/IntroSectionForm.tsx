@@ -24,23 +24,21 @@ export function IntroSectionForm() {
     file: "",
   });
 
-  const { addIntro, isLoading } = useIntroStore()
+  const { addIntro, isLoading } = useIntroStore();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const image = e.target.files?.[0] || null;
-  setFormData({ ...formData, image: image });
-};
-
+    const image = e.target.files?.[0] || null;
+    setFormData({ ...formData, image: image });
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0] || null;
-  setFormData({ ...formData, file: file });
-};
-
+    const file = e.target.files?.[0] || null;
+    setFormData({ ...formData, file: file });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    addIntro(formData)
+    e.preventDefault();
+    addIntro(formData);
     setFormData({
       name: "",
       description: "",
@@ -48,7 +46,7 @@ export function IntroSectionForm() {
       image: "",
       file: "",
     });
-  }
+  };
 
   return (
     <Dialog>
@@ -113,9 +111,7 @@ export function IntroSectionForm() {
                 accept="image/*"
                 placeholder="Upload an image"
                 required
-                
                 onChange={handleImageChange}
-                
               />
             </div>
 
@@ -127,7 +123,6 @@ export function IntroSectionForm() {
                 accept=".pdf,.doc,.docx,.txt"
                 placeholder="Upload a file"
                 required
-                
                 onChange={handleFileChange}
               />
             </div>

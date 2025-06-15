@@ -29,7 +29,7 @@ export const createAbout = async (req, res) => {
 
 export const getAbout = async (req, res) => {
     try {
-        const about = await About.findOne({});
+        const about = await About.find({});
         res.status(200).json({ data: about });
     } catch (error) {
         res.status(500).json({ error: error.message });
