@@ -7,12 +7,31 @@ import ContactSection from './ContactSection'
 
 export default function Home() {
   return (
-    <section>
-        <IntroSection/>
-        <AboutSection/>
-        <SkillSection/>
-        <ProjectSection/>
-        <ContactSection/>
-    </section>
+    <main className="scroll-smooth">
+      {/* Hero / Intro */}
+      <section id="intro">
+        <IntroSection />
+      </section>
+
+      {/* About */}
+      <section id="about" >
+        <AboutSection />
+      </section>
+
+      {/* Skills */}
+      <section id="skills" >
+        <SkillSection />
+      </section>
+
+      {/* Projects */}
+      <section id="projects" >
+        <ProjectSection />
+      </section>
+
+      {/* Contact */}
+      <section id="contact" >
+        <ContactSection />
+      </section>
+    </main>
   )
 }
