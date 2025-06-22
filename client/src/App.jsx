@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import AOS from "aos";
 import "aos/dist/aos.css"; 
+import SocialSection from "./components/SocialSection";
 
 
 export default function App() {
@@ -22,8 +23,8 @@ export default function App() {
         <div data-aos="fade-down" data-aos-duration="2000">
           <NavBar />
         </div>
-      
 
+        <SocialSection />
         <main className="pt-20 pb-12">
           <div data-aos="fade-up" data-aos-delay="300" data-aos-duration="1000">
             <Outlet />
