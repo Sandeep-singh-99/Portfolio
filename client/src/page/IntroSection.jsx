@@ -2,37 +2,53 @@ import img1 from "../assets/profile.jpg";
 
 export default function IntroSection() {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen px-4 md:px-8 lg:px-12 max-w-screen-xl mx-auto">
-      <div className="flex flex-col items-center md:items-start justify-center space-y-4 md:space-y-6 max-w-full md:max-w-2xl text-center md:text-left">
-        <div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white">
-            Hi, I am
+    <section
+      className="flex flex-col md:flex-row items-center justify-between min-h-screen px-4 sm:px-6 md:px-10 lg:px-10 max-w-screen mx-auto"
+      aria-label="Introduction Section"
+    >
+      {/* Text Content */}
+      <div
+        className="flex flex-col items-center md:items-start text-center md:text-left space-y-5 md:space-y-7 max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl order-2 md:order-1 mt-8 md:mt-0"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            Hi, I'm
           </h1>
-          <span className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Sandeep Singh
           </span>
         </div>
-        <h1 className="text-3xl md:text-5xl font-bold text-white">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-200">
           Web Developer
-        </h1>
-        <p className="text-sm md:text-base">
-          I am a passionate web developer with a keen interest in creating
-          dynamic and responsive web applications. I love to explore new
-          technologies and continuously improve my skills to deliver the best
-          user experience.
+        </h2>
+        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-prose tracking-wider">
+          I'm a passionate web developer specializing in crafting dynamic,
+          responsive web applications. I thrive on exploring cutting-edge
+          technologies to deliver exceptional user experiences.
         </p>
-        <button className="px-4 py-2 md:px-6 md:py-3 bg-black/50 backdrop-blur-sm text-white border border-white/20 rounded-xl hover:bg-black/70 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300 text-sm md:text-base">
+        <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-full hover:from-blue-600 hover:to-purple-700 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 text-sm sm:text-base">
           Contact Me
         </button>
       </div>
 
-      <div className="mt-8 md:mt-0 md:ml-8">
-        <img
-          src={img1}
-          alt="Profile"
-          className="rounded-full w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-cover border border-gray-300 shadow-2xl shadow-gray-800"
-        />
+      {/* Profile Image */}
+      <div
+        className="order-1 md:order-2 relative"
+        data-aos="fade-left"
+        data-aos-delay="400"
+      >
+        <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full overflow-hidden border-4 border-blue-500/30 shadow-2xl shadow-blue-900/50 hover:shadow-blue-900/70 transition-shadow duration-300">
+          <img
+            src={img1}
+            alt="Sandeep Singh's Profile"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

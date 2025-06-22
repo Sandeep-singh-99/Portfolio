@@ -19,7 +19,7 @@ export default function SocialSection() {
     >
       {socialLinks.map((link, index) => (
         <a
-          key={index}
+          key={index}                               
           href={link.href}
           target="_blank"
           rel="noopener noreferrer"
