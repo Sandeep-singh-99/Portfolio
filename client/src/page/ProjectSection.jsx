@@ -20,7 +20,7 @@ const projects = [
 
 export default function ProjectSection() {
   return (
-    <div className="py-12 ">
+    <section className="py-12" id='projects'>
       <h2 className="text-3xl font-bold text-center mb-8">My Projects</h2>
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4">
         {projects.map((project, index) => (
@@ -33,6 +33,6 @@ export default function ProjectSection() {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }

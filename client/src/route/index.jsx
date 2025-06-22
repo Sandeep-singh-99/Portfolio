@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
             },
 
             {
-                path: 'project',
+                path: 'projects',
                 element: <ProjectSection />
             },
 
