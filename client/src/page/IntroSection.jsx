@@ -28,8 +28,12 @@ export default function IntroSection() {
           responsive web applications. I thrive on exploring cutting-edge
           technologies to deliver exceptional user experiences.
         </p>
-        <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-full hover:from-blue-600 hover:to-purple-700 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 text-sm sm:text-base">
-          Contact Me
+        {/* <button className="px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-black to-gray-800 text-white font-medium rounded-lg hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 text-sm sm:text-base">
+          Resume
+        </button> */}
+        <button className="relative px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-gray-900 to-gray-700 text-white font-semibold rounded-xl hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/30 transition-all duration-300 text-sm sm:text-base focus:outline-none focus:ring-4 focus:ring-blue-500/50 active:scale-95 overflow-hidden group">
+          <span className="relative z-10">Resume</span>
+          <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
         </button>
       </div>
 
