@@ -1,20 +1,22 @@
 "use client";
-import React from "react";
+
+import React, { useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SubLayout({ children }: { children: React.ReactNode }) {
   const session = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  if (session.status === "authenticated") {
-    router.push("/admin-panel/intro");
-  }
+  useEffect(() => {
+    if (
+      session.status === "authenticated" &&
+      pathname !== "/admin-panel/intro"
+    ) {
+      router.push("/admin-panel/intro");
+    }
+  }, [session.status, pathname, router]);
 
   if (pathname === "/admin-panel/login") {
     return <>{children}</>;
