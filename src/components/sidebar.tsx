@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  BarChart,
-  HomeIcon,
+  Contact,
+  InfoIcon,
   LayoutDashboard,
-  MessageCircle,
-  Settings,
+  Package,
+  StarHalf,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -41,7 +41,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
     <div className="h-full px-4 py-6">
       <div className="flex items-center gap-2 mb-8 px-2">
         <Link href={"/"}>
-        <span className="text-4xl font-bold gradient-title">Portfolio </span>
+          <span className="text-4xl font-bold gradient-title">Portfolio </span>
         </Link>
       </div>
       <nav className="space-y-1">
@@ -52,44 +52,50 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             onClick={closeSheet}
           >
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            Overview
+            Intro Section
           </Button>
         </Link>
 
-        <Link href={"/intro"}>
+        <Link href={"/admin-panel/about"}>
           <Button
             variant="ghost"
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <HomeIcon className="mr-2 h-4 w-4" />
-            Articles
+            <InfoIcon className="mr-2 h-4 w-4" />
+            About Section
           </Button>
         </Link>
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={closeSheet}
-        >
-          <MessageCircle className="mr-2 h-4 w-4" />
-          Comments
-        </Button>
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={closeSheet}
-        >
-          <BarChart className="mr-2 h-4 w-4" />
-          Analytics
-        </Button>
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={closeSheet}
-        >
-          <Settings className="mr-2 h-4 w-4" />
-          Settings
-        </Button>
+        <Link href={"/admin-panel/skill"}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={closeSheet}
+          >
+            <StarHalf className="mr-2 h-4 w-4" />
+            Skill Section
+          </Button>
+        </Link>
+        <Link href={"/admin-panel/project"}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={closeSheet}
+          >
+            <Package className="mr-2 h-4 w-4" />
+            Project Section
+          </Button>
+        </Link>
+        <Link href={"/admin-panel/contact"}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={closeSheet}
+          >
+            <Contact className="mr-2 h-4 w-4" />
+            Contact Section
+          </Button>
+        </Link>
       </nav>
     </div>
   );
