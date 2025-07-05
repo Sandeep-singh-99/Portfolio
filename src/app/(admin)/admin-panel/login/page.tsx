@@ -1,20 +1,49 @@
+"use client"
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Image from 'next/image'
-import React from 'react'
+import React, {useState} from 'react'
+import {useRouter} from "next/navigation";
+import {signIn} from "next-auth/react";
+import {toast} from "sonner";
 
 export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false
+    });
+
+    if (result?.error) {
+      toast.error("Login failed!");
+    } else {
+      toast.success("Login successful!");
+      router.push("/dashboard/intro");
+    }
+  }
+
+
+
   return (
     <div className='flex flex-col items-center justify-between'>
       <div className='flex items-center justify-center space-x-10 h-screen'>
          <div>
         <Image
-          src='login.svg'
+          src='/login.svg'
           alt='Admin Login'
           width={250}
           height={500}
+          priority
           className='mx-auto mt-10'
         />
       </div>
@@ -28,12 +57,14 @@ export default function Login() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div>
                 <div>
                   <Label>Username</Label>
                   <Input
                     type='text'
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     placeholder='Enter your username'
                     className='mt-2 mb-4'
                   />
@@ -43,12 +74,14 @@ export default function Login() {
                   <Label>Password</Label>
                   <Input
                     type='password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder='Enter your password'
                     className='mt-2 mb-4'
                   />
                 </div>
               </div>
-              <Button className='w-full font-semibold text-xl py-2 px-4 rounded'>
+              <Button type={"submit"} variant={"destructive"} className='w-full font-semibold text-lg py-2 px-4 rounded'>
                 Login
               </Button>
             </form>
