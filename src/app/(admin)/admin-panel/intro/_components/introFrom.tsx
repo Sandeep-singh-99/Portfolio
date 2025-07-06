@@ -126,7 +126,7 @@ export default function IntroForm() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" >
+            <Button type="submit">
               Submit
             </Button>
           </DialogFooter>
