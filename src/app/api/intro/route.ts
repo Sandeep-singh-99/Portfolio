@@ -30,6 +30,11 @@ export async function POST(req: NextRequest) {
     try {
         await ConnectDB();
 
+        const existingIntro = await Intro.findOne({});
+        if (existingIntro) {
+            return NextResponse.json({ error: "Intro already exists" }, { status: 400 });
+        }
+
         const formData = await req.formData();
         const name = formData.get("name") as string;
         const techStack = formData.get("techStack") as string;

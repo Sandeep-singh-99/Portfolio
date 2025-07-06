@@ -24,20 +24,16 @@ export default function IntroForm() {
   });
   const [image, setImage] = useState<File | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [isPending, setIsPending] = useState(false);
-
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsPending(true);
-    toast.loading("Uploading intro...");
 
     const payload = new FormData();
+    if (!formData.name || !formData.techStack || !formData.desc) {
+      toast.error("All fields are required");
+      return;
+    }
+
     payload.append("name", formData.name);
     payload.append("techStack", formData.techStack);
     payload.append("desc", formData.desc);
@@ -49,8 +45,16 @@ export default function IntroForm() {
         method: "POST",
         body: payload,
       });
-      await response.json();
-      setIsPending(false);
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Intro added successfully");
+        setFormData({ name: "", techStack: "", desc: "" });
+        setImage(null);
+        setFile(null);
+      } else {
+        toast.error(result.error || "Failed to add intro");
+      }
 
     } catch (error) {
       console.error("Error uploading intro:", error);
@@ -72,26 +76,13 @@ export default function IntroForm() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            {/* {["name", "techStack", "desc"].map((field) => (
-              <div key={field} className="grid gap-2">
-                <Label htmlFor={field}>{field[0].toUpperCase() + field.slice(1)}</Label>
-                <Input
-                  id={field}
-                  name={field}
-                  value={(formData as any)[field]}
-                  onChange={handleChange}
-                  placeholder={`Enter ${field}`}
-                />
-                {errors[field] && <p className="text-red-500 text-sm">{errors[field]}</p>}
-              </div>
-            ))} */}
             <div className="grid gap-2">
-              <Label htmlFor="image">Image</Label>
+              <Label htmlFor="image">Name</Label>
               <Input
               type="text"
               id="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter name"
               />
             </div>
@@ -101,7 +92,7 @@ export default function IntroForm() {
                 type="text"
                 id="techStack"
                 value={formData.techStack}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
                 placeholder="Enter tech stack"
               />
             </div>
@@ -111,7 +102,7 @@ export default function IntroForm() {
                 type="text"
                 id="desc"
                 value={formData.desc}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
                 placeholder="Enter description"
               />
             </div>
@@ -135,8 +126,8 @@ export default function IntroForm() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save"}
+            <Button type="submit" >
+              Submit
             </Button>
           </DialogFooter>
         </form>
