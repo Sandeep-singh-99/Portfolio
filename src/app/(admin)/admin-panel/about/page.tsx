@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 
+
 export default function AboutPage() {
   return (
     <section className="p-6">
