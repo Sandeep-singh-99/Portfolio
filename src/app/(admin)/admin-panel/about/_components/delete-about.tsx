@@ -33,7 +33,7 @@ export default function DeleteAbout({ id }: DeleteAboutProps) {
   return (
     <div>
       <Button variant="destructive" onClick={() => handleDelete(id)}>
-        Delete About Section
+        Delete About
       </Button>
     </div>
   );

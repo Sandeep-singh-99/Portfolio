@@ -21,6 +21,11 @@ export default function AboutForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!desc) {
+      toast.error("Description is required");
+      return;
+    }
     try {
       const response = await fetch("/api/about", {
         method: "POST",
@@ -44,11 +49,11 @@ export default function AboutForm() {
   };
   return (
     <Dialog>
-      <form onSubmit={handleSubmit}>
         <DialogTrigger asChild>
           <Button variant="outline">Add About</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
+            <form onSubmit={handleSubmit}> 
           <DialogHeader>
             <DialogTitle>Add About Section</DialogTitle>
             <DialogDescription>
@@ -56,7 +61,7 @@ export default function AboutForm() {
               done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 ">
+          <div className="grid gap-4 py-4">
             <Label htmlFor="desc">Description</Label>
             <Textarea id="desc" name="desc" value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Enter description" />
           </div>
@@ -66,8 +71,8 @@ export default function AboutForm() {
             </DialogClose>
             <Button type="submit">Submit</Button>
           </DialogFooter>
+          </form>
         </DialogContent>
-      </form>
     </Dialog>
   );
 }
