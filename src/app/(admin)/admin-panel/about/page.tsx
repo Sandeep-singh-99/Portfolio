@@ -52,7 +52,7 @@ export default async function AboutPage() {
                       >
                         Delete
                       </Button> */}
-                      <DeleteAbout id={about._id} />
+                      <DeleteAbout id={about.id} />
                     </div>
                   </li>
                 ))}

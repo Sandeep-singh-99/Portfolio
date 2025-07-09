@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import SkillForm from './_components/skillForm';
 
 
 export default function SkillPage() {
@@ -14,7 +14,8 @@ export default function SkillPage() {
           </p>
         </div>
 
-        <Button variant="destructive">Add Skill</Button>
+        {/* <Button variant="destructive">Add Skill</Button> */}
+        <SkillForm/>
       </div>
 
       <main>

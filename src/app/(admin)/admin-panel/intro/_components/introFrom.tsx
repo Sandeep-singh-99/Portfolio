@@ -65,7 +65,7 @@ export default function IntroForm() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive">Add Intro</Button>
+        <Button variant={"outline"}>Add Intro</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
