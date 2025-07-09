@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,15 +14,54 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export default function SkillForm() {
+  const [skillName, setSkillName] = useState("");
+  const [skillImage, setSkillImage] = useState<File | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!skillName) {
+      toast.error("All fields are required");
+      return;
+    }
+
+    if (!skillImage) {
+      toast.error("Please upload an image");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("skillName", skillName);
+    if (skillImage) formData.append("skillImage", skillImage);
+
+    try {
+      const response = await fetch("/api/skill", {
+        method: "POST",
+        body: formData,
+      })
+      const result = await response.json();
+      if (response.ok) {
+        toast.success("Skill added successfully");
+        setSkillName("");
+        setSkillImage(null);
+      } else {
+        toast.error(result.error || "Failed to add skill");
+      }
+    } catch (error) {
+      console.error("Error uploading skill:", error);
+      toast.error("Failed to upload skill");
+    }
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">Add Skill</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form>
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Add Skill</DialogTitle>
             <DialogDescription>
@@ -30,11 +71,11 @@ export default function SkillForm() {
           <div className="grid gap-4 py-4">
             <div className="grid gap-3">
               <Label>Skill Name</Label>
-              <Input type="text" name="name" defaultValue="Skill Name" />
+              <Input type="text" name="name" value={skillName} onChange={(e) => setSkillName(e.target.value)} />
             </div>
             <div className="grid gap-3">
               <Label>Skill Image</Label>
-              <Input id="image" name="image" type="file" />
+              <Input type="file" accept="image/*" onChange={(e) => setSkillImage(e.target.files?.[0] || null)} />
             </div>
           </div>
           <DialogFooter>
