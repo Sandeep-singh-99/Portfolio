@@ -1,7 +1,12 @@
 import React from 'react'
+import IntroPage from './intro/page'
+import AboutPage from './about/page'
 
 export default function Home() {
   return (
-    <div>Home</div>
+    <section className=''>
+      <IntroPage/>
+      <AboutPage/>
+    </section>
   )
 }
