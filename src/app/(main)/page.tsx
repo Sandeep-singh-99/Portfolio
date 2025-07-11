@@ -2,11 +2,12 @@ import React from 'react'
 import IntroPage from './intro/page'
 import AboutPage from './about/page'
 
-export default function Home() {
+
+export default function HomePage() {
   return (
     <section className=''>
-      <IntroPage/>
-      <AboutPage/>
+      <IntroPage />
+      <AboutPage />
     </section>
   )
 }

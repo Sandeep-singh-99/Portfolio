@@ -2,8 +2,9 @@ import TypewriterClient from "@/components/TypewriterClient";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
-import { ConnectDB } from "../../../lib/db";
-import Intro from "../../../models/intro.model";
+import { ConnectDB } from "../../../../lib/db";
+import Intro from "../../../../models/intro.model";
+
 
 async function fetchIntroData() {
   await ConnectDB();
