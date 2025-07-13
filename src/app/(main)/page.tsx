@@ -1,6 +1,7 @@
 import React from 'react'
 import IntroPage from './intro/page'
 import AboutPage from './about/page'
+import ContactPage from './contact/page'
 
 
 export default function HomePage() {
@@ -8,6 +9,7 @@ export default function HomePage() {
     <section className=''>
       <IntroPage />
       <AboutPage />
+      <ContactPage />
     </section>
   )
 }
