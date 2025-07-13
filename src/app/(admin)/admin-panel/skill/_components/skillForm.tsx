@@ -15,15 +15,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function SkillForm() {
+  const [skillCategory, setSkillCategory] = useState("");
   const [skillName, setSkillName] = useState("");
   const [skillImage, setSkillImage] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!skillName) {
+    if (!skillName || !skillCategory) {
       toast.error("All fields are required");
       return;
     }
@@ -34,6 +44,7 @@ export default function SkillForm() {
     }
 
     const formData = new FormData();
+    formData.append("skillCategory", skillCategory);
     formData.append("skillName", skillName);
     if (skillImage) formData.append("skillImage", skillImage);
 
@@ -41,7 +52,7 @@ export default function SkillForm() {
       const response = await fetch("/api/skill", {
         method: "POST",
         body: formData,
-      })
+      });
       const result = await response.json();
       if (response.ok) {
         toast.success("Skill added successfully");
@@ -54,7 +65,7 @@ export default function SkillForm() {
       console.error("Error uploading skill:", error);
       toast.error("Failed to upload skill");
     }
-  }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -70,12 +81,39 @@ export default function SkillForm() {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-3">
+              <Label>Skill Category</Label>
+              <Select value={skillCategory} onValueChange={setSkillCategory}>
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue placeholder="Select a Skill Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Frontend</SelectLabel>
+                    <SelectItem value="frontend">Frontend</SelectItem>
+                    <SelectItem value="backend">Backend</SelectItem>
+                    <SelectItem value="tools">Tools</SelectItem>
+                    <SelectItem value="database">Database</SelectItem>
+                    <SelectItem value="ai">AI</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-3">
               <Label>Skill Name</Label>
-              <Input type="text" name="name" value={skillName} onChange={(e) => setSkillName(e.target.value)} />
+              <Input
+                type="text"
+                name="name"
+                value={skillName}
+                onChange={(e) => setSkillName(e.target.value)}
+              />
             </div>
             <div className="grid gap-3">
               <Label>Skill Image</Label>
-              <Input type="file" accept="image/*" onChange={(e) => setSkillImage(e.target.files?.[0] || null)} />
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSkillImage(e.target.files?.[0] || null)}
+              />
             </div>
           </div>
           <DialogFooter>

@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         await ConnectDB();
 
         const formData = await req.formData();
+        const skillCategory = formData.get("skillCategory") as string;
         const skillName = formData.get("skillName") as string;
         const image = formData.get("skillImage") as File;
 
@@ -43,6 +44,7 @@ export async function POST(req: NextRequest) {
         const [skillImage, skillImagePublicId] = await uploadToCloudinary(image, "image");
 
         const newSkill = await Skill.create({
+            skillCategory,
             skillName,
             skillImage,
             skillImagePublicId
