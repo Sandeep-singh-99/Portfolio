@@ -76,7 +76,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             Skill Section
           </Button>
         </Link>
-        <Link href={"/admin-panel/project"}>
+        <Link href={"/admin-panel/projects"}>
           <Button
             variant="ghost"
             className="w-full justify-start"

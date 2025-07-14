@@ -12,6 +12,6 @@ export default async function AboutPage() {
   const aboutData = await fetchAboutData();
 
   return (
-    <div className="text-center text-lg md:text-2xl tracking-wider px-10">{aboutData.desc}</div>
+    <div className="text-center text-lg md:text-2xl tracking-wider px-10 py-10">{aboutData.desc}</div>
   );
 }
