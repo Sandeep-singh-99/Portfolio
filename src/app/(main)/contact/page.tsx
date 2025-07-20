@@ -4,7 +4,7 @@ import ContactForm from './_components/contact-form'
 
 export default function ContactPage() {
   return (
-    <div className='flex items-center md:justify-between min-h-screen '>
+    <div className='flex items-center md:justify-between min-h-screen py-10 px-4 sm:px-6 lg:px-12'>
        <div className='hidden md:block'>
         <Image src={"/contact.svg"} alt='contact' width={500} height={500} />
        </div>
