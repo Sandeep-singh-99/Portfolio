@@ -93,7 +93,7 @@ export default function SkillForm() {
                     <SelectItem value="backend">Backend</SelectItem>
                     <SelectItem value="tools">Tools</SelectItem>
                     <SelectItem value="database">Database</SelectItem>
-                    <SelectItem value="ai">AI</SelectItem>
+                    <SelectItem value="language">Language</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>

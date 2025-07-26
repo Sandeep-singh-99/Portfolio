@@ -20,7 +20,7 @@ export default function NavBar() {
 
   return (
     <div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl 
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-2xl 
       px-4 py-3 rounded-2xl backdrop-blur-md shadow-md
       border border-zinc-300/20 dark:border-zinc-700/50
       bg-white/70 dark:bg-zinc-900/70 transition-all duration-300"
