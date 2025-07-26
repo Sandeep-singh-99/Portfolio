@@ -56,7 +56,7 @@ export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
           <RotatingStars />
         </Canvas>
       </div>
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4">{children}</div>
     </motion.div>
   );
 };

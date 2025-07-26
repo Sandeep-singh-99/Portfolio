@@ -20,10 +20,10 @@ export default async function ProjectPage() {
   return (
     <div id='projects' className="container mx-auto py-10 px-4 sm:px-6 lg:px-12">
       <div className="text-center mb-10">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+        <h1 className="md:text-5xl text-3xl tracking-wider p-2 font-bold bg-gradient-to-r from-indigo-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
           Featured Projects 🚀
         </h1>
-        <p className="mt-2 text-muted-foreground text-lg">Built with modern tech & clean design</p>
+        <p className="mt-2 text-muted-foreground text-sm md:text-lg">Built with modern tech & clean design</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
@@ -34,7 +34,7 @@ export default async function ProjectPage() {
               alt={proj.projectName}
               width={600}
               height={300}
-              className="w-full h-52 object-cover border-b border-zinc-800"
+              className="w-full h-52 object-contain border-b border-zinc-800"
             />
             <CardContent className="flex flex-col justify-between flex-grow p-6 space-y-5">
               <div>
