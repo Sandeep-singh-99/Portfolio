@@ -25,7 +25,7 @@ export default async function SkillPage() {
       </div>
 
       <Tabs defaultValue={allowedCategories[0]}>
-        <TabsList className="flex justify-center items-center md:gap-6 md:w-full  mb-6">
+        <TabsList className="flex justify-center items-center md:gap-6 md:w-full  mb-3">
           {allowedCategories.map((category) => (
             <TabsTrigger key={category} value={category}>
               {category.charAt(0).toUpperCase() + category.slice(1)}

@@ -69,10 +69,10 @@ export default async function ProjectPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
-                <Badge className="bg-green-600 text-white text-xs">✅ All Systems Operational</Badge>
+              <div className="flex items-center justify-end pt-4 border-t border-zinc-800">
+                {/* <Badge className="bg-green-600 text-white text-xs">✅ All Systems Operational</Badge> */}
 
-                <Link href={`/projects/${proj._id}`}>
+                <Link href={`/project/${proj._id}`}>
                   <Button
                     variant="default"
                     className="bg-white text-black  text-xs px-4 py-1"
