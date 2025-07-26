@@ -12,6 +12,13 @@ export default async function AboutPage() {
   const aboutData = await fetchAboutData();
 
   return (
-    <div className="text-center text-lg md:text-2xl tracking-wider py-10 px-4 sm:px-6 lg:px-12">{aboutData.desc}</div>
+    <div id="about">
+      <div className="text-center">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-wider px-4 sm:px-6 lg:px-12">
+          About Me
+        </h1>
+      </div>
+      <div className="text-center text-lg md:text-2xl tracking-wider py-10 px-4 sm:px-6 lg:px-12">{aboutData.desc}</div>
+    </div>
   );
 }

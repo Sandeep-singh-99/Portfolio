@@ -12,7 +12,7 @@ async function fetchSkillData() {
 export default async function SkillPage() {
   const skills = await fetchSkillData();
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-12">
+    <div id="skills" className="container mx-auto py-10 px-4 sm:px-6 lg:px-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
           Professional Skills

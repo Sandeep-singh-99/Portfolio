@@ -9,12 +9,12 @@ import { AuroraLayout } from '@/components/auroralayout'
 
 export default function HomePage() {
   return (
-    <AuroraLayout>
+    <>
       <IntroPage />
       <AboutPage />
       <SkillPage />
       <ProjectPage />
       <ContactPage />
-    </AuroraLayout>
+    </>
   )
 }
