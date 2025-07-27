@@ -110,7 +110,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
             </Button>
           </div>
 
-           <div data-color-mode="light" className="prose dark:prose-invert">
+           <div data-color-mode="dark" className="prose dark:prose-invert">
             <MDEditor.Markdown source={project.projectDesc} className='p-4' />
           </div>
 
