@@ -9,17 +9,17 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     await ConnectDB();
     const { id } = params;
 
-    const skill = await Project.findById(id);
+    const projectId = await Project.findById(id);
 
-    if (!skill) {
-      return NextResponse.json({ error: "Skill not found" }, { status: 404 });
+    if (!projectId) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    return NextResponse.json(skill, { status: 200 });
+    return NextResponse.json({ data: projectId, status: 200 });
   } catch (error) {
-    console.error("Error fetching skill:", error);
+    console.error("Error fetching project:", error);
     return NextResponse.json(
-      { error: "Failed to fetch skill" },
+      { error: "Failed to fetch project" },
       { status: 500 }
     );
   }

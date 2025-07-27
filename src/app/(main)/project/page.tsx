@@ -18,7 +18,7 @@ export default async function ProjectPage() {
   const projects = await fetchProjectData()
 
   return (
-    <div id='projects' className="container mx-auto py-10 px-4 sm:px-6 lg:px-12">
+    <div id='projects' className="container mx-auto pt-10 px-4 sm:px-6 lg:px-12">
       <div className="text-center mb-10">
         <h1 className="md:text-5xl text-3xl tracking-wider p-2 font-bold bg-gradient-to-r from-indigo-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
           Featured Projects 🚀

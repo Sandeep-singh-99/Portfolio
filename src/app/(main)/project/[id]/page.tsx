@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -18,16 +18,16 @@ interface Project {
   githubLink: string;
   liveLink: string;
   projectImagePublicId: string;
-  createdAt: { $date: string };
-  updatedAt: { $date: string };
+  createdAt: string;
+  updatedAt: string
   __v: number;
 }
 
-export default  function ProjectPage({ params }: { params: { id: string } }) {
+export default function ProjectPage({ params }: { params: { id: string } }) {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { id } = params;
+  const { id } =  params;
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -38,7 +38,7 @@ export default  function ProjectPage({ params }: { params: { id: string } }) {
         if (data.error) {
           console.error(data.error);
         } else {
-          setProject(data);
+          setProject(data.data);
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -59,10 +59,10 @@ export default  function ProjectPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen pt-36 pb-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
+      <Card className="max-w-7xl mx-auto">
+        {/* <CardHeader>
           <CardTitle className="text-3xl font-bold">{project.projectName}</CardTitle>
-        </CardHeader>
+        </CardHeader> */}
         <CardContent className="space-y-6">
           <div className="relative w-full h-96 rounded-lg overflow-hidden">
             <Image
@@ -72,10 +72,6 @@ export default  function ProjectPage({ params }: { params: { id: string } }) {
               className="object-cover"
               priority
             />
-          </div>
-
-          <div data-color-mode="light">
-            <MDEditor.Markdown source={project.projectDesc} />
           </div>
 
           <div>
@@ -114,9 +110,13 @@ export default  function ProjectPage({ params }: { params: { id: string } }) {
             </Button>
           </div>
 
+           <div data-color-mode="light" className="prose dark:prose-invert">
+            <MDEditor.Markdown source={project.projectDesc} className='p-4' />
+          </div>
+
           <div className="text-sm text-muted-foreground">
-            <p>Created: {project.createdAt?.$date ? format(new Date(project.createdAt.$date), 'MM/dd/yyyy') : 'N/A'}</p>
-            <p>Updated: {project.updatedAt?.$date ? format(new Date(project.updatedAt.$date), 'MM/dd/yyyy') : 'N/A'}</p>
+            <p>Created: {project.createdAt ? format(new Date(project.createdAt), 'MM/dd/yyyy') : 'N/A'}</p>
+            {/* <p>Updated: {project.updatedAt ? format(new Date(project.updatedAt), 'MM/dd/yyyy') : 'N/A'}</p> */}
           </div>
         </CardContent>
       </Card>

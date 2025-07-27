@@ -41,7 +41,7 @@ export default async function SkillPage() {
                 .map((skill) => (
                   <div
                     key={skill.id}
-                    className="flex items-center justify-center space-x-4 mb-6 bg-[#1a1a1c] p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                    className="flex items-center justify-center space-x-4 mb-1 bg-[#1a1a1c] p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
                   >
                     <Image
                       width={24}
