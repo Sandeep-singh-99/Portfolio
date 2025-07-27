@@ -9,7 +9,7 @@ import DeleteProject from "./_components/deleteProject";
 
 
 interface Project {
-  id: string;
+  _id: string;
   projectName: string;
   projectDesc: string;
   projectImage: string;
@@ -60,7 +60,7 @@ export default async function ProjectsPage() {
               <div className="flex flex-col gap-4 w-full max-h-960 overflow-y-auto">
                 {projects.map((project) => (
                   <div
-                    key={project.id}
+                    key={project._id}
                     className=" border border-gray-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 w-full"
                   >
                     {/* Header with Title and Delete Button */}
@@ -68,7 +68,7 @@ export default async function ProjectsPage() {
                       <h2 className="text-lg font-semibold text-white truncate">
                         {project.projectName}
                       </h2>
-                      <DeleteProject id={project.id} />
+                      <DeleteProject id={project._id} />
                     </div>
 
                     {/* Project Image */}
