@@ -6,10 +6,12 @@ import Project from "../../../../../models/project.model";
 import { MarkdownRender } from "@/components/MarkdownRender";
 import Image from "next/image";
 import DeleteProject from "./_components/deleteProject";
+import UpdateProjectForm from "./_components/updateProjectForm";
 
 
 interface Project {
   _id: string;
+  id: string;
   projectName: string;
   projectDesc: string;
   projectImage: string;
@@ -68,7 +70,10 @@ export default async function ProjectsPage() {
                       <h2 className="text-lg font-semibold text-white truncate">
                         {project.projectName}
                       </h2>
+                     <div className="flex items-center gap-2">
+                       <UpdateProjectForm id={project._id} />
                       <DeleteProject id={project._id} />
+                     </div>
                     </div>
 
                     {/* Project Image */}

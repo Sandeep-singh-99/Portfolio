@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ExternalLink, Github } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
 import { format } from 'date-fns';
+import { useParams } from 'next/navigation';
 
 interface Project {
   _id: { $oid: string };
@@ -23,11 +24,12 @@ interface Project {
   __v: number;
 }
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
+export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { id } =  params;
+  const params = useParams();
+  const id = params.id as string;
 
   useEffect(() => {
     const fetchProject = async () => {
