@@ -10,7 +10,7 @@ import Link from 'next/link'
 
 async function fetchProjectData() {
   await ConnectDB()
-  const data = await Project.find()
+  const data = await Project.find().sort({ createdAt: -1 })
   return data
 }
 
