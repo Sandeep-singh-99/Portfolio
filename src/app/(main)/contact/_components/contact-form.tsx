@@ -58,7 +58,7 @@ export default function ContactForm() {
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto">
+    <Card className="w-full max-w-lg mx-auto">
       <CardHeader>
         <CardTitle className="text-3xl font-semibold gradient-title">
           Contact Us
@@ -97,7 +97,7 @@ export default function ContactForm() {
             <Textarea
               id="message"
               placeholder="Your Message"
-              rows={8}
+              className="h-36"
               maxLength={500}
               value={formData.message}
               onChange={handleChange}

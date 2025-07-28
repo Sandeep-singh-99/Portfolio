@@ -36,7 +36,7 @@ export default async function ProjectPage() {
               height={300}
               className="w-full h-52 object-contain border-b border-zinc-800"
             />
-            <CardContent className="flex flex-col justify-between flex-grow p-6 space-y-5">
+            <CardContent className="flex flex-col justify-between flex-grow px-6 space-y-5">
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-2xl font-bold">{proj.projectName}</h2>
@@ -48,7 +48,7 @@ export default async function ProjectPage() {
                     )}
                     {proj.liveLink && (
                       <a href={proj.liveLink} target="_blank" rel="noopener noreferrer">
-                        <Globe className="w-5 h-5 hover:text-pink-500 transition" />
+                        <Globe className="w-5 h-5 hover:text-indigo-500 transition" />
                       </a>
                     )}
                   </div>
