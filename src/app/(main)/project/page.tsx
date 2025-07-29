@@ -17,6 +17,10 @@ async function fetchProjectData() {
 export default async function ProjectPage() {
   const projects = await fetchProjectData()
 
+  // Only show the first 4 projects
+  const visibleProjects = projects.slice(0, 4)
+  const hasMore = projects.length > 4
+
   return (
     <div id='projects' className="container mx-auto pt-10 px-4 sm:px-6 lg:px-12">
       <div className="text-center mb-10">
@@ -27,7 +31,7 @@ export default async function ProjectPage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
-        {projects.map((proj) => (
+        {visibleProjects.map((proj) => (
           <Card key={proj._id} className="rounded-3xl overflow-hidden shadow-xl border border-zinc-800 bg-gradient-to-br from-black via-zinc-900 to-zinc-950 text-white transition hover:scale-[1.01] duration-300">
             <Image
               src={proj.projectImage}
@@ -54,8 +58,6 @@ export default async function ProjectPage() {
                   </div>
                 </div>
 
-                {/* <p className="text-sm text-zinc-300">{proj.projectDesc}</p> */}
-
                 <div className="flex flex-wrap gap-2 mt-4">
                   {proj.projectTechStack.map((tech: string, index: number) => (
                     <Badge
@@ -70,8 +72,6 @@ export default async function ProjectPage() {
               </div>
 
               <div className="flex items-center justify-end pt-4 border-t border-zinc-800">
-                {/* <Badge className="bg-green-600 text-white text-xs">✅ All Systems Operational</Badge> */}
-
                 <Link href={`/project/${proj._id}`}>
                   <Button
                     variant="default"
@@ -85,6 +85,16 @@ export default async function ProjectPage() {
           </Card>
         ))}
       </div>
+
+      {hasMore && (
+        <div className="text-center mt-10">
+          <Link href="/all-projects">
+            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black">
+              View More Projects →
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   )
 }
