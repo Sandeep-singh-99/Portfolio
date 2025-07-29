@@ -28,7 +28,7 @@ export default function Login() {
       toast.error("Login failed!");
     } else {
       toast.success("Login successful!");
-      router.push("/dashboard/intro");
+      router.push("/admin-panel/intro");
     }
   }
 
