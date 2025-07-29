@@ -75,7 +75,7 @@ export default async function ViewAllProjects() {
                 <Link href={`/project/${proj._id}`}>
                   <Button
                     variant="default"
-                    className="bg-white text-black  text-xs px-4 py-1"
+                    className="   text-xs px-4 py-1"
                   >
                     View Details →
                   </Button>

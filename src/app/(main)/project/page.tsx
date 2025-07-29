@@ -58,6 +58,8 @@ export default async function ProjectPage() {
                   </div>
                 </div>
 
+                {/* <p className="text-sm text-zinc-300">{proj.projectDesc}</p> */}
+
                 <div className="flex flex-wrap gap-2 mt-4">
                   {proj.projectTechStack.map((tech: string, index: number) => (
                     <Badge
@@ -72,10 +74,12 @@ export default async function ProjectPage() {
               </div>
 
               <div className="flex items-center justify-end pt-4 border-t border-zinc-800">
+                {/* <Badge className="bg-green-600 text-white text-xs">✅ All Systems Operational</Badge> */}
+
                 <Link href={`/project/${proj._id}`}>
                   <Button
                     variant="default"
-                    className="bg-white text-black  text-xs px-4 py-1"
+                    className="text-xs px-4 py-1"
                   >
                     View Details →
                   </Button>
