@@ -5,7 +5,6 @@ import React from "react";
 import { ConnectDB } from "../../../../lib/db";
 import Intro from "../../../../models/intro.model";
 
-
 async function fetchIntroData() {
   await ConnectDB();
   const data = await Intro.findOne();
@@ -22,18 +21,23 @@ export default async function IntroPage() {
         {/* Text Section */}
         <div className="w-full  text-center md:text-left space-y-6">
           <h1 className="text-4xl sm:text-5xl font-bold">
-            {introData?.name}
+            Hi, I'm{" "}
+            <span
+              className=" bg-clip-text text-transparent
+             bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
+             dark:from-green-300 dark:via-blue-400 dark:to-purple-400"
+            >
+              {introData?.name}
+            </span>
           </h1>
 
-           <TypewriterClient words={stack} />
+          <TypewriterClient words={stack} />
 
           <p className="text-base sm:text-lg tracking-wider text-gray-600 dark:text-gray-300">
             {introData?.desc || "This is the default intro description."}
           </p>
 
-         
-
-           <a
+          <a
             href={introData?.file}
             target="_blank"
             rel="noopener noreferrer"
@@ -47,6 +51,8 @@ export default async function IntroPage() {
               View Resume
             </Button>
           </a>
+
+          
         </div>
 
         {/* Image Section */}

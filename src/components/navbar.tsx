@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
@@ -27,9 +28,14 @@ export default function NavBar() {
     >
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <Link href={"/"} className="text-lg md:text-2xl font-bold gradient-title tracking-tight">
-          Sandeep.
+        <Link href={"/"} className="flex items-center">
+          <Image src={"/profilePic.png"} alt="Profile Picture" width={30} height={30} className="rounded-full w-10 h-10 object-contain" />
         </Link>
+
+
+        {/* <Link href={"/"} className="text-lg md:text-2xl font-bold gradient-title tracking-tight">
+          Sandeep.
+        </Link> */}
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 text-sm font-medium">

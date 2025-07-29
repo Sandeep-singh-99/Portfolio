@@ -71,7 +71,7 @@ export default function ProjectPage() {
               src={project.projectImage || '/fallback-image.png'}
               alt={`${project.projectName} screenshot`}
               fill
-              className="object-cover"
+              className="object-fill"
               priority
             />
           </div>

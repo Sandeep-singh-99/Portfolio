@@ -34,7 +34,7 @@ export default async function ProjectPage() {
               alt={proj.projectName}
               width={600}
               height={300}
-              className="w-full h-52 object-contain border-b border-zinc-800"
+              className="w-full h-52 object-fill border-b border-zinc-800"
             />
             <CardContent className="flex flex-col justify-between flex-grow px-6 space-y-5">
               <div>
