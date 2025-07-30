@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import {Toaster} from "@/components/ui/sonner";
+import LeftSideBar from "@/components/leftsidebar";
 // import NavBar from "@/components/navbar";
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
             disableTransitionOnChange
         >
           <Toaster richColors/>
+          <LeftSideBar />
           {children}
         </ThemeProvider>
       </body>
