@@ -33,9 +33,9 @@ const links = [
 export default function LeftSideBar() {
   return (
     <div
-      className="fixed z-50 flex items-center gap-6 md:px-3 md:py-5 px-3 py-3
+      className="fixed z-50 flex items-center gap-4 md:px-3 md:py-5 px-3 py-3
   bg-zinc-900/60 backdrop-blur-md border border-zinc-700/40 rounded-xl shadow-xl
-  md:top-1/2 md:left-8  md:flex-col md:transform md:-translate-y-1/2
+  md:top-1/2 md:left-4  md:flex-col md:transform md:-translate-y-1/2
   bottom-4 md:bottom-auto left-1/2 flex-row transform -translate-x-1/2 md:translate-x-0
   transition-all duration-500"
 

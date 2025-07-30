@@ -61,7 +61,7 @@ export default function ProjectPage() {
 
   return (
     <div className="min-h-screen pt-36 pb-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <Card className="max-w-7xl mx-auto">
+      <Card className="max-w-5xl mx-auto">
         {/* <CardHeader>
           <CardTitle className="text-3xl font-bold">{project.projectName}</CardTitle>
         </CardHeader> */}
