@@ -9,7 +9,7 @@ const links = [
     label: "GitHub",
   },
   {
-    href: "https://linkedin.com/in/yourusername",
+    href: "https://www.linkedin.com/in/sandeep-singh-7a0219320",
     icon: <Linkedin size={20} />,
     label: "LinkedIn",
   },
