@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
         });
 
         revalidatePath("/admin-panel/skill")
+        revalidatePath("/");
         return NextResponse.json( { data: newSkill }, { status: 201 });
     } catch (error) {
         console.error("Error creating skill:", error);

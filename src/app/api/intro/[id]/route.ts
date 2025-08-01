@@ -31,6 +31,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         await Intro.findByIdAndDelete(id);
 
         revalidatePath("/admin-panel/intro");
+        revalidatePath("/");
 
         return NextResponse.json({ message: "Intro deleted successfully" }, { status: 200 });
 

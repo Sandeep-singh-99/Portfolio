@@ -28,6 +28,7 @@ export async function DELETE(
     await Skill.findByIdAndDelete(id);
 
     revalidatePath("/admin-panel/skill");
+    revalidatePath("/");
 
     return NextResponse.json({ message: "Skill deleted successfully" }, { status: 200 });
 

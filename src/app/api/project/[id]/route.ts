@@ -79,6 +79,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await Project.findByIdAndDelete(id);
 
     revalidatePath("/admin-panel/projects");
+    revalidatePath("/");
 
     return NextResponse.json({ message: "Project deleted successfully" }, { status: 200 });
   } catch (error) {
@@ -135,6 +136,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         await Project.findByIdAndUpdate(id, updatedProjectData);
         
         revalidatePath("/admin-panel/projects");
+        revalidatePath("/");
 
         return NextResponse.json({ data: updatedProjectData, message: "Project updated successfully" }, { status: 200 });
 

@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
         const newAbout = await About.create({ desc });
 
         revalidatePath("/admin-panel/about");
+        revalidatePath("/");
         return NextResponse.json({data: newAbout}, { status: 201 });
 
     } catch (error) {

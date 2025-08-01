@@ -22,6 +22,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         }
 
         revalidatePath("/admin-panel/about");
+        revalidatePath("/");
         return NextResponse.json({ message: "About section deleted successfully" }, { status: 200 });
     } catch (error) {
         console.error("Error in DELETE /api/about:", error);

@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
         })
 
         revalidatePath("/admin-panel/intro");
+        revalidatePath("/");
         return NextResponse.json({ data: newIntro }, { status: 200 });
     } catch (error) {
         console.error("Error creating intro:", error);
