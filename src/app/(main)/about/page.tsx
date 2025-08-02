@@ -18,7 +18,7 @@ export default async function AboutPage() {
           About Me
         </h1>
       </div>
-      <div className="text-center text-lg md:text-2xl tracking-wider py-10 px-4 sm:px-6 lg:px-12">{aboutData.desc}</div>
+      <div className="text-center text-[1rem]  md:text-2xl tracking-wider py-10 px-4 sm:px-6 lg:px-12">{aboutData.desc}</div>
     </div>
   );
 }

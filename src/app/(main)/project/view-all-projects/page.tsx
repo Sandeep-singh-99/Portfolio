@@ -18,7 +18,7 @@ export default async function ViewAllProjects() {
   const projects = await fetchProjectData()
 
   return (
-    <div className="container mx-auto max-w-6xl pt-36 px-4 sm:px-6 lg:px-12">
+    <div className="container mx-auto max-w-6xl pt-36 md:pb-12 pb-32 px-4 sm:px-6 lg:px-12">
       <div className="text-center mb-10">
         <h1 className="md:text-5xl text-3xl tracking-wider p-2 font-bold bg-gradient-to-r from-indigo-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
           Featured Projects 🚀

@@ -66,12 +66,12 @@ export default function ProjectPage() {
           <CardTitle className="text-3xl font-bold">{project.projectName}</CardTitle>
         </CardHeader> */}
         <CardContent className="space-y-6">
-          <div className="relative w-full h-96 rounded-lg overflow-hidden">
+          <div className="relative w-full md:h-96 h-56  rounded-lg overflow-hidden">
             <Image
               src={project.projectImage || '/fallback-image.png'}
               alt={`${project.projectName} screenshot`}
               fill
-              className="object-fill"
+              className="md:object-fill object-fit"
               priority
             />
           </div>

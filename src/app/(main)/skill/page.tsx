@@ -17,7 +17,7 @@ export default async function SkillPage() {
   const allowedCategories = ["frontend", "backend", "language", "database", "tools", "other"];
 
   return (
-    <div id="skills" className="container mx-auto py-10 px-4 sm:px-6 lg:px-12">
+    <div id="skills" className="container mx-auto py-10 px-2 sm:px-6 lg:px-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
           Professional Skills
@@ -27,7 +27,7 @@ export default async function SkillPage() {
       <Tabs defaultValue={allowedCategories[0]}>
         <TabsList className="flex justify-center items-center md:gap-6 md:w-full  mb-3">
           {allowedCategories.map((category) => (
-            <TabsTrigger key={category} value={category}>
+            <TabsTrigger key={category} value={category} className="">
               {category.charAt(0).toUpperCase() + category.slice(1)}
             </TabsTrigger>
           ))}
@@ -35,7 +35,7 @@ export default async function SkillPage() {
 
         {allowedCategories.map((category) => (
           <TabsContent key={category} value={category}>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8">
               {skills
                 .filter((skill) => skill.skillCategory === category)
                 .map((skill) => (
