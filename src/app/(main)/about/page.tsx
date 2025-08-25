@@ -12,7 +12,7 @@ export default async function AboutPage() {
   const aboutData = await fetchAboutData();
 
   return (
-    <div id="about"className="py-10">
+    <div id="about" className="py-10">
       <div className="text-center">
         <h1 className="text-4xl md:text-6xl font-bold tracking-wider px-4 sm:px-6 lg:px-12">
           About Me
@@ -22,3 +22,4 @@ export default async function AboutPage() {
     </div>
   );
 }
+

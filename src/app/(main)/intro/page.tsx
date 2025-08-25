@@ -16,7 +16,7 @@ export default async function IntroPage() {
   const stack = introData?.techStack || [];
 
   return (
-    <div className="px-4 sm:px-6 lg:px-12 pb-10 md:pb-4">
+    <div className="px-4 sm:px-6 lg:px-20 pb-10 md:pb-4">
       <div className="flex flex-col-reverse md:flex-row items-center md:justify-between gap-16 md:gap-8 min-h-screen">
         {/* Text Section */}
         <div className="w-full  text-center md:text-left space-y-6">
