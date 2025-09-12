@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
-import { ExternalLink, Github } from 'lucide-react';
-import MDEditor from '@uiw/react-md-editor';
-import { format } from 'date-fns';
-import { useParams } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { ExternalLink, Github, Loader2 } from "lucide-react";
+import MDEditor from "@uiw/react-md-editor";
+import { format } from "date-fns";
+import { useParams } from "next/navigation";
 
 interface Project {
   _id: { $oid: string };
@@ -20,7 +20,7 @@ interface Project {
   liveLink: string;
   projectImagePublicId: string;
   createdAt: string;
-  updatedAt: string
+  updatedAt: string;
   __v: number;
 }
 
@@ -43,7 +43,7 @@ export default function ProjectPage() {
           setProject(data.data);
         }
       } catch (error) {
-        console.error('Error fetching project:', error);
+        console.error("Error fetching project:", error);
       } finally {
         setLoading(false);
       }
@@ -52,11 +52,22 @@ export default function ProjectPage() {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-lg text-muted-foreground">
+          Fetching project details...
+        </p>
+      </div>
+    );
   }
 
   if (!project) {
-    return <div className="min-h-screen flex items-center justify-center">Project not found</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Project not found
+      </div>
+    );
   }
 
   return (
@@ -68,7 +79,7 @@ export default function ProjectPage() {
         <CardContent className="space-y-6">
           <div className="relative w-full md:h-96 h-56  rounded-lg overflow-hidden">
             <Image
-              src={project.projectImage || '/fallback-image.png'}
+              src={project.projectImage || "/fallback-image.png"}
               alt={`${project.projectName} screenshot`}
               fill
               className="md:object-fill object-fit"
@@ -112,12 +123,17 @@ export default function ProjectPage() {
             </Button>
           </div>
 
-           <div data-color-mode="dark" className="prose dark:prose-invert">
-            <MDEditor.Markdown source={project.projectDesc} className='p-4' />
+          <div data-color-mode="dark" className="prose dark:prose-invert">
+            <MDEditor.Markdown source={project.projectDesc} className="p-4" />
           </div>
 
           <div className="text-sm text-muted-foreground">
-            <p>Created: {project.createdAt ? format(new Date(project.createdAt), 'MM/dd/yyyy') : 'N/A'}</p>
+            <p>
+              Created:{" "}
+              {project.createdAt
+                ? format(new Date(project.createdAt), "MM/dd/yyyy")
+                : "N/A"}
+            </p>
             {/* <p>Updated: {project.updatedAt ? format(new Date(project.updatedAt), 'MM/dd/yyyy') : 'N/A'}</p> */}
           </div>
         </CardContent>
