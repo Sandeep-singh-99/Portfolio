@@ -44,7 +44,7 @@ export default async function IntroPage() {
             className="inline-block"
           >
             <Button
-              variant="default"
+              variant="secondary"
               size="lg"
               className="w-full sm:w-auto px-6 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
             >
