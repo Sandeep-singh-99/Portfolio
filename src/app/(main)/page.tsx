@@ -12,7 +12,7 @@ export default function HomePage() {
     <AuroraLayout>
      <div className="max-w-5xl mx-auto px-1 sm:px-6 lg:px-12">
        <IntroPage />
-      {/* <AboutPage /> */}
+      <AboutPage />
       <SkillPage />
       <ProjectPage />
       <ContactPage />
