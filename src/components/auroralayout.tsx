@@ -1,222 +1,60 @@
 // "use client";
+// import Image from "next/image";
+// import React from "react";
 
-// import React, { useEffect, useRef } from "react";
-// import { Canvas, useFrame } from "@react-three/fiber";
-// import { Stars } from "@react-three/drei";
-// import { Group } from "three";
-// import {
-//   motion,
-//   useMotionValue,
-//   useMotionTemplate,
-//   animate,
-// } from "framer-motion";
-
-// const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
-
-// // 🎯 This component will rotate the stars slowly
-// const RotatingStars = () => {
-//   const groupRef = useRef<Group>(null);
-
-//   useFrame((state, delta) => {
-//     if (groupRef.current) {
-//       groupRef.current.rotation.y += delta * 0.02; // Slow horizontal rotation
-//       groupRef.current.rotation.x += delta * 0.005; // Slow vertical rotation
-//       groupRef.current.rotation.z += delta * 0.01; // Slow depth rotation
-//     }
-//   });
-
-//   return (
-//     <group ref={groupRef}>
-//       <Stars radius={50} count={2500} factor={4} fade speed={2} />
-//     </group>
-//   );
-// };
 
 // export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
-//   const color = useMotionValue(COLORS_TOP[0]);
-
-//   useEffect(() => {
-//     animate(color, COLORS_TOP, {
-//       ease: "easeInOut",
-//       duration: 10,
-//       repeat: Infinity,
-//       repeatType: "mirror",
-//     });
-//   }, []);
-
-//   const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`;
-
 //   return (
-//     <motion.div
-//       style={{ backgroundImage }}
-//       className="relative min-h-screen w-full overflow-hidden bg-gray-950 text-white"
-//     >
-//       <div className="absolute inset-0 z-0">
-//         <Canvas>
-//           <RotatingStars />
-//         </Canvas>
-//       </div>
+//    <div className='bg-[#0a0c0f]'>
+//      <Image className='absolute top-0 right-0 opacity-90 z-90' src={"/gradient.png"} width={400} height={400} alt='Gradient Background' />
+
+//     {/* Blur Effect */}
+//     <div className='h-0 w-[40rem] absolute top-[20%] right-[-5%] shadow-[0_0_900px_20px_#ffffff] -rotate-[30deg] z-10'></div>
+//       {/* ---- Page Content ---- */}
 //       <div className="relative z-10">{children}</div>
-//     </motion.div>
+//     </div>
 //   );
 // };
 
-// "use client";
 
-// import React, { useEffect, useRef } from "react";
-// import { Canvas, useFrame } from "@react-three/fiber";
-// import { Stars } from "@react-three/drei";
-// import { Group } from "three";
-// import {
-//   motion,
-//   useMotionValue,
-//   useMotionTemplate,
-//   animate,
-// } from "framer-motion";
-// import { useTheme } from "next-themes";
 
-// const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
 
-// const RotatingStars = () => {
-//   const groupRef = useRef<Group>(null);
 
-//   useFrame((_, delta) => {
-//     if (groupRef.current) {
-//       groupRef.current.rotation.y += delta * 0.02;
-//       groupRef.current.rotation.x += delta * 0.005;
-//       groupRef.current.rotation.z += delta * 0.01;
-//     }
-//   });
 
-//   return (
-//     <group ref={groupRef}>
-//       <Stars radius={50} count={2500} factor={4} fade speed={2} />
-//     </group>
-//   );
-// };
 
-// export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
-//   const color = useMotionValue(COLORS_TOP[0]);
-//   const { theme, resolvedTheme } = useTheme();
 
-//   const isDark = theme === "dark" || resolvedTheme === "dark";
 
-//   useEffect(() => {
-//     if (isDark) {
-//       animate(color, COLORS_TOP, {
-//         ease: "easeInOut",
-//         duration: 10,
-//         repeat: Infinity,
-//         repeatType: "mirror",
-//       });
-//     }
-//   }, [isDark]);
-
-//   const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`;
-
-//   return (
-//     <motion.div
-//       style={{
-//         backgroundImage: isDark ? backgroundImage : "none",
-//         backgroundColor: isDark ? "#020617" : "#ffffff",
-//       }}
-//       className="relative min-h-screen w-full overflow-hidden transition-colors"
-//     >
-//       {/* Render stars only in dark mode */}
-//       {isDark && (
-//         <div className="absolute inset-0 z-0">
-//           <Canvas>
-//             <RotatingStars />
-//           </Canvas>
-//         </div>
-//       )}
-
-//       <div className="relative z-10">{children}</div>
-//     </motion.div>
-//   );
-// };
 
 
 
 
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
-import { Group } from "three";
-import {
-  motion,
-  useMotionValue,
-  useMotionTemplate,
-  animate,
-} from "framer-motion";
-import { useTheme } from "next-themes";
-
-const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
-
-const RotatingStars = () => {
-  const groupRef = useRef<Group>(null);
-
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.02;
-      groupRef.current.rotation.x += delta * 0.005;
-      groupRef.current.rotation.z += delta * 0.01;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Stars radius={50} count={2500} factor={4} fade speed={2} />
-    </group>
-  );
-};
+import Image from "next/image";
+import React from "react";
 
 export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
-  const color = useMotionValue(COLORS_TOP[0]);
-  const { theme, resolvedTheme } = useTheme();
-  const [isClient, setIsClient] = useState(false);
-
-  // Ensure client-only rendering for anything theme-dependent
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const isDark =
-    (theme === "dark" || resolvedTheme === "dark") && isClient;
-
-  useEffect(() => {
-    if (isDark) {
-      animate(color, COLORS_TOP, {
-        ease: "easeInOut",
-        duration: 10,
-        repeat: Infinity,
-        repeatType: "mirror",
-      });
-    }
-  }, [isDark]);
-
-  const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`;
-
   return (
-    <motion.div
-      style={{
-        backgroundImage: isDark ? backgroundImage : "none",
-        backgroundColor: isDark ? "#020617" : "#ffffff",
-      }}
-      className="relative min-h-screen w-full overflow-hidden transition-colors"
-    >
-      {/* Render stars only in dark mode and on client */}
-      {isDark && isClient && (
-        <div className="absolute inset-0 z-0">
-          <Canvas>
-            <RotatingStars />
-          </Canvas>
-        </div>
-      )}
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#050508] via-[#0a0c12] to-[#111827]">
+      {/* Gradient Overlay for Depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(30,30,40,0.8),transparent_70%)] pointer-events-none"></div>
 
-      <div className="relative z-10">{children}</div>
-    </motion.div>
+      {/* Aurora Glow Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute top-[15%] left-[-10%] w-[55rem] h-[35rem] bg-gradient-to-r from-purple-500/30 via-blue-400/20 to-transparent blur-[140px] rounded-full animate-pulse"></div>
+        <div className="absolute bottom-[15%] right-[-10%] w-[55rem] h-[35rem] bg-gradient-to-r from-pink-400/30 via-purple-500/20 to-transparent blur-[140px] rounded-full animate-pulse delay-700"></div>
+      </div>
+
+      {/* Background Gradient PNG */}
+      <Image
+        className="absolute top-0 right-0 opacity-70 mix-blend-screen pointer-events-none"
+        src="/gradient.png"
+        width={600}
+        height={600}
+        alt="Gradient Background"
+      />
+
+      {/* Main Page Content */}
+      <div className="relative z-20">{children}</div>
+    </div>
   );
 };
