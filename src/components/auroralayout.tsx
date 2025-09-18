@@ -18,8 +18,8 @@ export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
       <Image
         className="absolute top-0 right-0 opacity-70 mix-blend-screen pointer-events-none"
         src="/gradient.png"
-        width={600}
-        height={600}
+        width={500}
+        height={500}
         alt="Gradient Background"
       />
 

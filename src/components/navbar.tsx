@@ -21,7 +21,7 @@ export default function NavBar() {
 
   return (
     <div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-2xl 
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[350px] 
       px-4 py-3 rounded-2xl backdrop-blur-md shadow-md
       border border-zinc-300/20 dark:border-zinc-700/50
       bg-white/70 dark:bg-zinc-900/70 transition-all duration-300"
@@ -29,16 +29,17 @@ export default function NavBar() {
       <div className="flex items-center justify-between">
         {/* Logo */}
         <Link href={"/"} className="flex items-center">
-          <Image src={"/profilePic.png"} alt="Profile Picture" width={30} height={30} className="rounded-full w-10 h-10 object-contain" />
+          <Image
+            src={"/profilePic.png"}
+            alt="Profile Picture"
+            width={30}
+            height={30}
+            className="rounded-full w-10 h-10 object-contain"
+          />
         </Link>
 
-
-        {/* <Link href={"/"} className="text-lg md:text-2xl font-bold gradient-title tracking-tight">
-          Sandeep.
-        </Link> */}
-
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-6 text-sm font-medium">
+        {/* <nav className="hidden md:flex space-x-6 text-sm font-medium">
           {links.map((link) => (
             <Link
               key={link}
@@ -48,11 +49,11 @@ export default function NavBar() {
               {link}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         {/* Theme toggle + Mobile menu icon */}
         <div className="flex items-center gap-4">
-          <button
+          {/* <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-full border 
               border-zinc-400/40 dark:border-zinc-600/40 
@@ -62,7 +63,19 @@ export default function NavBar() {
             <span className="hidden sm:inline">
               {theme === "dark" ? "Light" : "Dark"}
             </span>
-          </button>
+          </button> */}
+
+          <nav className="hidden md:flex space-x-6 text-sm font-medium">
+            {links.map((link) => (
+              <Link
+                key={link}
+                href={link === "Home" ? "/" : `#${link.toLowerCase()}`}
+                className="text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white transition"
+              >
+                {link}
+              </Link>
+            ))}
+          </nav>
 
           {/* Menu icon (mobile only) */}
           <button
