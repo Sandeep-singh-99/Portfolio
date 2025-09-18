@@ -1,33 +1,3 @@
-// "use client";
-// import Image from "next/image";
-// import React from "react";
-
-
-// export const AuroraLayout = ({ children }: { children: React.ReactNode }) => {
-//   return (
-//    <div className='bg-[#0a0c0f]'>
-//      <Image className='absolute top-0 right-0 opacity-90 z-90' src={"/gradient.png"} width={400} height={400} alt='Gradient Background' />
-
-//     {/* Blur Effect */}
-//     <div className='h-0 w-[40rem] absolute top-[20%] right-[-5%] shadow-[0_0_900px_20px_#ffffff] -rotate-[30deg] z-10'></div>
-//       {/* ---- Page Content ---- */}
-//       <div className="relative z-10">{children}</div>
-//     </div>
-//   );
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
 import Image from "next/image";
 import React from "react";
