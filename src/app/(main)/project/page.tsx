@@ -17,7 +17,6 @@ async function fetchProjectData() {
 export default async function ProjectPage() {
   const projects = await fetchProjectData()
 
-  // Only show the first 4 projects
   const visibleProjects = projects.slice(0, 4)
   const hasMore = projects.length > 4
 
@@ -58,9 +57,7 @@ export default async function ProjectPage() {
                   </div>
                 </div>
 
-                {/* <p className="text-sm text-zinc-300">{proj.projectDesc}</p> */}
-
-                <div className="flex flex-wrap gap-2 mt-4">
+                {/* <div className="flex flex-wrap gap-2 mt-4">
                   {proj.projectTechStack.map((tech: string, index: number) => (
                     <Badge
                       key={index}
@@ -70,7 +67,7 @@ export default async function ProjectPage() {
                       {tech}
                     </Badge>
                   ))}
-                </div>
+                </div> */}
               </div>
 
               <div className="flex items-center justify-end pt-4 border-t border-zinc-800">

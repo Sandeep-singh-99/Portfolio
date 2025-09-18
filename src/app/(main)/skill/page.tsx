@@ -29,11 +29,8 @@ export default async function SkillPage() {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-          Professional Skills
+          Technical Skills
         </h1>
-        <p className="mt-4 text-gray-400 text-lg">
-          Technologies and tools I use categorized by expertise
-        </p>
       </div>
 
       {/* Category Sections */}
