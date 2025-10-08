@@ -51,7 +51,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-4 line-clamp-3">
+          <div className="flex flex-wrap gap-2 mt-4">
             {projectTechStack.map((tech, index) => (
               <Badge
                 key={index}
