@@ -41,7 +41,7 @@ export default async function SkillPage() {
         if (categorySkills.length === 0) return null;
 
         return (
-          <div key={category} className="mb-10">
+          <div key={category} className="mb-5">
             <h2 className="text-2xl font-bold text-white mb-6 capitalize">
               {category}
             </h2>
