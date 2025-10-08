@@ -4,6 +4,7 @@ interface IProject {
     _id?: string;
     projectName: string;
     projectDesc: string;
+    projectSubDesc?: string;
     projectImage: string;
     projectTechStack: string[];
     githubLink: string;
@@ -16,6 +17,7 @@ interface IProject {
 const projectSchema = new Schema<IProject>({
     projectName: { type: String, required: true },
     projectDesc: { type: String, required: true },
+    projectSubDesc: { type: String, required: false },
     projectImage: { type: String, required: true },
     projectTechStack: { type: [String], required: true },
     githubLink: { type: String, required: true },

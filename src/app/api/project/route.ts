@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
         const formData = await req.formData();
         const projectName = formData.get("projectName") as string;
         const projectDesc = formData.get("projectDesc") as string;
+        const projectSubDesc = formData.get("projectSubDesc") as string;
         const projectTechStack = formData.get("projectTechStack") as string;
         const githubLink = formData.get("githubLink") as string;
         const liveLink = formData.get("liveLink") as string;
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
         const newProject = await Project.create({
             projectName,
             projectDesc,
+            projectSubDesc,
             projectImage: imageUrl,
             projectTechStack: projectTechStack.split(",").map((tech: string) => tech.trim()),
             githubLink,

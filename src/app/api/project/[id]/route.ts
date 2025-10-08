@@ -102,6 +102,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       const formData = await req.formData();
       const projectName = formData.get("projectName") as string;
       const projectDesc = formData.get("projectDesc") as string;
+      const projectSubDesc = formData.get("projectSubDesc") as string;
       const projectTechStack = formData.get("projectTechStack") as string;
       const githubLink = formData.get("githubLink") as string;
       const liveLink = formData.get("liveLink") as string;
@@ -110,6 +111,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       let updatedProjectData: ProjectData = {
         ...(projectName && { projectName }),
         ...(projectDesc && { projectDesc }),
+        ...(projectSubDesc && { projectSubDesc }),
         ...(projectTechStack && { projectTechStack: projectTechStack.split(",").map((tech: string) => tech.trim()) }),
         ...(githubLink && { githubLink }),
         ...(liveLink && { liveLink }),
