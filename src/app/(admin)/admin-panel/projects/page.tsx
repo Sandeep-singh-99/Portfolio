@@ -14,6 +14,7 @@ interface Project {
   id: string;
   projectName: string;
   projectDesc: string;
+  projectSubDesc: string;
   projectImage: string;
   projectTechStack: string[];
   githubLink: string;
@@ -93,6 +94,9 @@ export default async function ProjectsPage() {
                     {/* Markdown Description */}
                     <div className="prose prose-sm max-w-none text-gray-300 mb-3 line-clamp-3">
                       <MarkdownRender content={project.projectDesc} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400 mb-3 italic">{project.projectSubDesc}</p>
                     </div>
 
                     {/* Tech Stack */}

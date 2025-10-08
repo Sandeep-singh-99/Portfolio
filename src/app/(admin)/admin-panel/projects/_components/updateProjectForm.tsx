@@ -25,6 +25,7 @@ type FormDataType = {
   liveLink: string;
   projectTechStack: string; // stored as comma-separated string
   projectDesc: string;
+  projectSubDesc: string;
 };
 
 export default function ProjectForm({ id }: { id?: string }) {
@@ -34,6 +35,7 @@ export default function ProjectForm({ id }: { id?: string }) {
     liveLink: "",
     projectTechStack: "",
     projectDesc: "",
+    projectSubDesc: "",
   });
 
   const [projectImage, setProjectImage] = useState<File | null>(null);
@@ -51,6 +53,7 @@ export default function ProjectForm({ id }: { id?: string }) {
           liveLink: data.liveLink || "",
           projectTechStack: (data.projectTechStack || []).join(", "),
           projectDesc: data.projectDesc || "",
+          projectSubDesc: data.projectSubDesc || "",
         });
       } else {
         toast.error(data.message || "Failed to fetch project data");
@@ -84,6 +87,7 @@ export default function ProjectForm({ id }: { id?: string }) {
     const formPayload = new FormData();
     formPayload.append("projectName", projectName);
     formPayload.append("projectDesc", projectDesc);
+    formPayload.append("projectSubDesc", formData.projectSubDesc);
     formPayload.append("projectTechStack", projectTechStack);
     formPayload.append("githubLink", githubLink);
     formPayload.append("liveLink", liveLink);
@@ -104,6 +108,7 @@ export default function ProjectForm({ id }: { id?: string }) {
           liveLink: "",
           projectTechStack: "",
           projectDesc: "",
+          projectSubDesc: "",
         });
         setProjectImage(null);
       } else {
@@ -138,6 +143,15 @@ export default function ProjectForm({ id }: { id?: string }) {
                   value={formData.projectName}
                   onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
                   required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="projectSubDesc">Project Sub Description</Label>
+                <Input
+                  id="projectSubDesc"
+                  value={formData.projectSubDesc}
+                  onChange={(e) => setFormData({ ...formData, projectSubDesc: e.target.value })}
                 />
               </div>
 

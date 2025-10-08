@@ -23,6 +23,7 @@ export default function ProjectForm() {
   const [projectTechStack, setProjectTechStack] = useState("");
   const [projectImage, setProjectImage] = useState<File | null>(null);
   const [projectDesc, setProjectDesc] = useState("");
+  const [projectSubDesc, setProjectSubDesc] = useState("");
 
   const handleDescriptionChange = (value?: string) => {
     setProjectDesc(value || "");
@@ -38,6 +39,7 @@ export default function ProjectForm() {
     const formData = new FormData();
     formData.append("projectName", productName);
     formData.append("projectDesc", projectDesc);
+    formData.append("projectSubDesc", projectSubDesc);
     formData.append("projectTechStack", projectTechStack);
     formData.append("githubLink", githubLink);
     formData.append("liveLink", liveLink);
@@ -58,6 +60,7 @@ export default function ProjectForm() {
             setProjectTechStack("");
             setProjectImage(null);
             setProjectDesc("");
+            setProjectSubDesc("");
         } else {
             toast.error(result.error || "Failed to upload Project");
         }
@@ -90,6 +93,19 @@ export default function ProjectForm() {
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
                   placeholder="Enter project name"
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="projectSubDesc">Project Subtitle</Label>
+                <Input
+                  id="projectSubDesc"
+                  name="projectSubDesc"
+                  type="text"
+                  value={projectSubDesc}
+                  onChange={(e) => setProjectSubDesc(e.target.value)}
+                  placeholder="Enter project subtitle"
                   required
                 />
               </div>
