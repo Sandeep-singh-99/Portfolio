@@ -10,7 +10,7 @@ import { AuroraLayout } from '@/components/auroralayout'
 export default function HomePage() {
   return (
     <AuroraLayout>
-     <div className="">
+     <div className="mx-auto px-1 sm:px-6 lg:px-12">
        <IntroPage />
       <AboutPage />
       <SkillPage />
