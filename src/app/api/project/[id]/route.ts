@@ -13,6 +13,8 @@ interface ProjectData {
   liveLink?: string;
   projectImage?: string;
   projectImagePublicId?: string;
+  projectSubDesc?: string;
+  priority?: number;
 }
 
 
@@ -107,6 +109,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       const githubLink = formData.get("githubLink") as string;
       const liveLink = formData.get("liveLink") as string;
       const image = formData.get("projectImage") as File
+      const priority = formData.get("priority")
 
       let updatedProjectData: ProjectData = {
         ...(projectName && { projectName }),
@@ -115,6 +118,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         ...(projectTechStack && { projectTechStack: projectTechStack.split(",").map((tech: string) => tech.trim()) }),
         ...(githubLink && { githubLink }),
         ...(liveLink && { liveLink }),
+         ...(priority && { priority: Number(priority) }),
       }
 
         if (image.size > 5 * 1024 * 1024) {

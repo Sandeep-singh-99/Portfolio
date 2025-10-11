@@ -24,6 +24,8 @@ export default function ProjectForm() {
   const [projectImage, setProjectImage] = useState<File | null>(null);
   const [projectDesc, setProjectDesc] = useState("");
   const [projectSubDesc, setProjectSubDesc] = useState("");
+  const [priority, setPriority] = useState<number>(0);
+
 
   const handleDescriptionChange = (value?: string) => {
     setProjectDesc(value || "");
@@ -31,7 +33,13 @@ export default function ProjectForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productName || !githubLink || !liveLink || !projectTechStack || !projectImage) {
+    if (
+      !productName ||
+      !githubLink ||
+      !liveLink ||
+      !projectTechStack ||
+      !projectImage
+    ) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -43,39 +51,40 @@ export default function ProjectForm() {
     formData.append("projectTechStack", projectTechStack);
     formData.append("githubLink", githubLink);
     formData.append("liveLink", liveLink);
+    formData.append("priority", String(priority));
     if (projectImage) formData.append("projectImage", projectImage);
 
     try {
-        const response = await fetch("/api/project", {
-            method: "POST",
-            body: formData,
-        })
-        const result = await response.json();
+      const response = await fetch("/api/project", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
 
-        if (response.ok) {
-            toast.success("Project uploaded successfully");
-            setProductName("");
-            setGithubLink("");
-            setLiveLink("");
-            setProjectTechStack("");
-            setProjectImage(null);
-            setProjectDesc("");
-            setProjectSubDesc("");
-        } else {
-            toast.error(result.error || "Failed to upload Project");
-        }
+      if (response.ok) {
+        toast.success("Project uploaded successfully");
+        setProductName("");
+        setGithubLink("");
+        setLiveLink("");
+        setProjectTechStack("");
+        setProjectImage(null);
+        setProjectDesc("");
+        setProjectSubDesc("");
+      } else {
+        toast.error(result.error || "Failed to upload Project");
+      }
     } catch (error) {
-        console.error("Error uploading Project:", error);
-        toast.error("Failed to upload Project");
+      console.error("Error uploading Project:", error);
+      toast.error("Failed to upload Project");
     }
-  }
+  };
   return (
     <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">Add Project</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[985px]">
-            <form onSubmit={handleSubmit}>
+      <DialogTrigger asChild>
+        <Button variant="outline">Add Project</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[985px]">
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Add Project</DialogTitle>
             <DialogDescription>
@@ -107,6 +116,19 @@ export default function ProjectForm() {
                   onChange={(e) => setProjectSubDesc(e.target.value)}
                   placeholder="Enter project subtitle"
                   required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="priority">
+                  Priority (0 = normal, higher = top)
+                </Label>
+                <Input
+                  id="priority"
+                  name="priority"
+                  type="number"
+                  placeholder="Enter priority (e.g., 5)"
+                  onChange={(e) => setPriority(Number(e.target.value))}
                 />
               </div>
 
@@ -176,8 +198,8 @@ export default function ProjectForm() {
             </DialogClose>
             <Button type="submit">Save changes</Button>
           </DialogFooter>
-           </form>
-        </DialogContent>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }

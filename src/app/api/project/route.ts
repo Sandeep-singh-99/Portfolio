@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         const githubLink = formData.get("githubLink") as string;
         const liveLink = formData.get("liveLink") as string;
         const image = formData.get("projectImage") as File;
+        const priority = Number(formData.get("priority")) || 0;
 
         if (!projectName || !projectDesc || !projectTechStack || !githubLink || !liveLink) {
             return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
             githubLink,
             liveLink,
             projectImagePublicId: imagePublicId,
+            priority,
         })
 
         revalidatePath("/admin-panel/projects");

@@ -23,9 +23,10 @@ type FormDataType = {
   projectName: string;
   githubLink: string;
   liveLink: string;
-  projectTechStack: string; // stored as comma-separated string
+  projectTechStack: string; 
   projectDesc: string;
   projectSubDesc: string;
+  priority?: number;
 };
 
 export default function ProjectForm({ id }: { id?: string }) {
@@ -36,6 +37,7 @@ export default function ProjectForm({ id }: { id?: string }) {
     projectTechStack: "",
     projectDesc: "",
     projectSubDesc: "",
+    priority: 0,
   });
 
   const [projectImage, setProjectImage] = useState<File | null>(null);
@@ -54,6 +56,7 @@ export default function ProjectForm({ id }: { id?: string }) {
           projectTechStack: (data.projectTechStack || []).join(", "),
           projectDesc: data.projectDesc || "",
           projectSubDesc: data.projectSubDesc || "",
+          priority: data.priority || 0,
         });
       } else {
         toast.error(data.message || "Failed to fetch project data");
@@ -91,6 +94,7 @@ export default function ProjectForm({ id }: { id?: string }) {
     formPayload.append("projectTechStack", projectTechStack);
     formPayload.append("githubLink", githubLink);
     formPayload.append("liveLink", liveLink);
+    formPayload.append("priority", String(formData.priority || 0));
     if (projectImage) formPayload.append("projectImage", projectImage);
 
     try {
@@ -109,6 +113,7 @@ export default function ProjectForm({ id }: { id?: string }) {
           projectTechStack: "",
           projectDesc: "",
           projectSubDesc: "",
+          priority: 0,
         });
         setProjectImage(null);
       } else {
@@ -152,6 +157,16 @@ export default function ProjectForm({ id }: { id?: string }) {
                   id="projectSubDesc"
                   value={formData.projectSubDesc}
                   onChange={(e) => setFormData({ ...formData, projectSubDesc: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="priority">Priority</Label>
+                <Input
+                  id="priority"
+                  type="number"
+                  value={formData.priority}
+                  onChange={(e) => setFormData({ ...formData, priority: Number(e.target.value) })}
                 />
               </div>
 

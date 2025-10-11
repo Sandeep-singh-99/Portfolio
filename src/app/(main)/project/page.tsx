@@ -30,8 +30,8 @@ export default async function ProjectPage() {
           Built with modern tech & clean design
         </p>
       </div>
-      {/* Project Cards */}
-      <div className="grid md:grid-cols-2 gap-10">
+      {/* Project Cards md:grid-cols-2 gap-10 */}
+      <div className="grid md:grid-cols-2 gap-5 ">
         {visibleProjects.map((proj) => (
           <ProjectCard
             key={proj.id}
