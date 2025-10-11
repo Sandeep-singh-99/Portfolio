@@ -30,13 +30,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <Card className="rounded-2xl overflow-hidden shadow-md border border-zinc-800 bg-zinc-900 hover:shadow-lg transition-shadow duration-300">
       <div className="flex flex-col md:flex-row">
         {/* Image Section */}
-        <div className="md:w-1/2 w-full h-64 md:h-auto relative">
+        {/* <div className="md:w-1/2 w-full h-64 md:h-auto relative">
           <Image
             src={projectImage}
             alt={projectName}
             fill
             className="object-cover transition-transform duration-500 hover:scale-105"
           />
+        </div> */}
+         <div className="md:w-1/2 w-full bg-zinc-950 flex items-center justify-center rounded-2xl">
+          <div className="relative w-full h-64 md:h-80">
+            <Image
+              src={projectImage}
+              alt={projectName}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-contain object-center p-2"
+            />
+          </div>
         </div>
 
         {/* Content Section */}
@@ -45,7 +56,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <h2 className="text-xl md:text-2xl font-semibold text-white mb-1">
               {projectName}
             </h2>
-            <p className="text-sm text-zinc-400">{projectSubDesc}</p>
+            <p className="text-sm text-zinc-400 font-sans">{projectSubDesc}</p>
 
             <div className="flex flex-wrap gap-2 mt-3">
               {projectTechStack.map((tech, index) => (
@@ -97,3 +108,4 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 };
 
 export default ProjectCard;
+
