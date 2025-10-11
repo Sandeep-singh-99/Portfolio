@@ -36,6 +36,7 @@ export default async function ProjectPage() {
           <ProjectCard
             key={proj.id}
             _id={proj.id}
+            projectSubDesc={proj.projectSubDesc}
             projectName={proj.projectName}
             projectImage={proj.projectImage}
             projectTechStack={proj.projectTechStack}

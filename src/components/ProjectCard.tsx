@@ -10,6 +10,7 @@ import Link from "next/link"
 interface ProjectCardProps {
   _id: string
   projectName: string
+  projectSubDesc: string
   projectImage: string
   projectTechStack: string[]
   githubLink?: string
@@ -19,6 +20,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({
   _id,
   projectName,
+  projectSubDesc,
   projectImage,
   projectTechStack,
   githubLink,
@@ -49,6 +51,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 </a>
               )}
             </div>
+          </div>
+
+          <div>
+            <p>
+              {projectSubDesc}
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-4">
