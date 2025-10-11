@@ -6,11 +6,11 @@ import SkillPage from './skill/page'
 import ProjectPage from './project/page'
 import { AuroraLayout } from '@/components/auroralayout'
 
-// max-w-7xl mx-auto px-1 sm:px-6 lg:px-12
+// max-w-5xl mx-auto px-1 sm:px-6 lg:px-12
 export default function HomePage() {
   return (
     <AuroraLayout>
-     <div className="max-w-5xl mx-auto px-1 sm:px-6 lg:px-12">
+     <div className="">
        <IntroPage />
       <AboutPage />
       <SkillPage />

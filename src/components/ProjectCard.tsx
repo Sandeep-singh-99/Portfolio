@@ -27,61 +27,80 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   liveLink,
 }) => {
   return (
-    <Card className="rounded-3xl overflow-hidden shadow-xl border border-zinc-800 bg-gradient-to-br from-black via-zinc-900 to-zinc-950 text-white transition hover:scale-[1.01] duration-300">
-      <Image
-        src={projectImage}
-        alt={projectName}
-        width={600}
-        height={300}
-        className="w-full h-52 object-fill border-b border-zinc-800"
-      />
-      <CardContent className="flex flex-col justify-between flex-grow px-6 space-y-5">
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-2xl font-bold">{projectName}</h2>
-            <div className="flex space-x-3">
-              {githubLink && (
-                <a href={githubLink} target="_blank" rel="noopener noreferrer">
-                  <Github className="w-5 h-5 hover:text-pink-500 transition" />
-                </a>
-              )}
-              {liveLink && (
-                <a href={liveLink} target="_blank" rel="noopener noreferrer">
-                  <Globe className="w-5 h-5 hover:text-indigo-500 transition" />
-                </a>
-              )}
+    <Card className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 bg-gradient-to-br from-black via-zinc-900 to-zinc-950 transition-transform hover:scale-[1.02] hover:shadow-2xl duration-300">
+      <div className="flex flex-col md:flex-row">
+        {/* Image Section */}
+        <div className="md:w-1/2 w-full h-64 md:h-auto relative group">
+          <Image
+            src={projectImage}
+            alt={projectName}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {/* Optional overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        </div>
+
+        {/* Content Section */}
+        <CardContent className="flex flex-col justify-between md:w-1/2 w-full px-6 py-6 space-y-5">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 hover:text-indigo-400 transition-colors">
+              {projectName}
+            </h2>
+            <p className="text-sm md:text-base text-zinc-300">{projectSubDesc}</p>
+
+            <div className="flex flex-wrap gap-2 mt-4">
+              {projectTechStack.map((tech, index) => (
+                <Badge
+                  key={index}
+                  variant="outline"
+                  className="bg-zinc-800 border-zinc-700 text-white text-xs md:text-sm px-3 py-1 rounded-full"
+                >
+                  {tech}
+                </Badge>
+              ))}
             </div>
           </div>
 
-          <div>
-            <p>
-              {projectSubDesc}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mt-4">
-            {projectTechStack.map((tech, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="bg-zinc-800 border-zinc-700 text-white text-xs px-3 py-1 rounded-full"
+          {/* Action Row */}
+          <div className="flex items-center gap-4 mt-4">
+            {githubLink && (
+              <a
+                href={githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-sm md:text-base font-medium hover:text-pink-500 transition"
               >
-                {tech}
-              </Badge>
-            ))}
+                <Github className="w-5 h-5" />
+                <span>GitHub</span>
+              </a>
+            )}
+            {liveLink && (
+              <a
+                href={liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-sm md:text-base font-medium hover:text-indigo-500 transition"
+              >
+                <Globe className="w-5 h-5" />
+                <span>Live</span>
+              </a>
+            )}
+            <Link href={`/project/${_id}`}>
+              <Button
+                variant="default"
+                size="sm"
+                className="text-xs md:text-sm px-4 py-2 hover:bg-indigo-600 transition"
+              >
+                View Details →
+              </Button>
+            </Link>
           </div>
-        </div>
-
-        <div className="flex items-center justify-end pt-4 border-t border-zinc-800">
-          <Link href={`/project/${_id}`}>
-            <Button variant="default" className="text-xs px-4 py-1">
-              View Details →
-            </Button>
-          </Link>
-        </div>
-      </CardContent>
+        </CardContent>
+      </div>
     </Card>
   )
 }
 
-export default ProjectCard;
+export default ProjectCard
+
