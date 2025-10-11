@@ -16,8 +16,9 @@ export default async function IntroPage() {
   const stack = introData?.techStack || [];
 
   return (
-    <div className="px-4 sm:px-6 lg:px-20 pb-10 pt-25 md:pb-4">
+    <div className="px-4 sm:px-6 lg:px-20 pb-10 pt-20 md:pb-4">
       <div className="flex flex-col items-center justify-center gap-6 md:gap-8">
+        {/* Profile Image */}
         <div className="w-full md:w-1/2 flex justify-center">
           <Image
             src={introData?.image || "/fallback-image.webp"}
@@ -29,11 +30,12 @@ export default async function IntroPage() {
           />
         </div>
 
+        {/* Text Content */}
         <div className="w-full flex flex-col items-center justify-center text-center md:text-left space-y-4">
           <h1 className="text-4xl sm:text-4xl font-bold">
-            Hi, I'm
+            Hi, I'm{" "}
             <span
-              className=" bg-clip-text text-transparent ml-3
+              className="bg-clip-text text-transparent ml-2
              bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
              dark:from-green-300 dark:via-blue-400 dark:to-purple-400"
             >
@@ -43,10 +45,23 @@ export default async function IntroPage() {
 
           <TypewriterClient words={stack} />
 
-          {/* <p className="text-base sm:text-lg tracking-wider text-gray-600 dark:text-gray-300">
-            {introData?.desc || "This is the default intro description."}
-          </p> */}
+          {/* 💼 Opportunity Tag Section */}
+          <div className="flex flex-wrap justify-center gap-2 mt-3">
+            <span className="px-4 py-1 rounded-full text-sm font-medium bg-zinc-800 text-zinc-200 border border-zinc-700">
+              💼 Open to opportunities
+            </span>
+            <span className="px-4 py-1 rounded-full text-sm font-medium bg-zinc-800 text-zinc-200 border border-zinc-700">
+              🌍 Remote Work
+            </span>
+            <span className="px-4 py-1 rounded-full text-sm font-medium bg-zinc-800 text-zinc-200 border border-zinc-700">
+              🤝 Freelance
+            </span>
+            <span className="px-4 py-1 rounded-full text-sm font-medium bg-zinc-800 text-zinc-200 border border-zinc-700">
+              🧑‍💻 Collaboration
+            </span>
+          </div>
 
+          {/* Resume Button */}
           <a
             href={introData?.file}
             target="_blank"

@@ -24,7 +24,7 @@ export default async function SkillPage() {
   return (
     <section
       id="skills"
-      className="container mx-auto py-12 px-4 sm:px-6 lg:px-12"
+      className="container max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-12"
     >
       {/* Header */}
       <div className="text-center mb-12">
