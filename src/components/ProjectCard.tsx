@@ -1,20 +1,20 @@
-"use client"
-import React from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Github, Globe } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+"use client";
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Github, Globe } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface ProjectCardProps {
-  _id: string
-  projectName: string
-  projectSubDesc: string
-  projectImage: string
-  projectTechStack: string[]
-  githubLink?: string
-  liveLink?: string
+  _id: string;
+  projectName: string;
+  projectSubDesc: string;
+  projectImage: string;
+  projectTechStack: string[];
+  githubLink?: string;
+  liveLink?: string;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -27,34 +27,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   liveLink,
 }) => {
   return (
-    <Card className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 bg-gradient-to-br from-black via-zinc-900 to-zinc-950 transition-transform hover:scale-[1.02] hover:shadow-2xl duration-300">
+    <Card className="rounded-2xl overflow-hidden shadow-md border border-zinc-800 bg-zinc-900 hover:shadow-lg transition-shadow duration-300">
       <div className="flex flex-col md:flex-row">
         {/* Image Section */}
-        <div className="md:w-1/2 w-full h-64 md:h-auto relative group">
+        <div className="md:w-1/2 w-full h-64 md:h-auto relative">
           <Image
             src={projectImage}
             alt={projectName}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 hover:scale-105"
           />
-          {/* Optional overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         </div>
 
         {/* Content Section */}
-        <CardContent className="flex flex-col justify-between md:w-1/2 w-full px-6 py-6 space-y-5">
+        <CardContent className="flex flex-col justify-between md:w-1/2 w-full px-5 py-5 space-y-4">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 hover:text-indigo-400 transition-colors">
+            <h2 className="text-xl md:text-2xl font-semibold text-white mb-1">
               {projectName}
             </h2>
-            <p className="text-sm md:text-base text-zinc-300">{projectSubDesc}</p>
+            <p className="text-sm text-zinc-400">{projectSubDesc}</p>
 
-            <div className="flex flex-wrap gap-2 mt-4">
+            <div className="flex flex-wrap gap-2 mt-3">
               {projectTechStack.map((tech, index) => (
                 <Badge
                   key={index}
                   variant="outline"
-                  className="bg-zinc-800 border-zinc-700 text-white text-xs md:text-sm px-3 py-1 rounded-full"
+                  className="bg-zinc-800 border-zinc-700 text-white text-xs px-2 py-1 rounded-full"
                 >
                   {tech}
                 </Badge>
@@ -63,16 +61,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center gap-4 mt-4">
+          <div className="flex flex-wrap justify-end items-center gap-3 mt-2">
             {githubLink && (
               <a
                 href={githubLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm md:text-base font-medium hover:text-pink-500 transition"
+                className="flex items-center gap-1 text-sm text-zinc-300 hover:text-pink-400 transition-colors"
               >
-                <Github className="w-5 h-5" />
-                <span>GitHub</span>
+                <Github className="w-4 h-4" />
+                GitHub
               </a>
             )}
             {liveLink && (
@@ -80,18 +78,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 href={liveLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm md:text-base font-medium hover:text-indigo-500 transition"
+                className="flex items-center gap-1 text-sm text-zinc-300 hover:text-indigo-400 transition-colors"
               >
-                <Globe className="w-5 h-5" />
-                <span>Live</span>
+                <Globe className="w-4 h-4" />
+                Live
               </a>
             )}
             <Link href={`/project/${_id}`}>
-              <Button
-                variant="default"
-                size="sm"
-                className="text-xs md:text-sm px-4 py-2 hover:bg-indigo-600 transition"
-              >
+              <Button size="sm" className="px-3 py-1 text-xs">
                 View Details →
               </Button>
             </Link>
@@ -99,8 +93,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </CardContent>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default ProjectCard
-
+export default ProjectCard;
