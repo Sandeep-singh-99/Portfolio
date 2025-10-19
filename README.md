@@ -2,7 +2,7 @@
 
 This is a full-stack personal portfolio website built with Next.js, Tailwind CSS, and MongoDB. It features an admin panel for managing projects, dynamic project pages, and a clean, modern design.
 
-![image](./screenshot/Screenshot%202025-10-08%20234106.png)
+![image](./screenshot/Screenshot%202025-10-19%20124140.png)
 
 ## Features
 
@@ -13,6 +13,8 @@ This is a full-stack personal portfolio website built with Next.js, Tailwind CSS
 -   **Authentication**: Secure admin routes using NextAuth.js.
 -   **Responsive Design**: Fully responsive layout for all device sizes, built with Tailwind CSS and Shadcn/ui.
 -   **API Routes**: Backend logic is handled by Next.js API routes.
+-   **Resend Email Integration**: Send and manage contact form submissions via [Resend](https://resend.com/).
+
 
 ## Tech Stack
 
