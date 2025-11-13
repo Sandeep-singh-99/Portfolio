@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  Contact,
-  InfoIcon,
+  Award,
+  Brain,
+  Briefcase,
+  Home,
   LayoutDashboard,
-  Package,
-  StarHalf,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -44,14 +45,14 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
           <span className="text-4xl font-bold gradient-title">Portfolio </span>
         </Link>
       </div>
-      <nav className="space-y-1">
+      <nav className="space-y-6">
         <Link href={"/admin-panel/intro"}>
           <Button
             variant="ghost"
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <Home className="mr-2 h-4 w-4" />
             Intro Section
           </Button>
         </Link>
@@ -62,7 +63,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <InfoIcon className="mr-2 h-4 w-4" />
+            <User className="mr-2 h-4 w-4" />
             About Section
           </Button>
         </Link>
@@ -72,7 +73,7 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <StarHalf className="mr-2 h-4 w-4" />
+            <Brain className="mr-2 h-4 w-4" />
             Skill Section
           </Button>
         </Link>
@@ -82,18 +83,18 @@ function DashboardSidebar({ closeSheet }: { closeSheet?: () => void }) {
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <Package className="mr-2 h-4 w-4" />
+            <Briefcase className="mr-2 h-4 w-4" />
             Project Section
           </Button>
         </Link>
-        <Link href={"/admin-panel/contact"}>
+        <Link href={"/admin-panel/certificate"}>
           <Button
             variant="ghost"
             className="w-full justify-start"
             onClick={closeSheet}
           >
-            <Contact className="mr-2 h-4 w-4" />
-            Contact Section
+            <Award className="mr-2 h-4 w-4" />
+            Certificate Section
           </Button>
         </Link>
       </nav>

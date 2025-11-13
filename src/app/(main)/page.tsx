@@ -5,6 +5,7 @@ import ContactPage from './contact/page'
 import SkillPage from './skill/page'
 import ProjectPage from './project/page'
 import { AuroraLayout } from '@/components/auroralayout'
+import CertificatePage from './certificate/page'
 
 // max-w-5xl mx-auto px-1 sm:px-6 lg:px-12
 export default function HomePage() {
@@ -15,6 +16,7 @@ export default function HomePage() {
       <AboutPage />
       <SkillPage />
       <ProjectPage />
+      <CertificatePage />
       <ContactPage />
      </div>
     </AuroraLayout>
