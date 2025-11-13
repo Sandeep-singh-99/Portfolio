@@ -86,7 +86,7 @@ export default function CertificateForm() {
             <Input
               id="certificate"
               type="file"
-              accept="image/*,.pdf"
+              accept="image/*"
               onChange={(e) => setImage(e.target.files?.[0] || null)}
             />
 

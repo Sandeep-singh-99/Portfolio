@@ -1,8 +1,9 @@
 import React from "react";
 import { ConnectDB } from "../../../../lib/db";
 import Certificate from "../../../../models/certificate.model";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
+
+
 
 async function fetchCertificateData() {
   await ConnectDB();
@@ -12,9 +13,9 @@ async function fetchCertificateData() {
 
 export default async function CertificatePage() {
   const certificates = await fetchCertificateData();
-
+// bg-gray-900/40 border-gray-700 text-white hover:shadow-lg transition-shadow
   return (
-    <div className="max-w-3xl mx-auto text-center py-20 px-6 sm:px-10 lg:px-20 text-white">
+    <div className="mx-auto text-center py-20 px-6 sm:px-10 lg:px-20 text-white">
       <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text mb-10">
         Achievements & Certifications
       </h2>
@@ -27,27 +28,27 @@ export default async function CertificatePage() {
             const isPDF = cer.imageUrl.endsWith(".pdf");
 
             return (
-              <Card
+              <div
                 key={cer._id}
-                className="p-4 bg-gray-900/40 border-gray-700 text-white hover:shadow-lg transition-shadow"
+                className=""
               >
                 {
                   isPDF ? (
                     <iframe
-                      src={cer.imageUrl}
-                      className="w-full h-48 border rounded-md"
+                      src={`${cer.imageUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                      className="w-full h-64 border rounded-md overflow-auto"
                     />
                   ) : (
                     <Image
                       src={cer.imageUrl}
-                      alt={cer.title}
+                      alt={"certificate image"}
                       width={400}
                       height={192}
                       className="rounded-md border border-gray-700"
                     />
                   )
                 }
-              </Card>
+              </div>
             );
           })}
         </div>
