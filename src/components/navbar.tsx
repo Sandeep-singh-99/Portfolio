@@ -21,7 +21,7 @@ export default function NavBar() {
 
   return (
     <div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[350px] 
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-3xl
       px-4 py-3 rounded-2xl backdrop-blur-md shadow-md
       border border-zinc-300/20 dark:border-zinc-700/50
       bg-white/70 dark:bg-zinc-900/70 transition-all duration-300"
@@ -38,32 +38,16 @@ export default function NavBar() {
           />
         </Link>
 
-        {/* Desktop Nav */}
-        {/* <nav className="hidden md:flex space-x-6 text-sm font-medium">
-          {links.map((link) => (
-            <Link
-              key={link}
-              href={link === "Home" ? "/" : `#${link.toLowerCase()}`}
-              className="text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white transition"
-            >
-              {link}
-            </Link>
-          ))}
-        </nav> */}
-
         {/* Theme toggle + Mobile menu icon */}
         <div className="flex items-center gap-4">
-          {/* <button
+          <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-full border 
               border-zinc-400/40 dark:border-zinc-600/40 
               text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300/30 dark:hover:bg-zinc-800/50 transition"
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            <span className="hidden sm:inline">
-              {theme === "dark" ? "Light" : "Dark"}
-            </span>
-          </button> */}
+          </button>
 
           <nav className="hidden md:flex space-x-6 text-sm font-medium">
             {links.map((link) => (
