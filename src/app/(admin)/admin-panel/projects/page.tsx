@@ -1,5 +1,15 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import ProjectForm from "./_components/projectForm";
 import { ConnectDB } from "../../../../../lib/db";
 import Project from "../../../../../models/project.model";
@@ -7,7 +17,7 @@ import { MarkdownRender } from "@/components/MarkdownRender";
 import Image from "next/image";
 import DeleteProject from "./_components/deleteProject";
 import UpdateProjectForm from "./_components/updateProjectForm";
-
+import { Github, ExternalLink, Calendar, Code, FolderGit2 } from "lucide-react";
 
 interface Project {
   _id: string;
@@ -45,109 +55,148 @@ export default async function ProjectsPage() {
   const projects: Project[] = await fetchProjectData();
 
   return (
-    <section className="p-4 sm:p-6 min-h-screen">
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-8 p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Project Section</h1>
-          <p className="text-gray-400 mt-1">
-            Manage the project content of your portfolio.
+          <h1 className="text-4xl font-bold tracking-tight">
+            Projects Section
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Manage your portfolio projects and case studies.
           </p>
         </div>
         <ProjectForm />
       </div>
 
-      <main>
-        <Card className="shadow-xl rounded-xl w-full">
-          <CardContent className="p-4 w-full">
-            {projects.length > 0 ? (
-              <div className="flex flex-col gap-4 w-full max-h-960 overflow-y-auto">
-                {projects.map((project) => (
-                  <div
-                    key={project._id}
-                    className=" border border-gray-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 w-full"
-                  >
-                    {/* Header with Title and Delete Button */}
-                    <div className="flex justify-between items-start mb-3">
-                      <h2 className="text-lg font-semibold text-white truncate">
-                        {project.projectName}
-                      </h2>
-                     <div className="flex items-center gap-2">
-                       <UpdateProjectForm id={project._id} />
-                      <DeleteProject id={project._id} />
-                     </div>
-                    </div>
+      <Separator />
 
-                    {/* Project Image */}
-                    <div className="relative mb-3">
-                      <Image
-                        src={project.projectImage}
-                        alt={project.projectName}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        priority
-                        className="w-full h-48 object-cover rounded-md"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 to-transparent rounded-md" />
-                    </div>
+      <section className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Your Projects
+          </h2>
+          <span className="text-sm text-muted-foreground">
+            {projects.length} total projects
+          </span>
+        </div>
 
-                    {/* Markdown Description */}
-                    <div className="prose prose-sm max-w-none text-gray-300 mb-3 line-clamp-3">
-                      <MarkdownRender content={project.projectDesc} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400 mb-3 italic">{project.projectSubDesc}</p>
-                    </div>
+        {projects.length === 0 ? (
+          <Card className="bg-muted/50 border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="rounded-full bg-background p-4 mb-4 shadow-sm">
+                <FolderGit2 className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold">No projects yet</h3>
+              <p className="text-muted-foreground max-w-sm mt-2">
+                Showcase your work by adding your first project.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project) => (
+              <Card
+                key={project._id}
+                className="group flex flex-col overflow-hidden border-muted/60 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="relative h-48 w-full overflow-hidden bg-muted">
+                  <Image
+                    src={project.projectImage}
+                    alt={project.projectName}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md p-1">
+                    <UpdateProjectForm id={project._id} />
+                    <DeleteProject id={project._id} />
+                  </div>
+                </div>
 
-                    {/* Tech Stack */}
-                    <div className="mb-3">
-                      <h3 className="text-sm font-medium text-gray-400">Tech Stack:</h3>
-                      <ul className="flex flex-wrap gap-1.5 mt-1">
-                        {project.projectTechStack.map((tech, index) => (
-                          <li
+                <CardHeader className="space-y-2">
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="line-clamp-1 text-xl">
+                      {project.projectName}
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="line-clamp-2 text-sm">
+                    {project.projectSubDesc}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 flex-1">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <Code className="h-3 w-3" />
+                      Tech Stack
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.projectTechStack
+                        .slice(0, 5)
+                        .map((tech, index) => (
+                          <Badge
                             key={index}
-                            className="text-xs text-gray-300 bg-gray-700/50 px-2 py-1 rounded-full"
+                            variant="secondary"
+                            className="px-2 py-0.5 text-xs font-normal"
                           >
                             {tech}
-                          </li>
+                          </Badge>
                         ))}
-                      </ul>
+                      {project.projectTechStack.length > 5 && (
+                        <Badge
+                          variant="outline"
+                          className="px-2 py-0.5 text-xs font-normal"
+                        >
+                          +{project.projectTechStack.length - 5}
+                        </Badge>
+                      )}
                     </div>
+                  </div>
+                </CardContent>
 
-                    {/* Links */}
-                    <div className="flex items-center gap-3 text-sm">
+                <CardFooter className="pt-4 border-t bg-muted/20 flex justify-between items-center gap-2">
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      asChild
+                    >
                       <a
                         href={project.githubLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 transition-colors"
+                        title="View Code"
                       >
-                        GitHub
+                        <Github className="h-4 w-4" />
                       </a>
-                      <span className="text-gray-600">|</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      asChild
+                    >
                       <a
                         href={project.liveLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 transition-colors"
+                        title="Live Demo"
                       >
-                        Live
+                        <ExternalLink className="h-4 w-4" />
                       </a>
-                    </div>
-
-                    {/* Created Date */}
-                    <p className="text-xs text-gray-500 mt-2">
-                      {new Date(project.createdAt).toLocaleDateString()}
-                    </p>
+                    </Button>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-400 text-center py-8">No projects found.</p>
-            )}
-          </CardContent>
-        </Card>
-      </main>
-    </section>
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <Calendar className="mr-1 h-3 w-3" />
+                    {new Date(project.createdAt).toLocaleDateString()}
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

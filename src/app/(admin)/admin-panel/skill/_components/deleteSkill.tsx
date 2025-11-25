@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
@@ -33,7 +34,7 @@ export default function DeleteSkill({ id }: DeleteSkillProps) {
   return (
     <div>
       <Button variant="destructive" onClick={() => handleDelete(id)}>
-        Delete Intro
+        <Trash2 />
       </Button>
     </div>
   );
