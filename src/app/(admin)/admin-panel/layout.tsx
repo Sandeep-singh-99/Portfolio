@@ -4,6 +4,8 @@ import React, { useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AdminHeader from "@/components/AdminHeader";
 
 export default function SubLayout({ children }: { children: React.ReactNode }) {
   const session = useSession();
@@ -27,11 +29,12 @@ export default function SubLayout({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
   return (
-    <div className="min-h-screen w-full">
-      <div className="flex">
-        <Sidebar />
-        <div className="flex-1">{children}</div>
+    <SidebarProvider>
+      <Sidebar />
+      <div className="w-full">
+        <AdminHeader />
+        {children}
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
