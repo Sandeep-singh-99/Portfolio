@@ -58,7 +58,7 @@ export default function NavBar() {
             {links.map((link) => (
               <Link
                 key={link}
-                href={link === "Home" ? "/" : `#${link.toLowerCase()}`}
+                href={link === "Home" ? "/" : `${link.toLowerCase()}`}
                 className="text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white transition"
               >
                 {link}
