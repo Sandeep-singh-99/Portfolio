@@ -135,7 +135,7 @@ export default function NavBar() {
           {links.map((link) => (
             <Link
               key={link}
-              href={link === "Home" ? "/" : `#${link.toLowerCase()}`}
+              href={link === "Home" ? "/" : `${link.toLowerCase()}`}
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center py-2 rounded-md text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300/30 dark:hover:bg-zinc-800/50 transition"
             >

@@ -56,10 +56,10 @@ export default function ContactSection() {
         transition={{ duration: 0.6 }}
       >
         <div className="flex flex-col items-center gap-4">
-          <h1 className="text-4xl font-extrabold text-zinc-900 dark:text-white">
+          <h1 className="md:text-4xl text-2xl font-extrabold text-zinc-900 dark:text-white">
             Contact
           </h1>
-          <p className="text-lg font-medium text-zinc-600 dark:text-zinc-400">
+          <p className="md:text-lg text-sm font-medium text-zinc-600 dark:text-zinc-400">
             Get in touch with me. I will get back to you as soon as possible.
           </p>
         </div>
@@ -71,26 +71,37 @@ export default function ContactSection() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.12 }}
       >
-        <div>
-          <div>
+        <div className="px-5">
+          <div className="flex flex-col gap-2">
             <h2 className="font-semibold">Send me a message</h2>
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+            <p className="text-zinc-600 dark:text-zinc-400 md:text-sm text-xs">
               Fill out the form below and I will get back to you as soon as
               possible.
             </p>
           </div>
           <div className="mt-5">
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <Label className="text-sm font-medium">Name *</Label>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Your full name"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="text-sm font-medium">Name *</Label>
+                  <Input
+                    type="text"
+                    name="name"
+                    placeholder="Your full name"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="text-sm font-medium">Phone *</Label>
+                  <Input
+                    type="tel"
+                    name="phone"
+                    placeholder="+1 (123) xxx-xxxx"
+                    required
+                  />
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <Label className="text-sm font-medium">Email *</Label>
