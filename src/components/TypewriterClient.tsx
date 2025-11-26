@@ -5,20 +5,18 @@ import Typewriter from "typewriter-effect";
 interface TypewriterClientProps {
   words: string[];
 }
- // className="text-2xl  font-semibold"
+
+// md:text-4xl text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500
+
 export default function TypewriterClient({ words }: TypewriterClientProps) {
   return (
-    <h2 
-  className="text-3xl font-bold bg-clip-text text-transparent
-             bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
-             dark:from-green-300 dark:via-blue-400 dark:to-purple-400"
->
+    <h2 className="md:text-4xl text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 via-gray-400 to-gray-600">
       <Typewriter
         options={{
           loop: true,
           delay: 100,
           deleteSpeed: 50,
-          cursor: "|",
+          cursor: "_",
           cursorClassName: "animate-blink",
         }}
         onInit={(typewriter) => {

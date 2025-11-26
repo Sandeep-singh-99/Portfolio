@@ -13,9 +13,9 @@ export default function AboutSection({ about }: { about: IAbout }) {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-3xl font-bold mb-4">About Me</h1>
+        <h1 className="md:text-3xl text-xl font-bold mb-4">About Me</h1>
         <div className="prose dark:prose-invert max-w-none">
-          <p className="text-lg opacity-80 leading-relaxed whitespace-pre-wrap">
+          <p className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
             {about.desc}
           </p>
         </div>

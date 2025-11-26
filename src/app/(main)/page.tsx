@@ -2,8 +2,7 @@ import React from 'react'
 import IntroPage from './intro/page'
 import SkillPage from './skill/page'
 import AboutPage from './about/page'
-import ProjectPage from './project/page'
-import ContactPage from './contact/page'
+import ProjectPage from './project/page' 
 import CertificatePage from './certificate/page'
 import GithubPage from './github/page'
 
@@ -17,7 +16,6 @@ export default function Home() {
       <ProjectPage />
       <GithubPage />
       <CertificatePage />
-      {/* <ContactPage /> */}
     </div>
   )
 }

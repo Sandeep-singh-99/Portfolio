@@ -7,10 +7,45 @@ import { FileText, Send } from "lucide-react";
 import TypewriterClient from "@/components/TypewriterClient";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import LeftSideBar from "./leftsidebar";
+import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const links = [
+  {
+    href: "https://github.com/Sandeep-singh-99",
+    icon: <Github size={20} />,
+    label: "GitHub",
+  },
+  {
+    href: "https://www.linkedin.com/in/sandeep-singh-7a0219320",
+    icon: <Linkedin size={20} />,
+    label: "LinkedIn",
+  },
+  {
+    href: "mailto:sandeep.necoder@gmail.com",
+    icon: <Mail size={20} />,
+    label: "Email",
+  },
+  {
+    href: "https://x.com/SinghNecoder",
+    icon: <Twitter size={20} />,
+    label: "Twitter",
+  },
+  {
+    href: "https://www.instagram.com/sandeep.necoder",
+    icon: <Instagram size={20} />,
+    label: "Instagram",
+  },
+];
 
 export default function IntroSection({ intro }: { intro: IIntro }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* Profile Image */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -34,12 +69,12 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex items-center gap-2"
+        className=" md:flex md:items-center md:gap-2 space-y-2  flex-col md:flex-row"
       >
-        <h1 className="text-3xl font-bold">
-          Hi, I'm <span className="text-blue-400">{intro.name}</span>
+        <h1 className="md:text-4xl text-xl font-bold">
+          Hi, I'm <span className="">{intro.name}</span>
         </h1>
-        <span className="text-2xl font-bold">—</span>
+        <span className="md:text-2xl font-bold hidden md:block">—</span>
         <TypewriterClient words={intro.techStack} />
       </motion.div>
 
@@ -49,7 +84,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="text-lg opacity-80 line-clamp-2"
+        className="md:text-lg text-sm opacity-80"
       >
         {intro.desc}
       </motion.h2>
@@ -61,20 +96,47 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.4 }}
       >
-       <div className="flex items-center gap-5">
-         <Button className="flex items-center gap-2 cursor-pointer">
-          <FileText size={18} />
-          Resume / CV
-        </Button>
+        <div className="flex items-center gap-5">
+          <Button className="flex items-center gap-2 cursor-pointer" variant={"outline"}>
+            <FileText size={18} />
+            Resume / CV
+          </Button>
 
-        <Link href={"/contact"}>
-        <Button variant={"ghost"} className="cursor-pointer">
-          <Send />
-          Get in touch
-        </Button>
-        </Link>
-       </div>
+          <Link href={"/contact"}>
+            <Button variant={"default"} className="cursor-pointer">
+              <Send />
+              Get in touch
+            </Button>
+          </Link>
+        </div>
       </motion.div>
+
+      {/* Socials */}
+      <div className="md:hidden block">
+        <LeftSideBar />
+      </div>
+
+      <div className="hidden md:flex flex-row gap-3">
+        {links.map((link, index) => (
+          <Tooltip key={index}>
+            <TooltipTrigger asChild>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative transition-all duration-200"
+              >
+                <div className="p-3 rounded-full bg-muted/50 hover:bg-accent text-muted-foreground hover:text-primary transition-colors border border-border/50 hover:border-accent-foreground/20">
+                  {link.icon}
+                </div>
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{link.label}</p>
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
     </div>
   );
 }
