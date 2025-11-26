@@ -1,26 +1,31 @@
 import { model, models, Schema } from "mongoose";
 
-interface ICertificate {
-    priority: number;
-    imageUrl: string;
-    imageUrlPublicId: string;
+export interface ICertificate {
+  _id?: string;
+  priority: number;
+  imageUrl: string;
+  imageUrlPublicId: string;
 }
 
-const certificateSchema = new Schema<ICertificate>({
+const certificateSchema = new Schema<ICertificate>(
+  {
     priority: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
 
     imageUrl: {
-        type: String,
+      type: String,
     },
 
     imageUrlPublicId: {
-        type: String,
-    }
-}, { timestamps: true });
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-const Certificate = models.Certificate || model<ICertificate>("Certificate", certificateSchema)
+const Certificate =
+  models.Certificate || model<ICertificate>("Certificate", certificateSchema);
 
 export default Certificate;

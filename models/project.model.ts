@@ -1,21 +1,22 @@
 import { model, models, Schema } from "mongoose";
 
-interface IProject {
-    _id?: string;
-    projectName: string;
-    projectDesc: string;
-    projectSubDesc: string;
-    projectImage: string;
-    projectTechStack: string[];
-    githubLink: string;
-    liveLink: string;
-    projectImagePublicId?: string;
-    priority: number;
-    createdAt: Date;
-    updatedAt: Date;
+export interface IProject {
+  _id?: string;
+  projectName: string;
+  projectDesc: string;
+  projectSubDesc: string;
+  projectImage: string;
+  projectTechStack: string[];
+  githubLink: string;
+  liveLink: string;
+  projectImagePublicId?: string;
+  priority: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const projectSchema = new Schema<IProject>({
+const projectSchema = new Schema<IProject>(
+  {
     projectName: { type: String, required: true },
     projectDesc: { type: String, required: true },
     projectSubDesc: { type: String, required: false },
@@ -25,7 +26,9 @@ const projectSchema = new Schema<IProject>({
     liveLink: { type: String, required: true },
     priority: { type: Number, default: 0 },
     projectImagePublicId: { type: String, required: false },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 const Project = models.Project || model<IProject>("Project", projectSchema);
 

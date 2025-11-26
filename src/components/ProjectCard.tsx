@@ -3,9 +3,10 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Github, Globe } from "lucide-react";
+import { Github, Globe, ArrowRight, Activity } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface ProjectCardProps {
   _id: string;
@@ -27,85 +28,156 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   liveLink,
 }) => {
   return (
-    <Card className="rounded-2xl overflow-hidden shadow-md border border-zinc-800 bg-zinc-900 hover:shadow-lg transition-shadow duration-300">
-      <div className="flex flex-col md:flex-row">
-        {/* Image Section */}
-        {/* <div className="md:w-1/2 w-full h-64 md:h-auto relative">
-          <Image
-            src={projectImage}
-            alt={projectName}
-            fill
-            className="object-cover transition-transform duration-500 hover:scale-105"
-          />
-        </div> */}
-         <div className="md:w-1/2 w-full bg-zinc-950 flex items-center justify-center rounded-2xl">
-          <div className="relative w-full h-64 md:h-80">
-            <Image
-              src={projectImage}
-              alt={projectName}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-contain object-center p-2"
-            />
-          </div>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -8 }}
+      className="h-full"
+    >
+      <Card className="
+  group relative flex flex-col overflow-hidden rounded-2xl 
+  border border-zinc-800/50 dark:border-zinc-800 
+  bg-[#0B0B0E]/90 dark:bg-[#0B0B0E]/90 
+  backdrop-blur-xl
+  shadow-[0_0_40px_-10px_rgba(0,0,0,0.7)]
+  hover:shadow-[0_0_60px_-10px_rgba(0,0,0,0.8)]
+  transition-all duration-500
+">
+  {/* Image Section */}
+  <div className="relative h-56 w-full overflow-hidden rounded-t-2xl">
+    <div className="
+      absolute inset-0 
+      bg-gradient-to-br from-purple-500/30 via-pink-500/20 to-blue-500/20
+      blur-2xl scale-150 opacity-40
+      group-hover:opacity-60 transition-all duration-700
+    "/>
 
-        {/* Content Section */}
-        <CardContent className="flex flex-col justify-between md:w-1/2 w-full px-5 py-5 space-y-4">
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold text-white mb-1">
-              {projectName}
-            </h2>
-            <p className="text-sm text-zinc-400 font-sans">{projectSubDesc}</p>
+    <Image
+      src={projectImage}
+      alt={projectName}
+      fill
+      className="object-cover transition-transform duration-700 group-hover:scale-110"
+    />
 
-            <div className="flex flex-wrap gap-2 mt-3">
-              {projectTechStack.map((tech, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className="bg-zinc-800 border-zinc-700 text-white text-xs px-2 py-1 rounded-full"
-                >
-                  {tech}
-                </Badge>
-              ))}
-            </div>
-          </div>
+    {/* Dark gradient overlay */}
+    <div className="
+      absolute inset-0 
+      bg-gradient-to-t from-black/70 via-black/20 to-transparent
+      group-hover:from-black/50
+      transition-all duration-500
+    "/>
 
-          {/* Action Row */}
-          <div className="flex flex-wrap justify-end items-center gap-3 mt-2">
-            {githubLink && (
-              <a
-                href={githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm text-zinc-300 hover:text-pink-400 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-                GitHub
-              </a>
-            )}
-            {liveLink && (
-              <a
-                href={liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm text-zinc-300 hover:text-indigo-400 transition-colors"
-              >
-                <Globe className="w-4 h-4" />
-                Live
-              </a>
-            )}
-            <Link href={`/project/${_id}`}>
-              <Button size="sm" className="px-3 py-1 text-xs">
-                View Details →
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </div>
-    </Card>
+    {/* Floating icon buttons */}
+    <div className="
+      absolute right-4 bottom-4 flex gap-2 
+      opacity-0 translate-y-2 
+      group-hover:opacity-100 group-hover:translate-y-0 
+      transition-all duration-300
+    ">
+      {githubLink && (
+        <a
+          href={githubLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            p-2 bg-white/20 dark:bg-zinc-900/50 backdrop-blur-md 
+            rounded-full text-white hover:text-blue-400 
+            hover:scale-110 transition-all shadow-md
+          "
+        >
+          <Github size={18} />
+        </a>
+      )}
+      {liveLink && (
+        <a
+          href={liveLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            p-2 bg-white/20 dark:bg-zinc-900/50 backdrop-blur-md 
+            rounded-full text-white hover:text-blue-400 
+            hover:scale-110 transition-all shadow-md
+          "
+        >
+          <Globe size={18} />
+        </a>
+      )}
+    </div>
+  </div>
+
+  {/* Content */}
+  <CardContent className="p-6 flex flex-col space-y-4">
+    
+    {/* Title */}
+    <div>
+      <h2 className="
+        text-xl font-semibold text-white tracking-tight 
+        group-hover:text-blue-400 transition-colors
+      ">
+        {projectName}
+      </h2>
+      <div className="
+        h-1 w-12 bg-blue-500 rounded-full mt-2 
+        group-hover:w-20 transition-all
+      "/>
+    </div>
+
+    {/* Description */}
+    <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3">
+      {projectSubDesc}
+    </p>
+
+    {/* Tech Stack */}
+    <div className="flex flex-wrap gap-2">
+      {projectTechStack.slice(0, 3).map((tech, index) => (
+        <Badge
+          key={index}
+          className="
+            bg-zinc-800 text-zinc-300 border border-zinc-700
+            hover:bg-blue-900/40 hover:text-blue-300
+            transition-colors
+          "
+        >
+          {tech}
+        </Badge>
+      ))}
+      {projectTechStack.length > 3 && (
+        <Badge className="text-xs text-zinc-500 border-zinc-700">
+          +{projectTechStack.length - 3}
+        </Badge>
+      )}
+    </div>
+
+    {/* Footer */}
+    <div className="
+      pt-4 mt-auto border-t border-zinc-800/60 
+      flex items-center justify-between
+    ">
+      <span className="text-xs text-zinc-500 flex items-center gap-1">
+        <Activity size={14} className="text-green-400" />
+        Active Project
+      </span>
+
+      <Link
+        href={`/project/${_id}`}
+        className="
+        flex items-center gap-1 
+        text-sm font-medium text-zinc-300 
+        hover:text-blue-400 transition-colors
+        "
+      >
+        Details
+        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+      </Link>
+    </div>
+
+  </CardContent>
+</Card>
+
+    </motion.div>
   );
 };
 
 export default ProjectCard;
-
