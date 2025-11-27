@@ -3,7 +3,8 @@ import { ConnectDB } from "../../../../lib/db";
 import Certificate, {
   ICertificate,
 } from "../../../../models/certificate.model";
-import CertificateCard from "@/components/CertificateCard";
+
+import CertificateGallery from "@/components/CertificateGallery";
 
 async function fetchCertificates(): Promise<ICertificate[]> {
   await ConnectDB();
@@ -24,11 +25,7 @@ export default async function CertificatePage() {
       <h1 className="text-3xl font-bold mb-8 text-zinc-900 dark:text-white">
         My Certificates
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certificates.map((cert) => (
-          <CertificateCard key={cert._id} imageUrl={cert.imageUrl} />
-        ))}
-      </div>
+      <CertificateGallery certificates={certificates} />
     </div>
   );
 }
