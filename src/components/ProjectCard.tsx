@@ -33,149 +33,117 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -5 }}
       className="h-full"
     >
-      <Card className="
-  group relative flex flex-col overflow-hidden rounded-2xl 
-  border border-zinc-800/50 dark:border-zinc-800 
-  bg-[#0B0B0E]/90 dark:bg-[#0B0B0E]/90 
-  backdrop-blur-xl
-  shadow-[0_0_40px_-10px_rgba(0,0,0,0.7)]
-  hover:shadow-[0_0_60px_-10px_rgba(0,0,0,0.8)]
-  transition-all duration-500
-">
-  {/* Image Section */}
-  <div className="relative h-56 w-full overflow-hidden rounded-t-2xl">
-    <div className="
-      absolute inset-0 
-      bg-gradient-to-br from-purple-500/30 via-pink-500/20 to-blue-500/20
-      blur-2xl scale-150 opacity-40
-      group-hover:opacity-60 transition-all duration-700
-    "/>
-
-    <Image
-      src={projectImage}
-      alt={projectName}
-      fill
-      className="object-cover transition-transform duration-700 group-hover:scale-110"
-    />
-
-    {/* Dark gradient overlay */}
-    <div className="
-      absolute inset-0 
-      bg-gradient-to-t from-black/70 via-black/20 to-transparent
-      group-hover:from-black/50
-      transition-all duration-500
-    "/>
-
-    {/* Floating icon buttons */}
-    <div className="
-      absolute right-4 bottom-4 flex gap-2 
-      opacity-0 translate-y-2 
-      group-hover:opacity-100 group-hover:translate-y-0 
-      transition-all duration-300
-    ">
-      {githubLink && (
-        <a
-          href={githubLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            p-2 bg-white/20 dark:bg-zinc-900/50 backdrop-blur-md 
-            rounded-full text-white hover:text-blue-400 
-            hover:scale-110 transition-all shadow-md
-          "
-        >
-          <Github size={18} />
-        </a>
-      )}
-      {liveLink && (
-        <a
-          href={liveLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            p-2 bg-white/20 dark:bg-zinc-900/50 backdrop-blur-md 
-            rounded-full text-white hover:text-blue-400 
-            hover:scale-110 transition-all shadow-md
-          "
-        >
-          <Globe size={18} />
-        </a>
-      )}
-    </div>
-  </div>
-
-  {/* Content */}
-  <CardContent className="p-6 flex flex-col space-y-4">
-    
-    {/* Title */}
-    <div>
-      <h2 className="
-        text-xl font-semibold text-white tracking-tight 
-        group-hover:text-blue-400 transition-colors
-      ">
-        {projectName}
-      </h2>
-      <div className="
-        h-1 w-12 bg-blue-500 rounded-full mt-2 
-        group-hover:w-20 transition-all
-      "/>
-    </div>
-
-    {/* Description */}
-    <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3">
-      {projectSubDesc}
-    </p>
-
-    {/* Tech Stack */}
-    <div className="flex flex-wrap gap-2">
-      {projectTechStack.slice(0, 3).map((tech, index) => (
-        <Badge
-          key={index}
-          className="
-            bg-zinc-800 text-zinc-300 border border-zinc-700
-            hover:bg-blue-900/40 hover:text-blue-300
-            transition-colors
-          "
-        >
-          {tech}
-        </Badge>
-      ))}
-      {projectTechStack.length > 3 && (
-        <Badge className="text-xs text-zinc-500 border-zinc-700">
-          +{projectTechStack.length - 3}
-        </Badge>
-      )}
-    </div>
-
-    {/* Footer */}
-    <div className="
-      pt-4 mt-auto border-t border-zinc-800/60 
-      flex items-center justify-between
-    ">
-      <span className="text-xs text-zinc-500 flex items-center gap-1">
-        <Activity size={14} className="text-green-400" />
-        Active Project
-      </span>
-
-      <Link
-        href={`/project/${_id}`}
+      <Card
         className="
-        flex items-center gap-1 
-        text-sm font-medium text-zinc-300 
-        hover:text-blue-400 transition-colors
+          group relative flex flex-col overflow-hidden rounded-2xl 
+          border border-zinc-200 dark:border-[#1e2939]
+          bg-white dark:bg-[#171717] 
+          shadow-md hover:shadow-xl dark:shadow-none
+          transition-all duration-300
+          p-0
         "
       >
-        Details
-        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </div>
+        {/* Image Section */}
+        <div className="relative h-48 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+          <Image
+            src={projectImage}
+            alt={projectName}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
 
-  </CardContent>
-</Card>
+        {/* Content */}
+        <CardContent className="p-3 flex flex-col space-y-2 flex-grow">
+          {/* Header: Title & Links */}
+          <div className="flex items-start justify-between gap-2">
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+              {projectName}
+            </h2>
 
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              {liveLink && (
+                <a
+                  href={liveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                >
+                  <Globe size={20} strokeWidth={1.5} />
+                </a>
+              )}
+              {githubLink && (
+                <a
+                  href={githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                >
+                  <Github size={20} strokeWidth={1.5} />
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed line-clamp-3">
+            {projectSubDesc}
+          </p>
+
+          {/* Tech Stack */}
+          <div className="mt-2">
+            <h3 className="text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
+              Technologies
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {projectTechStack.slice(0, 3).map((tech, index) => (
+                <div
+                  key={index}
+                  className="
+                    flex items-center justify-center
+                    px-2.5 py-1 rounded-md
+                    bg-zinc-100 dark:bg-zinc-800/50
+                    border border-zinc-200 dark:border-zinc-700/50
+                    text-xs font-medium text-zinc-700 dark:text-zinc-300
+                  "
+                >
+                  {tech}
+                </div>
+              ))}
+              {projectTechStack.length > 5 && (
+                <div className="text-xs text-zinc-500 flex items-center px-1">
+                  +{projectTechStack.length - 5}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="pt-4 mt-auto flex items-center justify-between">
+            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-green-500/10 dark:bg-green-500/10 border border-green-500/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">
+                All Systems Operational
+              </span>
+            </div>
+
+            <Link
+              href={`/project/${_id}`}
+              className="
+                flex items-center gap-1 
+                text-sm font-medium text-zinc-600 dark:text-zinc-400 
+                hover:text-zinc-900 dark:hover:text-white transition-colors
+              "
+            >
+              View Details
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
