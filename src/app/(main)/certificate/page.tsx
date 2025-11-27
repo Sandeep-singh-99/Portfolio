@@ -9,7 +9,7 @@ import CertificateGallery from "@/components/CertificateGallery";
 async function fetchCertificates(): Promise<ICertificate[]> {
   await ConnectDB();
   const certificates = await Certificate.find()
-    .sort({ priority: 1 })
+    .sort({ createdAt: 1 })
     .lean<ICertificate[]>();
   return certificates.map((cert) => ({
     ...cert,
