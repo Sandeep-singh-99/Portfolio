@@ -101,10 +101,21 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         transition={{ duration: 1.2, delay: 0.4 }}
       >
         <div className="flex items-center gap-5">
-          <Button className="flex items-center gap-2 cursor-pointer" variant={"outline"}>
-            <FileText size={18} />
-            Resume / CV
-          </Button>
+           <a
+            href={intro.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+             className="flex items-center gap-2 cursor-pointer" 
+            >
+              <FileText size={18} />
+              Resume / CV
+            </Button>
+          </a>
 
           <Link href={"/contact"}>
             <Button variant={"default"} className="cursor-pointer">
