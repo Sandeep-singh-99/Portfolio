@@ -22,6 +22,7 @@ export default function ContactSection() {
       name: formData.get("name"),
       email: formData.get("email"),
       message: formData.get("message"),
+      phone: formData.get("phone"),
     };
 
     try {
