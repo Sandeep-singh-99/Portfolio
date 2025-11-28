@@ -5,6 +5,7 @@ import AboutPage from './about/page'
 import ProjectPage from './project/page' 
 import CertificatePage from './certificate/page'
 import GithubPage from './github/page'
+import BlogPage from './blog/page'
 
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       <ProjectPage />
       <GithubPage />
       <CertificatePage />
+      <BlogPage />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Award, Brain, Briefcase, Home, HousePlug, Info } from "lucide-react";
+import { Award, Brain, Briefcase, Home, HousePlug, Info, Newspaper } from "lucide-react";
 import React from "react";
 import {
   Sidebar,
@@ -31,6 +31,12 @@ const MenuOptions = [
     url: "/admin-panel/skill",
     icon: <Brain />,
   },
+  {
+    title: "Blog Section",
+    url: "/admin-panel/blog",
+    icon: <Newspaper />,
+  },
+  
   {
     title: "Projects Section",
     url: "/admin-panel/projects",
