@@ -27,7 +27,20 @@ export default function NavBar() {
 
   if (!mounted) return null;
 
-  const links = ["About", "Skills", "Projects", "Contact"];
+  const links = [
+    {
+      title: "Projects",
+      url: "/project/all-projects",
+    },
+    {
+      title: "Blogs",
+      url: "/blog/all-blogs",
+    },
+    {
+      title: "Contact",
+      url: "/contact",
+    },
+  ];
 
   return (
     <div
@@ -57,11 +70,11 @@ export default function NavBar() {
           <nav className="hidden md:flex space-x-6 text-sm font-medium">
             {links.map((link) => (
               <Link
-                key={link}
-                href={link === "Home" ? "/" : `${link.toLowerCase()}`}
+                key={link.title}
+                href={link.url}
                 className="text-zinc-700 dark:text-zinc-200 hover:text-black dark:hover:text-white transition"
               >
-                {link}
+                {link.title}
               </Link>
             ))}
           </nav>
@@ -134,12 +147,12 @@ export default function NavBar() {
         <div className="md:hidden mt-3 flex flex-col items-center space-y-2 text-sm font-medium">
           {links.map((link) => (
             <Link
-              key={link}
-              href={link === "Home" ? "/" : `${link.toLowerCase()}`}
+              key={link.title}
+              href={link.url}
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center py-2 rounded-md text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300/30 dark:hover:bg-zinc-800/50 transition"
             >
-              {link}
+              {link.title}
             </Link>
           ))}
         </div>
