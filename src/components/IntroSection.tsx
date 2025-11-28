@@ -68,7 +68,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
         className=" md:flex md:items-center md:gap-2 space-y-2  flex-col md:flex-row"
       >
         <h1 className="md:text-4xl text-xl font-bold">
@@ -83,10 +83,14 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="md:text-lg text-sm opacity-80"
+        transition={{ duration: 1.0, delay: 0.3 }}
+        className=" opacity-80"
       >
-        {intro.desc}
+        <div className="prose dark:prose-invert max-w-none">
+          <p className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
+            {intro.desc}
+          </p>
+        </div>
       </motion.h2>
 
       {/* Resume Button */}
@@ -94,7 +98,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        transition={{ duration: 1.2, delay: 0.4 }}
       >
         <div className="flex items-center gap-5">
           <Button className="flex items-center gap-2 cursor-pointer" variant={"outline"}>
@@ -116,6 +120,12 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         <LeftSideBar />
       </div>
 
+       <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.4, delay: 0.4 }}
+      >
       <div className="hidden md:flex flex-row gap-3">
         {links.map((link, index) => (
           <Tooltip key={index}>
@@ -137,6 +147,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
           </Tooltip>
         ))}
       </div>
+      </motion.div>
     </div>
   );
 }

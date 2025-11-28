@@ -43,8 +43,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "All fields are required" }, { status: 400 });
         }
 
-        if (image.size > 5 * 1024 * 1024) {
-            return NextResponse.json({ error: "Image size exceeds 5MB" }, { status: 400 });
+        if (image.size > 10 * 1024 * 1024) {
+            return NextResponse.json({ error: "Image size exceeds 10MB" }, { status: 400 });
         }
 
         const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");

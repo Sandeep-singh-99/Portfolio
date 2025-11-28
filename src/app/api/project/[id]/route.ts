@@ -121,8 +121,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
          ...(priority && { priority: Number(priority) }),
       }
 
-        if (image.size > 5 * 1024 * 1024) {
-          return NextResponse.json({ error: "Image size exceeds 5MB" }, { status: 400 });
+        if (image.size > 10 * 1024 * 1024) {
+          return NextResponse.json({ error: "Image size exceeds 10MB" }, { status: 400 });
         }
 
         const deleteImage = await DeleteImage(projectExists.projectImagePublicId);

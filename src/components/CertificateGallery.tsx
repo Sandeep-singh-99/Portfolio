@@ -9,17 +9,23 @@ import { ICertificate } from "../../models/certificate.model";
 
 interface CertificateGalleryProps {
   certificates: ICertificate[];
+  limit?: number;
 }
 
 export default function CertificateGallery({
   certificates,
+  limit,
 }: CertificateGalleryProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const displayedCertificates = limit
+    ? certificates.slice(0, limit)
+    : certificates;
 
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certificates.map((cert) => (
+        {displayedCertificates.map((cert) => (
           <CertificateCard
             key={cert._id}
             imageUrl={cert.imageUrl}

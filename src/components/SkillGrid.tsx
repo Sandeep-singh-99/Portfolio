@@ -55,7 +55,7 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
             transition={{ duration: 0.5, delay: catIndex * 0.1 }}
             className="mb-8"
           >
-            <h2 className="md:text-2xl text-xl font-bold text-zinc-800 dark:text-white mb-6 capitalize flex items-center gap-2">
+            <h2 className="md:text-xl text-lg font-bold text-zinc-800 dark:text-white mb-6 capitalize flex items-center gap-2">
               {category}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">

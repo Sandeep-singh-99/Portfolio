@@ -24,7 +24,10 @@ export default async function SkillPage() {
   return (
     <TooltipProvider>
       <div className="">
-        <h1 className="text-3xl font-bold mb-6">My Skills</h1>
+        <div className="flex flex-col mb-2">
+          <p className="text-sm dark:text-gray-400 text-gray-700">Featured</p>
+          <h2 className="md:text-xl text-xl font-bold">Skills</h2>
+        </div>
         <SkillGrid skills={skills} />
       </div>
     </TooltipProvider>

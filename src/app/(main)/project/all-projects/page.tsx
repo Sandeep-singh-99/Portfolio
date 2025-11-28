@@ -1,10 +1,11 @@
 import React from "react";
-import { ConnectDB } from "../../../../lib/db";
-import Project, { IProject } from "../../../../models/project.model";
 import ProjectCard from "@/components/ProjectCard";
 import Link from "next/link";
 import { ArrowLeft, Grid, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConnectDB } from "../../../../../lib/db";
+import Project, { IProject } from "../../../../../models/project.model";
+import { Separator } from "@/components/ui/separator";
 
 async function fetchProjects(): Promise<IProject[]> {
   await ConnectDB();
@@ -17,17 +18,20 @@ async function fetchProjects(): Promise<IProject[]> {
   }));
 }
 
-export default async function ProjectPage() {
+export default async function AllProjectsPage() {
   const projects = await fetchProjects();
 
   return (
-    <div className="container mx-auto">
-       <div className="flex flex-col mb-2">
-          <p className="text-sm dark:text-gray-400 text-gray-700">Featured</p>
-          <h2 className="md:text-xl text-xl font-bold">Projects</h2>
-        </div>
+    <div className="container mx-auto space-y-10">
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="text-4xl font-bold">Projects</h1>
+        <p className="text-zinc-600 dark:text-zinc-400 font-medium">
+          My projects and work across different technologies and domains.
+        </p>
+      </div>
+      <Separator />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {projects.slice(0, 4).map((project) => (
+        {projects.map((project) => (
           <ProjectCard
             key={project._id}
             _id={project._id!}
@@ -39,14 +43,6 @@ export default async function ProjectPage() {
             liveLink={project.liveLink}
           />
         ))}
-      </div>
-
-      <div className="text-center mt-10">
-        <Link href="/project/all-projects">
-          <Button variant="outline" className=" hover:bg-white cursor-pointer ">
-            Show all projects <MoveRight />
-          </Button>
-        </Link>
       </div>
     </div>
   );
