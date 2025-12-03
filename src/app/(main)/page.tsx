@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <div className='py-10 space-y-10'>
       <IntroPage />
-      <AboutPage />
-      <SkillPage />
       <ProjectPage />
+      <SkillPage />
+      <AboutPage />
       <GithubPage />
       <CertificatePage />
       <BlogPage />
