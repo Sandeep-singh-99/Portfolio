@@ -60,21 +60,14 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {categorySkills.map((skill, index) => (
-                <motion.div
+                <div
                   key={skill._id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{
-                    scale: 1.05,
-                  }}
                   className="flex items-center justify-start space-x-3 px-4 py-3 rounded-xl
                       border border-zinc-200 dark:border-zinc-800/50 
                       bg-white dark:bg-zinc-900/50 border-dashed
                       hover:border-blue-500/50 dark:hover:border-blue-500/50
-                      hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition-colors duration-300
-                      shadow-sm hover:shadow-lg cursor-pointer group"
+                      hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition-all duration-300
+                      shadow-sm hover:shadow-lg cursor-pointer group hover:scale-105"
                 >
                   {/* Skill Icon */}
                   <div className="relative w-8 h-8 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg group-hover:scale-110 transition-transform duration-300">
@@ -90,7 +83,7 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
                   <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                     {skill.skillName}
                   </h2>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
