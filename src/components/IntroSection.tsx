@@ -52,7 +52,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="h-32 w-32 relative rounded-full overflow-hidden bg-blue-400"
+        className="h-32 w-32 relative rounded-full overflow-hidden bg-secondary border-2 border-primary/10 shadow-md"
       >
         <Image
           src={intro.image}
@@ -101,7 +101,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         transition={{ duration: 1.2, delay: 0.4 }}
       >
         <div className="flex items-center gap-5">
-           <a
+          <a
             href={intro.file}
             target="_blank"
             rel="noopener noreferrer"
@@ -110,7 +110,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             <Button
               variant="outline"
               size="lg"
-             className="flex items-center gap-2 cursor-pointer" 
+              className="flex items-center gap-2 cursor-pointer"
             >
               <FileText size={18} />
               Resume / CV
@@ -131,33 +131,33 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         <LeftSideBar />
       </div>
 
-       <motion.div
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1.4, delay: 0.4 }}
       >
-      <div className="hidden md:flex flex-row gap-3">
-        {links.map((link, index) => (
-          <Tooltip key={index}>
-            <TooltipTrigger asChild>
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative transition-all duration-200"
-              >
-                <div className="p-3 rounded-full bg-muted/50 hover:bg-accent text-muted-foreground hover:text-primary transition-colors border border-border/50 hover:border-accent-foreground/20">
-                  {link.icon}
-                </div>
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{link.label}</p>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </div>
+        <div className="hidden md:flex flex-row gap-3">
+          {links.map((link, index) => (
+            <Tooltip key={index}>
+              <TooltipTrigger asChild>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative transition-all duration-200"
+                >
+                  <div className="p-3 rounded-full bg-muted/50 hover:bg-accent text-muted-foreground hover:text-primary transition-colors border border-border/50 hover:border-accent-foreground/20">
+                    {link.icon}
+                  </div>
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{link.label}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
       </motion.div>
     </div>
   );

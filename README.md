@@ -8,7 +8,7 @@
 
 A modern, full-stack personal portfolio website designed to showcase projects and skills with a premium user experience. Built with **Next.js 15**, **Tailwind CSS 4**, and **MongoDB**, it features a secure admin panel, dynamic content management, and immersive 3D elements.
 
-![Project Screenshot](./screenshot/Screenshot%202025-12-03%20155036.png)
+![Project Screenshot](./screenshot/Screenshot%202025-12-03%20155917.png)
 
 ## 📑 Table of Contents
 
