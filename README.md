@@ -19,7 +19,6 @@ A modern, full-stack personal portfolio website designed to showcase projects an
 - [Environment Variables](#-environment-variables)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
-- [License](#-license)
 
 ## ✨ Features
 
