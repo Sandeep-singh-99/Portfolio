@@ -15,10 +15,11 @@ import { Separator } from "@/components/ui/separator";
 import CertificateDelete from "./_components/certificateDelete";
 import { FileText, Award, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import SortableCertificateList from "./_components/SortableCertificateList";
 
 async function fetchCertificateData() {
   await ConnectDB();
-  const data = await Certificate.find().sort({ createdAt: -1 });
+  const data = await Certificate.find().sort({ priority: 1 });
   return data;
 }
 
@@ -62,62 +63,7 @@ export default async function CertificateAdminPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {certficateData.map((cer: any) => {
-              const isPDF = cer.imageUrl.endsWith(".pdf");
-
-              return (
-                <Card
-                  key={cer._id}
-                  className="group flex flex-col overflow-hidden border-muted/60 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="relative h-56 w-full overflow-hidden bg-muted">
-                    {isPDF ? (
-                      <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted/50">
-                        <FileText className="h-12 w-12" />
-                        <span className="text-sm font-medium">
-                          PDF Document
-                        </span>
-                      </div>
-                    ) : (
-                      <Image
-                        src={cer.imageUrl}
-                        alt="Certificate"
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    )}
-
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md p-1">
-                      <CertificateDelete id={cer.id} />
-                    </div>
-                  </div>
-
-                  <CardContent className="p-4 flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="text-xs font-normal">
-                        Priority: {cer.priority}
-                      </Badge>
-                    </div>
-                  </CardContent>
-
-                  <CardFooter className="p-4 pt-0">
-                    <Button variant="outline" className="w-full gap-2" asChild>
-                      <a
-                        href={cer.imageUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                        View Certificate
-                      </a>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
-          </div>
+          <SortableCertificateList initialCertificates={certficateData} />
         )}
       </section>
     </div>

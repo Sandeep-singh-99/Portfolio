@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 async function fetchCertificates(): Promise<ICertificate[]> {
   await ConnectDB();
   const certificates = await Certificate.find()
-    .sort({ createdAt: 1 })
+    .sort({ priority: 1 })
     .lean<ICertificate[]>();
   return certificates.map((cert) => ({
     ...cert,
