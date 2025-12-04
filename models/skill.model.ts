@@ -6,6 +6,7 @@ export interface ISkill {
   skillName: string;
   skillImage: string;
   skillImagePublicId?: string;
+  priority: number;
 }
 
 const skillSchema = new Schema<ISkill>(
@@ -25,6 +26,10 @@ const skillSchema = new Schema<ISkill>(
     },
     skillImagePublicId: {
       type: String,
+    },
+    priority: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

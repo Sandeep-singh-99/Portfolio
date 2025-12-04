@@ -22,7 +22,7 @@ const SkillGrid = dynamic(() => import("@/components/SkillGrid"), {
 
 async function fetchSkills(): Promise<ISkill[]> {
   await ConnectDB();
-  const skills = await Skill.find().lean<ISkill[]>();
+  const skills = await Skill.find().sort({ priority: 1 }).lean<ISkill[]>();
   return skills.map((skill) => ({
     ...skill,
     _id: skill._id?.toString(),
