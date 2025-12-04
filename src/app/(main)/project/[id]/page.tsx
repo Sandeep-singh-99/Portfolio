@@ -51,7 +51,7 @@ export default async function ProjectPageById({
 
   return (
     <>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pt-20 pb-32">
+      <div className="min-h-screen  pt-20 pb-32">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
 
           {/* Hero Image */}
