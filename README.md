@@ -1,12 +1,13 @@
-# Personal Portfolio Website
+# ⚡ Personal Portfolio Website
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-A modern, full-stack personal portfolio website designed to showcase projects and skills with a premium user experience. Built with **Next.js 15**, **Tailwind CSS 4**, and **MongoDB**, it features a secure admin panel, dynamic content management, and immersive 3D elements.
+A modern, high-performance full-stack portfolio website built to showcase projects and skills with a premium user experience. Leveraging the power of **Next.js 15**, **Tailwind CSS 4**, and **MongoDB**, it features a secure admin panel, dynamic content management, immersive 3D elements, and seamless animations.
 
 ![Project Screenshot](./screenshot/Screenshot%202025-12-03%20155917.png)
 
@@ -22,14 +23,22 @@ A modern, full-stack personal portfolio website designed to showcase projects an
 
 ## ✨ Features
 
-- **🎨 Modern & Responsive Design**: Built with **Tailwind CSS** and **Shadcn/ui** for a sleek, accessible, and fully responsive interface across all devices.
-- **🚀 Dynamic Project Showcase**: Projects are fetched dynamically from a **MongoDB** database, allowing for real-time updates without redeploying.
-- **📝 Markdown Support**: Detailed project descriptions are rendered using `@uiw/react-md-editor`, supporting rich text formatting.
-- **🔐 Secure Admin Panel**: Protected routes using **NextAuth.js** allow authorized users to Create, Read, Update, and Delete (CRUD) projects.
-- **☁️ Cloudinary Integration**: Optimized image hosting and delivery for high-performance project visuals.
-- **📧 Contact Form**: Integrated with **Resend** to handle email submissions directly from the portfolio.
-- **✨ Animations & 3D**: Enhanced user experience with **Framer Motion** animations and **Three.js** (@react-three/fiber) elements.
-- **🔔 Toast Notifications**: Real-time feedback for user actions using **Sonner**.
+### 👤 User Features
+
+- **🎨 Modern & Responsive Design**: Crafted with **Tailwind CSS 4** and **Shadcn/ui** for a sleek, accessible, and fully responsive interface across all devices.
+- **🚀 Dynamic Project Showcase**: Projects are fetched dynamically from a **MongoDB** database, ensuring content is always up-to-date.
+- **✨ Immersive Animations**: Enhanced user experience with **Framer Motion** for smooth transitions and **Three.js** (@react-three/fiber) for 3D elements.
+- **📝 Rich Content**: Detailed project descriptions rendered using `@uiw/react-md-editor` with markdown support.
+- **📧 Contact Integration**: Fully functional contact form powered by **Resend** for direct email submissions.
+- **🔔 Real-time Notifications**: Interactive toast notifications using **Sonner**.
+
+### 🛡️ Admin Features
+
+- **🔐 Secure Authentication**: Protected admin routes using **NextAuth.js** to ensure only authorized access.
+- **📊 Dashboard Overview**: comprehensive view of projects and content.
+- **🛠️ Project Management**: Full CRUD (Create, Read, Update, Delete) capabilities for managing portfolio projects.
+- **✋ Drag & Drop Reordering**: Intuitive **Drag and Drop** interface (powered by `@dnd-kit`) to easily reorder skills and projects, giving you full control over how content is displayed.
+- **☁️ Media Management**: Seamless image uploads and hosting via **Cloudinary**.
 
 ## 🛠 Tech Stack
 
@@ -38,10 +47,10 @@ A modern, full-stack personal portfolio website designed to showcase projects an
 - **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Components**: [Shadcn/ui](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **3D Graphics**: [Three.js](https://threejs.org/) / [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
+- **Components**: [Shadcn/ui](https://ui.shadcn.com/) & [Radix UI](https://www.radix-ui.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) & [Typewriter Effect](https://github.com/tameemsafi/typewriterjs)
 - **Icons**: [Lucide React](https://lucide.dev/)
+- **Markdown**: [@uiw/react-md-editor](https://uiwjs.github.io/react-md-editor/)
 
 ### Backend
 
@@ -54,7 +63,8 @@ A modern, full-stack personal portfolio website designed to showcase projects an
 
 - **Image Hosting**: [Cloudinary](https://cloudinary.com/)
 - **Email Service**: [Resend](https://resend.com/)
-- **Markdown**: `@uiw/react-md-editor`
+- **Drag & Drop**: [@dnd-kit](https://dndkit.com/)
+- **Date Handling**: [date-fns](https://date-fns.org/)
 - **Linting**: ESLint
 
 ## 📂 Project Structure
@@ -62,16 +72,17 @@ A modern, full-stack personal portfolio website designed to showcase projects an
 ```bash
 src/
 ├── app/
-│   ├── (admin)/       # Protected admin routes (Dashboard, Project Management)
+│   ├── (admin)/       # Protected admin routes (Dashboard, Project/Skill Management)
 │   ├── (main)/        # Public facing routes (Home, Projects, Contact)
-│   ├── api/           # Backend API endpoints
+│   ├── api/           # Backend API endpoints (Projects, Skills, Auth, Email)
 │   ├── globals.css    # Global styles and Tailwind directives
 │   └── layout.tsx     # Root layout
-├── components/        # Reusable UI components
+├── components/        # Reusable UI components (Buttons, Cards, Modals)
 ├── hooks/             # Custom React hooks
-├── lib/               # Utility functions and database connections
+├── lib/               # Utility functions, DB connection, Cloudinary config
+├── models/            # Mongoose database models (Project, Skill, User)
 ├── types/             # TypeScript type definitions
-└── middleware.ts      # Auth middleware
+└── middleware.ts      # Authentication middleware
 ```
 
 ## 🚀 Getting Started
@@ -143,3 +154,4 @@ Contributions are welcome! Please follow these steps:
 3.  Commit your changes (`git commit -m 'Add some feature'`).
 4.  Push to the branch (`git push origin feature/YourFeature`).
 5.  Open a Pull Request.
+
