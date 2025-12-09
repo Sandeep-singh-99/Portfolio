@@ -10,7 +10,7 @@ interface TypewriterClientProps {
 
 export default function TypewriterClient({ words }: TypewriterClientProps) {
   return (
-    <h2 className="md:text-4xl text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 via-gray-400 to-gray-600">
+    <h2 className="md:text-3xl text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-300 via-gray-400 to-gray-600">
       <Typewriter
         options={{
           loop: true,
