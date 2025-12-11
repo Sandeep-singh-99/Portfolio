@@ -4,16 +4,23 @@ import { IIntro } from "../../models/intro.model";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FileText, Send } from "lucide-react";
-import TypewriterClient from "@/components/TypewriterClient";
-import { motion } from "framer-motion";
+// import TypewriterClient from "@/components/TypewriterClient";
 import Link from "next/link";
 import LeftSideBar from "./leftsidebar";
 import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
+import dynamic from "next/dynamic";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+const TypewriterClient = dynamic(
+  () => import("@/components/TypewriterClient"),
+  {
+    ssr: false,
+  }
+);
 
 const links = [
   {
@@ -47,59 +54,40 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Profile Image */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="h-32 w-32 relative rounded-full overflow-hidden bg-secondary border-2 border-primary/10 shadow-md"
-      >
+      <div className="h-32 w-32 relative rounded-full overflow-hidden bg-secondary border-2 border-primary/10 shadow-md">
         <Image
           src={intro.image}
           alt={intro.name}
           width={120}
           height={120}
           className="object-contain"
+          priority
         />
-      </motion.div>
+      </div>
 
       {/* Title + Typewriter */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className=" md:flex md:items-center md:gap-2 space-y-2  flex-col md:flex-row"
-      >
+      <div className=" md:flex md:items-center md:gap-2 space-y-2  flex-col md:flex-row">
         <h1 className="md:text-4xl text-xl font-bold">
           Hi, I'm <span className="">{intro.name}</span>
         </h1>
         <span className="md:text-2xl font-bold hidden md:block">—</span>
-        <TypewriterClient words={intro.techStack} />
-      </motion.div>
+        {/* Lazy loaded typewriter */}
+        <div className="min-h-[28px] md:min-h-[36px]">
+          <TypewriterClient words={intro.techStack} />
+        </div>
+      </div>
 
       {/* Description */}
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.0, delay: 0.3 }}
-        className=" opacity-80"
-      >
+      <div className="opacity-0 animate-fade-in-up delay-100">
         <div className="prose dark:prose-invert max-w-none">
-          <p className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
+          <h2 className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
             {intro.desc}
-          </p>
+          </h2>
         </div>
-      </motion.h2>
+      </div>
 
       {/* Resume Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, delay: 0.4 }}
-      >
+      <div className="opacity-0 animate-fade-in-up delay-200">
         <div className="flex items-center gap-5">
           <a
             href={intro.file}
@@ -124,19 +112,14 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             </Button>
           </Link>
         </div>
-      </motion.div>
+      </div>
 
       {/* Socials */}
       <div className="md:hidden block">
         <LeftSideBar />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.4, delay: 0.4 }}
-      >
+      <div className="opacity-0 animate-fade-in-up delay-300">
         <div className="hidden md:flex flex-row gap-3">
           {links.map((link, index) => (
             <Tooltip key={index}>
@@ -158,7 +141,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             </Tooltip>
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

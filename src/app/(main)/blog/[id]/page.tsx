@@ -32,7 +32,7 @@ export default async function BlogPageById({
 
   if (!blog) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold text-zinc-800 dark:text-zinc-100">
             404 – Blog Not Found
@@ -51,7 +51,7 @@ export default async function BlogPageById({
 
   return (
     <>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pt-20 pb-32">
+      <div className="min-h-screen pt-20 pb-32">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           {/* Hero Image */}
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 shadow-2xl">

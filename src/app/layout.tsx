@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import {Toaster} from "@/components/ui/sonner";
-import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
-  // weight: ["400", "700"], 
+  display: "swap",
+  // weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -22,16 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} antialiased`}
-      >
+      <body className={`${inter.className} antialiased`}>
         <ThemeProvider
-         attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
         >
-          <Toaster richColors/>
+          <Toaster richColors />
           {children}
           <Analytics />
         </ThemeProvider>

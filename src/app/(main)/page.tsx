@@ -1,16 +1,16 @@
-import React from 'react'
-import IntroPage from './intro/page'
-import SkillPage from './skill/page'
-import AboutPage from './about/page'
-import ProjectPage from './project/page' 
-import CertificatePage from './certificate/page'
-import GithubPage from './github/page'
-import BlogPage from './blog/page'
+import dynamic from "next/dynamic";
+import IntroPage from "./intro/page";
 
+const SkillPage = dynamic(() => import("./skill/page"));
+const AboutPage = dynamic(() => import("./about/page"));
+const ProjectPage = dynamic(() => import("./project/page"));
+const CertificatePage = dynamic(() => import("./certificate/page"));
+const GithubPage = dynamic(() => import("./github/page"));
+const BlogPage = dynamic(() => import("./blog/page"));
 
 export default function Home() {
   return (
-    <div className='py-10 space-y-10'>
+    <div className="py-10 space-y-10">
       <IntroPage />
       <ProjectPage />
       <SkillPage />
@@ -19,5 +19,5 @@ export default function Home() {
       <CertificatePage />
       <BlogPage />
     </div>
-  )
+  );
 }
