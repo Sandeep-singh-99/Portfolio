@@ -17,36 +17,46 @@ interface ProjectData {
   priority?: number;
 }
 
-
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
   api_key: process.env.CLOUDINARY_API_KEY!,
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-async function uploadToCloudinary(file: File, type: "image" | "auto"): Promise<[string, string]> {
+async function uploadToCloudinary(
+  file: File,
+  type: "image" | "auto"
+): Promise<[string, string]> {
   const buffer = Buffer.from(await file.arrayBuffer());
 
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream(
-      { resource_type: type, folder: "portfolio/intro" },
-      (err, result) => {
-        if (err || !result?.secure_url) return reject("Cloudinary upload failed");
-        resolve([result.secure_url, result.public_id]);
-      }
-    ).end(buffer);
+    cloudinary.uploader
+      .upload_stream(
+        { resource_type: type, folder: "portfolio/intro" },
+        (err, result) => {
+          if (err || !result?.secure_url)
+            return reject("Cloudinary upload failed");
+          resolve([result.secure_url, result.public_id]);
+        }
+      )
+      .end(buffer);
   });
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string }}) {
+export async function GET(
+  req: NextRequest,
+  props: { params: Promise<{ id: string }> }
+) {
   try {
     await ConnectDB();
+    const params = await props.params;
     const { id } = params;
+    console.log("Fetching project with ID:", id);
 
     const projectId = await Project.findById(id);
 
     if (!projectId) {
+      console.log("Project not found for ID:", id);
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
@@ -60,10 +70,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string }}) {
+export async function DELETE(
+  req: NextRequest,
+  props: { params: Promise<{ id: string }> }
+) {
   try {
     await ConnectDB();
 
+    const params = await props.params;
     const { id } = params;
 
     const project = await Project.findById(id);
@@ -75,7 +89,10 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const deleteImage = await DeleteImage(project.projectImagePublicId);
 
     if (deleteImage !== "ok") {
-      return NextResponse.json({ error: "Failed to delete image" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to delete image" },
+        { status: 500 }
+      );
     }
 
     await Project.findByIdAndDelete(id);
@@ -83,16 +100,25 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     revalidatePath("/admin-panel/projects");
     revalidatePath("/");
 
-    return NextResponse.json({ message: "Project deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Project deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to delete Project" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete Project" },
+      { status: 500 }
+    );
   }
 }
 
-
-export async function PATCH(req: NextRequest, { params }: { params: { id: string }}) {
+export async function PATCH(
+  req: NextRequest,
+  props: { params: Promise<{ id: string }> }
+) {
   try {
     await ConnectDB();
+    const params = await props.params;
     const { id } = params;
 
     const projectExists = await Project.findById(id);
@@ -101,52 +127,72 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-      const formData = await req.formData();
-      const projectName = formData.get("projectName") as string;
-      const projectDesc = formData.get("projectDesc") as string;
-      const projectSubDesc = formData.get("projectSubDesc") as string;
-      const projectTechStack = formData.get("projectTechStack") as string;
-      const githubLink = formData.get("githubLink") as string;
-      const liveLink = formData.get("liveLink") as string;
-      const image = formData.get("projectImage") as File
-      const priority = formData.get("priority")
+    const formData = await req.formData();
+    const projectName = formData.get("projectName") as string;
+    const projectDesc = formData.get("projectDesc") as string;
+    const projectSubDesc = formData.get("projectSubDesc") as string;
+    const projectTechStack = formData.get("projectTechStack") as string;
+    const githubLink = formData.get("githubLink") as string;
+    const liveLink = formData.get("liveLink") as string;
+    const image = formData.get("projectImage") as File;
+    const priority = formData.get("priority");
 
-      let updatedProjectData: ProjectData = {
-        ...(projectName && { projectName }),
-        ...(projectDesc && { projectDesc }),
-        ...(projectSubDesc && { projectSubDesc }),
-        ...(projectTechStack && { projectTechStack: projectTechStack.split(",").map((tech: string) => tech.trim()) }),
-        ...(githubLink && { githubLink }),
-        ...(liveLink && { liveLink }),
-         ...(priority && { priority: Number(priority) }),
+    let updatedProjectData: ProjectData = {
+      ...(projectName && { projectName }),
+      ...(projectDesc && { projectDesc }),
+      ...(projectSubDesc && { projectSubDesc }),
+      ...(projectTechStack && {
+        projectTechStack: projectTechStack
+          .split(",")
+          .map((tech: string) => tech.trim()),
+      }),
+      ...(githubLink && { githubLink }),
+      ...(liveLink && { liveLink }),
+      ...(priority && { priority: Number(priority) }),
+    };
+
+    if (image && image.size > 0) {
+      if (image.size > 10 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: "Image size exceeds 10MB" },
+          { status: 400 }
+        );
       }
 
-        if (image.size > 10 * 1024 * 1024) {
-          return NextResponse.json({ error: "Image size exceeds 10MB" }, { status: 400 });
-        }
+      const deleteImage = await DeleteImage(projectExists.projectImagePublicId);
 
-        const deleteImage = await DeleteImage(projectExists.projectImagePublicId);
+      if (deleteImage !== "ok") {
+        return NextResponse.json(
+          { error: "Failed to delete old image" },
+          { status: 500 }
+        );
+      }
 
-        if (deleteImage !== "ok") {
-          return NextResponse.json({ error: "Failed to delete old image" }, { status: 500 });
-        }
+      const [imageUrl, imagePublicId] = await uploadToCloudinary(
+        image,
+        "image"
+      );
 
-        const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");
+      updatedProjectData = {
+        ...updatedProjectData,
+        projectImage: imageUrl,
+        projectImagePublicId: imagePublicId,
+      };
+    }
 
-        updatedProjectData = {
-          ...updatedProjectData,
-          projectImage: imageUrl,
-          projectImagePublicId: imagePublicId,
-        };
+    await Project.findByIdAndUpdate(id, updatedProjectData);
 
-        await Project.findByIdAndUpdate(id, updatedProjectData);
-        
-        revalidatePath("/admin-panel/projects");
-        revalidatePath("/");
+    revalidatePath("/admin-panel/projects");
+    revalidatePath("/");
 
-        return NextResponse.json({ data: updatedProjectData, message: "Project updated successfully" }, { status: 200 });
-
+    return NextResponse.json(
+      { data: updatedProjectData, message: "Project updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update Project" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update Project" },
+      { status: 500 }
+    );
   }
 }

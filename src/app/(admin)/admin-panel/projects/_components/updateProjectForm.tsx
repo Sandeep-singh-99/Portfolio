@@ -17,19 +17,19 @@ import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
 import { toast } from "sonner";
 import { NotebookPen } from "lucide-react";
-import axios from "axios";
 
 type FormDataType = {
   projectName: string;
   githubLink: string;
   liveLink: string;
-  projectTechStack: string; 
+  projectTechStack: string;
   projectDesc: string;
   projectSubDesc: string;
   priority?: number;
 };
 
 export default function ProjectForm({ id }: { id?: string }) {
+  console.log("UpdateProjectForm initialized with ID:", id);
   const [formData, setFormData] = useState<FormDataType>({
     projectName: "",
     githubLink: "",
@@ -44,11 +44,13 @@ export default function ProjectForm({ id }: { id?: string }) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`/api/project/${id}`);
-      const data = response.data.data;
-      console.log("Fetched data:", data);
+      console.log("Fetching data for project ID:", id);
+      const response = await fetch(`/api/project/${id}`);
+      const result = await response.json();
+      console.log("Fetched data:", result);
 
-      if (response.status === 200) {
+      if (response.ok) {
+        const data = result.data;
         setFormData({
           projectName: data.projectName || "",
           githubLink: data.githubLink || "",
@@ -59,7 +61,7 @@ export default function ProjectForm({ id }: { id?: string }) {
           priority: data.priority || 0,
         });
       } else {
-        toast.error(data.message || "Failed to fetch project data");
+        toast.error(result.error || "Failed to fetch project data");
       }
     } catch (error) {
       console.error("Error fetching project data:", error);
@@ -67,7 +69,7 @@ export default function ProjectForm({ id }: { id?: string }) {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (id) {
       fetchData();
     }
@@ -79,8 +81,10 @@ export default function ProjectForm({ id }: { id?: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting update for project ID:", id);
 
-    const { projectName, githubLink, liveLink, projectTechStack, projectDesc } = formData;
+    const { projectName, githubLink, liveLink, projectTechStack, projectDesc } =
+      formData;
 
     if (!projectName || !githubLink || !liveLink || !projectTechStack) {
       toast.error("Please fill in all required fields.");
@@ -136,7 +140,9 @@ export default function ProjectForm({ id }: { id?: string }) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Update Project</DialogTitle>
-            <DialogDescription>Fill in the details for your project.</DialogDescription>
+            <DialogDescription>
+              Fill in the details for your project.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="flex justify-between gap-3 py-4">
@@ -146,7 +152,9 @@ export default function ProjectForm({ id }: { id?: string }) {
                 <Input
                   id="projectName"
                   value={formData.projectName}
-                  onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectName: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -156,7 +164,9 @@ export default function ProjectForm({ id }: { id?: string }) {
                 <Input
                   id="projectSubDesc"
                   value={formData.projectSubDesc}
-                  onChange={(e) => setFormData({ ...formData, projectSubDesc: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectSubDesc: e.target.value })
+                  }
                 />
               </div>
 
@@ -166,7 +176,12 @@ export default function ProjectForm({ id }: { id?: string }) {
                   id="priority"
                   type="number"
                   value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      priority: Number(e.target.value),
+                    })
+                  }
                 />
               </div>
 
@@ -175,7 +190,9 @@ export default function ProjectForm({ id }: { id?: string }) {
                 <Input
                   id="githubLink"
                   value={formData.githubLink}
-                  onChange={(e) => setFormData({ ...formData, githubLink: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, githubLink: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -185,17 +202,26 @@ export default function ProjectForm({ id }: { id?: string }) {
                 <Input
                   id="liveLink"
                   value={formData.liveLink}
-                  onChange={(e) => setFormData({ ...formData, liveLink: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, liveLink: e.target.value })
+                  }
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="projectTechStack">Project Tech Stack (comma separated)</Label>
+                <Label htmlFor="projectTechStack">
+                  Project Tech Stack (comma separated)
+                </Label>
                 <Input
                   id="projectTechStack"
                   value={formData.projectTechStack}
-                  onChange={(e) => setFormData({ ...formData, projectTechStack: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      projectTechStack: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
@@ -206,14 +232,20 @@ export default function ProjectForm({ id }: { id?: string }) {
                   id="projectImage"
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setProjectImage(e.target.files ? e.target.files[0] : null)}
+                  onChange={(e) =>
+                    setProjectImage(e.target.files ? e.target.files[0] : null)
+                  }
                 />
               </div>
             </div>
 
             <div className="w-3/5 flex flex-col gap-2">
               <Label htmlFor="projectDesc">Project Description</Label>
-              <MDEditor value={formData.projectDesc} onChange={handleDescriptionChange} height={400} />
+              <MDEditor
+                value={formData.projectDesc}
+                onChange={handleDescriptionChange}
+                height={400}
+              />
             </div>
           </div>
 

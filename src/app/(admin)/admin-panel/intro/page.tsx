@@ -1,7 +1,4 @@
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -11,6 +8,7 @@ import Intro from "../../../../../models/intro.model";
 import Image from "next/image";
 import { FileText, Download, User, Code } from "lucide-react";
 import DeleteIntro from "./_components/deleteIntro";
+import UpdateIntroForm from "./_components/updateIntroForm";
 
 async function fetchIntroFromDB() {
   await ConnectDB();
@@ -80,7 +78,17 @@ export default async function IntroPage() {
                           Full Stack Developer
                         </p>
                       </div>
-                      <DeleteIntro id={intro.id} />
+                      <div className="flex gap-2">
+                        <UpdateIntroForm
+                          intro={{
+                            _id: intro._id.toString(),
+                            name: intro.name,
+                            desc: intro.desc,
+                            techStack: intro.techStack,
+                          }}
+                        />
+                        <DeleteIntro id={intro.id} />
+                      </div>
                     </div>
 
                     <div className="mt-6 space-y-6 flex-1">
