@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
+import { GlobalChatWidget } from "@/components/GlobalChatWidget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -95,6 +96,7 @@ export default function RootLayout({
         >
           <Toaster richColors />
           {children}
+          <GlobalChatWidget />
           <Analytics />
         </ThemeProvider>
       </body>
