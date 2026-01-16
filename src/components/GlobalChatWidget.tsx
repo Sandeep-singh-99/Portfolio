@@ -79,201 +79,225 @@ export function GlobalChatWidget() {
   }, [chatHistory, isLoading]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-1">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 0.9, y: 20, filter: "blur(10px)" }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="mb-2"
           >
-            <Card className="w-[400px] sm:w-[500px] h-[500px] sm:h-[600px] max-h-[80vh] shadow-2xl border overflow-hidden flex flex-col bg-background/95 backdrop-blur-sm">
+            <div className="w-[380px] sm:w-[450px] h-[600px] max-h-[80vh] shadow-2xl border border-white/10 rounded-2xl overflow-hidden flex flex-col bg-background/60 backdrop-blur-xl ring-1 ring-white/5">
               {/* Header */}
-              <div className="bg-linear-to-r from-background to-secondary/20 border-b p-3 flex items-center gap-2.5 select-none">
-                <Avatar className="h-10 w-10 border shadow-sm">
-                  <AvatarImage src="/profilePic.png" alt="Sandeep" />
-                  <AvatarFallback>SS</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm tracking-tight">
-                    Sandeep&#39;s Portfolio Assistant
+              <div className="bg-secondary border-b border-border/50 p-4 flex items-center gap-4 select-none">
+                <div className="relative">
+                  <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
+                    <AvatarImage src="/profilePic.png" alt="Sandeep" />
+                    <AvatarFallback>SS</AvatarFallback>
+                  </Avatar>
+                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background shadow-sm"></span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-semibold text-sm tracking-tight text-foreground">
+                    Sandeep&#39;s Assistant
                   </span>
-                  <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
-                    <span className="text-xs text-muted-foreground font-medium">
-                      Online
-                    </span>
-                  </div>
+                    Online & Ready
+                  </span>
                 </div>
               </div>
-
-              {/* Chat Content */}
               <CardContent
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto p-3 bg-secondary/5 scroll-smooth"
+                className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth scrollbar-hide"
               >
-                <div className="flex flex-col gap-4">
-                  {/* Welcome Message */}
+                {/* Welcome Message */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex gap-3"
+                >
+                  <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
+                    <AvatarImage src="/profilePic.png" alt="AI" />
+                    <AvatarFallback className="text-[10px] bg-transparent">
+                      AI
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1 max-w-[85%]">
+                    <div className="bg-secondary/40 backdrop-blur-md border border-white/5 p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm leading-relaxed">
+                      <p>
+                        Hello! 👋 I'm here to answer questions about Sandeep's
+                        work, experience, and projects. Ask me anything!
+                      </p>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/60 ml-1 font-medium">
+                      {new Date().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Chat History */}
+                <AnimatePresence mode="popLayout">
+                  {chatHistory.map((chat, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className={`flex gap-3 ${chat.role === "user" ? "justify-end" : ""}`}
+                    >
+                      {chat.role === "assistant" && (
+                        <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
+                          <AvatarImage src="/profilePic.png" alt="AI" />
+                          <AvatarFallback className="text-[10px] bg-transparent">
+                            AI
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div
+                        className={`flex flex-col gap-1 max-w-[85%] ${chat.role === "user" ? "items-end" : ""}`}
+                      >
+                        <div
+                          className={`p-3.5 rounded-2xl shadow-sm text-sm overflow-hidden backdrop-blur-sm ${
+                            chat.role === "user"
+                              ? "bg-secondary/20 border border-white/10 rounded-tr-none shadow-primary/20"
+                              : "bg-secondary/40 border border-white/5 rounded-tl-none"
+                          }`}
+                        >
+                          {chat.role === "assistant" ? (
+                            <MarkdownRender content={chat.content} />
+                          ) : (
+                            <p className="whitespace-pre-wrap leading-relaxed">
+                              {chat.content}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {isLoading && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex gap-3"
                   >
-                    <Avatar className="h-8 w-8 border bg-background mt-1 shadow-sm">
+                    <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
                       <AvatarImage src="/profilePic.png" alt="AI" />
-                      <AvatarFallback>AI</AvatarFallback>
+                      <AvatarFallback className="text-[10px] bg-transparent">
+                        AI
+                      </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col gap-1 max-w-[85%]">
-                      <div className="bg-background border p-3 rounded-2xl rounded-tl-none shadow-sm text-sm">
-                        <p>
-                          Hello! I&#39;m Sandeep&#39;s Portfolio Assistant. How
-                          can I help you today?
-                        </p>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground/60 ml-1 font-medium">
-                        {new Date().toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
+                    <div className="bg-secondary/40 border border-white/5 p-4 rounded-2xl rounded-tl-none shadow-sm text-sm flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
                     </div>
                   </motion.div>
+                )}
 
-                  {/* Chat History */}
-                  <AnimatePresence mode="popLayout">
-                    {chatHistory.map((chat, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        className={`flex gap-3 ${chat.role === "user" ? "justify-end" : ""}`}
-                      >
-                        {chat.role === "assistant" && (
-                          <Avatar className="h-8 w-8 border bg-background mt-1 shadow-sm">
-                            <AvatarImage src="/profilePic.png" alt="AI" />
-                            <AvatarFallback>AI</AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div
-                          className={`flex flex-col gap-1 max-w-[85%] ${chat.role === "user" ? "items-end" : ""}`}
+                {/* Quick Questions (Only show if history is empty) */}
+                {chatHistory.length === 0 && (
+                  <div className="space-y-3 pt-2">
+                    <p className="text-[11px] uppercase tracking-wider text-muted-foreground/70 font-semibold ml-1 flex items-center gap-2">
+                      Suggested Topics
+                      <span className="h-px flex-1 bg-linear-to-r from-border/50 to-transparent"></span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        "What is your tech stack?",
+                        "Can you show me your resume?",
+                        "How can I hire you?",
+                        "Tell me about your projects",
+                      ].map((q, i) => (
+                        <motion.button
+                          key={i}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.2 + i * 0.05 }}
+                          onClick={(e) => handleSendMessage(e, q)}
+                          className="text-left text-xs bg-secondary/30 hover:bg-secondary/60 hover:text-primary border border-white/5 rounded-xl px-3 py-2 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer active:scale-95"
                         >
-                          <div
-                            className={`p-3 rounded-2xl shadow-sm text-sm overflow-hidden ${
-                              chat.role === "user"
-                                ? "bg-primary text-primary-foreground rounded-tr-none"
-                                : "bg-background border rounded-tl-none"
-                            }`}
-                          >
-                            {chat.role === "assistant" ? (
-                              <MarkdownRender content={chat.content} />
-                            ) : (
-                              <p className="whitespace-pre-wrap leading-relaxed">
-                                {chat.content}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  {isLoading && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex gap-3"
-                    >
-                      <Avatar className="h-8 w-8 border bg-background mt-1 shadow-sm">
-                        <AvatarImage src="/profilePic.png" alt="AI" />
-                        <AvatarFallback>AI</AvatarFallback>
-                      </Avatar>
-                      <div className="bg-background border p-4 rounded-2xl rounded-tl-none shadow-sm text-sm flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Quick Questions (Only show if history is empty) */}
-                  {chatHistory.length === 0 && (
-                    <div className="space-y-2 pt-1">
-                      <p className="text-xs text-muted-foreground font-medium ml-1 flex items-center gap-2">
-                        <span>✨ Suggested questions</span>
-                        <span className="h-px flex-1 bg-border/50"></span>
-                      </p>
-                      <div className="flex flex-col gap-2">
-                        {[
-                          "What technologies do you work with?",
-                          "Tell me about your recent projects",
-                          "How can I contact you for work?",
-                        ].map((q, i) => (
-                          <motion.button
-                            key={i}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            onClick={(e) => handleSendMessage(e, q)}
-                            className="text-left text-sm bg-background/50 hover:bg-accent border border-border/50 hover:border-border rounded-xl px-3 py-2.5 transition-all duration-200 shadow-sm hover:shadow w-fit max-w-full group"
-                          >
-                            <span className="group-hover:translate-x-0.5 transition-transform inline-block">
-                              {q}
-                            </span>
-                          </motion.button>
-                        ))}
-                      </div>
+                          {q}
+                        </motion.button>
+                      ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </CardContent>
 
               {/* Footer */}
-              <div className="p-3 bg-background/95 backdrop-blur border-t z-10">
+              <div className="p-3 bg-background/95 backdrop-blur-md border-t border-border z-10">
                 <form
                   onSubmit={(e) => handleSendMessage(e)}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 relative"
                 >
                   <Input
-                    placeholder="Ask me something..."
+                    placeholder="Type a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="flex-1 rounded-full bg-secondary/20 border-border/50 focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:border-primary/50 pl-4 py-2.5 shadow-inner transition-all hover:bg-secondary/40"
+                    className="flex-1 rounded-full bg-secondary text-foreground border-input focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-input pl-4 py-6 shadow-xs transition-all hover:bg-secondary/80 text-sm placeholder:text-muted-foreground"
                   />
-                  <Button
-                    type="submit"
-                    size="icon"
-                    className={`h-12 w-12 shrink-0 rounded-full shadow-md transition-all duration-300 ${message.trim() ? "bg-primary hover:bg-primary/90 scale-100" : "bg-muted text-muted-foreground scale-95"}`}
-                    disabled={isLoading || !message.trim()}
-                  >
-                    <Send
-                      className={`h-5 w-5 ${message.trim() ? "ml-0.5" : ""}`}
-                    />
-                    <span className="sr-only">Send</span>
-                  </Button>
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <Button
+                      type="submit"
+                      size="icon"
+                      className={`h-9 w-9 cursor-pointer shrink-0 rounded-full shadow-md transition-all duration-300 ${message.trim() ? "bg-primary text-primary-foreground hover:bg-primary/90 scale-100" : "bg-muted text-muted-foreground scale-90 opacity-70"}`}
+                      disabled={isLoading || !message.trim()}
+                    >
+                      <Send
+                        className={`h-4 w-4 ${message.trim() ? "ml-0.5" : ""}`}
+                      />
+                      <span className="sr-only">Send</span>
+                    </Button>
+                  </div>
                 </form>
               </div>
-            </Card>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <Button
+      <motion.button
         onClick={toggleChat}
-        size="icon"
-        className="h-14 w-14 rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 bg-foreground text-background z-50"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="h-14 w-14 rounded-full shadow-2xl hover:shadow-primary/40 transition-all duration-300 bg-black dark:bg-secondary text-white z-50 flex items-center justify-center cursor-pointer ring-2 ring-white/10"
       >
-        {isOpen ? (
-          <X className="h-6 w-6" />
-        ) : (
-          <MessageCircle className="h-6 w-6" />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          {isOpen ? (
+            <motion.div
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <X className="h-6 w-6" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MessageCircle className="h-6 w-6" />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <span className="sr-only">Toggle chat</span>
-      </Button>
+      </motion.button>
     </div>
   );
 }
