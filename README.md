@@ -31,6 +31,7 @@ A modern, high-performance full-stack portfolio website built to showcase projec
 - **📝 Rich Content**: Detailed project descriptions rendered using `@uiw/react-md-editor` with markdown support.
 - **📧 Contact Integration**: Fully functional contact form powered by **Resend** for direct email submissions.
 - **🔔 Real-time Notifications**: Interactive toast notifications using **Sonner**.
+- **🤖 AI Chat Assistant**: Intelligent chatbot powered by **Google Gemini** to answer questions about the portfolio.
 
 ### 🛡️ Admin Features
 
@@ -58,6 +59,7 @@ A modern, high-performance full-stack portfolio website built to showcase projec
 - **Database**: [MongoDB](https://www.mongodb.com/)
 - **ORM**: [Mongoose](https://mongoosejs.com/)
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **AI**: [Google Generative AI](https://ai.google.dev/)
 
 ### Tools & Services
 
@@ -124,6 +126,9 @@ RESEND_API_KEY="your_resend_api_key"
 
 # App
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+
+# Google Gemini AI
+GOOGLE_API_KEY="your_google_api_key"
 ```
 
 ### 4. Run the Development Server
@@ -154,4 +159,3 @@ Contributions are welcome! Please follow these steps:
 3.  Commit your changes (`git commit -m 'Add some feature'`).
 4.  Push to the branch (`git push origin feature/YourFeature`).
 5.  Open a Pull Request.
-
