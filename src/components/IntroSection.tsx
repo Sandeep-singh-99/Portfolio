@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FileText, Send } from "lucide-react";
 import Link from "next/link";
-import LeftSideBar from "./leftsidebar";
+import LeftSideBar from "./SocialMediaLinks";
 import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
 import dynamic from "next/dynamic";
 import {

@@ -30,7 +30,7 @@ const links = [
   },
 ];
 
-export default function LeftSideBar() {
+export default function SocialMediaLinks() {
   return (
     <div
       className="fixed z-50 flex items-center gap-4 md:px-3 md:py-5 px-3 py-3
