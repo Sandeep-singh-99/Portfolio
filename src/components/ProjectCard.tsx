@@ -1,9 +1,13 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Github, Globe, ArrowRight, Activity } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Github, Globe, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -65,26 +69,42 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             </h2>
 
             <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-              {liveLink && (
-                <a
-                  href={liveLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                >
-                  <Globe size={20} strokeWidth={1.5} />
-                </a>
-              )}
-              {githubLink && (
-                <a
-                  href={githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                >
-                  <Github size={20} strokeWidth={1.5} />
-                </a>
-              )}
+              <TooltipProvider>
+                {liveLink && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={liveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                      >
+                        <Globe size={20} strokeWidth={1.5} />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Live Preview</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                {githubLink && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={githubLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                      >
+                        <Github size={20} strokeWidth={1.5} />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Source Code</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </TooltipProvider>
             </div>
           </div>
 
