@@ -22,7 +22,7 @@ export function GlobalChatWidget() {
 
   const handleSendMessage = async (
     e: React.FormEvent,
-    msgOverride?: string
+    msgOverride?: string,
   ) => {
     e.preventDefault();
     const msgToSend = msgOverride || message;
@@ -79,7 +79,9 @@ export function GlobalChatWidget() {
   }, [chatHistory, isLoading]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div
+      className={`fixed z-50 flex flex-col items-end gap-2 ${isOpen ? "inset-0 sm:inset-auto sm:bottom-6 sm:right-6" : "bottom-6 right-6"}`}
+    >
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -87,31 +89,45 @@ export function GlobalChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.9, y: 20, filter: "blur(10px)" }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="mb-2"
+            className="mb-0 sm:mb-2 w-full h-full sm:w-auto sm:h-auto"
           >
-            <div className="w-[380px] sm:w-[450px] h-[600px] max-h-[80vh] shadow-2xl border border-white/10 rounded-2xl overflow-hidden flex flex-col bg-background/60 backdrop-blur-xl ring-1 ring-white/5">
+            <div className="w-full h-full sm:w-[450px] sm:h-[600px] sm:max-h-[80vh] shadow-2xl border-0 sm:border border-white/10 rounded-none sm:rounded-2xl overflow-hidden flex flex-col bg-background/95 sm:bg-background/60 backdrop-blur-xl ring-0 sm:ring-1 ring-white/5">
               {/* Header */}
-              <div className="bg-secondary border-b border-border/50 p-4 flex items-center gap-4 select-none">
-                <div className="relative">
-                  <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                    <AvatarImage src="/profilePic.png" alt="Sandeep" />
-                    <AvatarFallback>SS</AvatarFallback>
-                  </Avatar>
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background shadow-sm"></span>
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-semibold text-sm tracking-tight text-foreground">
-                    Sandeep&#39;s Assistant
-                  </span>
-                  <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              <div className="bg-secondary/50 border-b border-border/50 p-4 flex items-center justify-between select-none backdrop-blur-md">
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
+                      <AvatarImage src="/profilePic.png" alt="Sandeep" />
+                      <AvatarFallback>SS</AvatarFallback>
+                    </Avatar>
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background shadow-sm"></span>
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-sm tracking-tight text-foreground">
+                      Sandeep&#39;s Assistant
                     </span>
-                    Online & Ready
-                  </span>
+                    <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                      </span>
+                      Online & Ready
+                    </span>
+                  </div>
                 </div>
+
+                {/* Close Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full hover:bg-background/20 text-muted-foreground hover:text-foreground transition-colors sm:hidden"
+                  onClick={toggleChat}
+                >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close chat</span>
+                </Button>
               </div>
+
               <CardContent
                 ref={scrollRef}
                 className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth scrollbar-hide"
@@ -271,7 +287,7 @@ export function GlobalChatWidget() {
         onClick={toggleChat}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="h-14 w-14 rounded-full shadow-2xl hover:shadow-primary/40 transition-all duration-300 bg-black dark:bg-secondary text-white z-50 flex items-center justify-center cursor-pointer ring-2 ring-white/10"
+        className={`h-14 w-14 rounded-full shadow-2xl hover:shadow-primary/40 transition-all duration-300 bg-black dark:bg-secondary text-white z-50 flex items-center justify-center cursor-pointer ring-2 ring-white/10 ${isOpen ? "hidden sm:flex" : "flex"}`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {isOpen ? (

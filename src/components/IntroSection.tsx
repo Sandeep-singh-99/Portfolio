@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FileText, Send } from "lucide-react";
 import Link from "next/link";
-import LeftSideBar from "./SocialMediaLinks";
 import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
 import dynamic from "next/dynamic";
 import {
@@ -142,13 +141,8 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         </div>
       </motion.div>
 
-      {/* Socials */}
-      <div className="md:hidden block">
-        <LeftSideBar />
-      </div>
-
       <motion.div variants={item}>
-        <div className="hidden md:flex flex-row gap-3">
+        <div className="flex flex-row gap-3">
           {links.map((link, index) => (
             <Tooltip key={index}>
               <TooltipTrigger asChild>
