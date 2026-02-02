@@ -51,7 +51,7 @@ export default async function BlogPageById({
 
   return (
     <>
-      <div className="min-h-screen pt-20 pb-32">
+      <div className="min-h-screen pt-5 pb-10">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           {/* Hero Image */}
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 shadow-2xl">
