@@ -27,7 +27,6 @@ export async function PUT(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error reordering certificates:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

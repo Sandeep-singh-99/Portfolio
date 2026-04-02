@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
         revalidatePath("/");
         return NextResponse.json( { data: newSkill }, { status: 201 });
     } catch (error) {
-        console.error("Error creating skill:", error);
         return NextResponse.json({ error: "Failed to create skill" }, { status: 500 });
     }
 }

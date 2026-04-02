@@ -51,18 +51,15 @@ export async function GET(
     await ConnectDB();
     const params = await props.params;
     const { id } = params;
-    console.log("Fetching project with ID:", id);
 
     const projectId = await Project.findById(id);
 
     if (!projectId) {
-      console.log("Project not found for ID:", id);
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
     return NextResponse.json({ data: projectId, status: 200 });
   } catch (error) {
-    console.error("Error fetching project:", error);
     return NextResponse.json(
       { error: "Failed to fetch project" },
       { status: 500 }

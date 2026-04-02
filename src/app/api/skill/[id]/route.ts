@@ -33,7 +33,6 @@ export async function DELETE(
     return NextResponse.json({ message: "Skill deleted successfully" }, { status: 200 });
 
   } catch (error) {
-    console.error("Error deleting skill:", error);
     return NextResponse.json(
       { error: "Failed to delete skill" },
       { status: 500 }

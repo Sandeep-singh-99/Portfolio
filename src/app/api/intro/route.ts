@@ -27,51 +27,50 @@ async function uploadToCloudinary(file: File, type: "image" | "auto"): Promise<[
 
 
 export async function POST(req: NextRequest) {
-    try {
-        await ConnectDB();
+  try {
+    await ConnectDB();
 
-        const existingIntro = await Intro.findOne({});
-        if (existingIntro) {
-            return NextResponse.json({ error: "Intro already exists" }, { status: 400 });
-        }
-
-        const formData = await req.formData();
-        const name = formData.get("name") as string;
-        const techStack = formData.get("techStack") as string;
-        const desc = formData.get("desc") as string;
-        const image = formData.get("image") as File;
-        const file = formData.get("file") as File;
-
-        if (!name || !techStack || !desc || !image || !file) {
-            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
-        }
-
-        if (image.size > 5 * 1024 * 1024) {
-            return NextResponse.json({ error: "Image size exceeds 5MB" }, { status: 400 });
-        }
-
-        if (file.size > 10 * 1024 * 1024) {
-            return NextResponse.json({ error: "File size exceeds 10MB" }, { status: 400 });
-        }
-
-        const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");
-        const [fileUrl, filePublicId] = await uploadToCloudinary(file, "auto");
-
-        const newIntro = await Intro.create({
-            name,
-            techStack: techStack.split(",").map((t) => t.trim()),
-            desc,
-            image: imageUrl,
-            file: fileUrl,
-            imagePublicId,
-            filePublicId,
-        })
-
-        revalidatePath("/admin-panel/intro");
-        revalidatePath("/");
-        return NextResponse.json({ data: newIntro }, { status: 200 });
-    } catch (error) {
-        console.error("Error creating intro:", error);
-        return NextResponse.json({ error: "Failed to create intro" }, { status: 500 });
+    const existingIntro = await Intro.findOne({});
+    if (existingIntro) {
+      return NextResponse.json({ error: "Intro already exists" }, { status: 400 });
     }
+
+    const formData = await req.formData();
+    const name = formData.get("name") as string;
+    const techStack = formData.get("techStack") as string;
+    const desc = formData.get("desc") as string;
+    const image = formData.get("image") as File;
+    const file = formData.get("file") as File;
+
+    if (!name || !techStack || !desc || !image || !file) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
+
+    if (image.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "Image size exceeds 5MB" }, { status: 400 });
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: "File size exceeds 10MB" }, { status: 400 });
+    }
+
+    const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");
+    const [fileUrl, filePublicId] = await uploadToCloudinary(file, "auto");
+
+    const newIntro = await Intro.create({
+      name,
+      techStack: techStack.split(",").map((t) => t.trim()),
+      desc,
+      image: imageUrl,
+      file: fileUrl,
+      imagePublicId,
+      filePublicId,
+    })
+
+    revalidatePath("/admin-panel/intro");
+    revalidatePath("/");
+    return NextResponse.json({ data: newIntro }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to create intro" }, { status: 500 });
+  }
 }

@@ -75,7 +75,6 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting intro:", error);
     return NextResponse.json(
       { error: "Failed to delete intro" },
       { status: 500 }
@@ -176,7 +175,6 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating intro:", error);
     return NextResponse.json(
       { error: "Failed to update intro" },
       { status: 500 }

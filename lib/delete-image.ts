@@ -12,11 +12,9 @@ export const DeleteImage = async (publicId: string) => {
       if (error) {
         return reject(error.message);
       }
-       if (result?.result === "ok" || result?.result === "not found") {
+      if (result?.result === "ok" || result?.result === "not found") {
         return resolve("ok");
       }
-
-      console.error("Unexpected Cloudinary delete result:", result);
       return resolve(result);
     });
   });

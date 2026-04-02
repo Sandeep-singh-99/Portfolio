@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({data: newAbout}, { status: 201 });
 
     } catch (error) {
-        console.error("Error in POST /api/about:", error);
         return NextResponse.json({ error: "Failed to create about section" }, { status: 500 });
     }
 }
