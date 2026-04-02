@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,73 +11,134 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MarkdownRender } from "@/components/MarkdownRender";
 
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export function GlobalChatWidget() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
-  const [chatHistory, setChatHistory] = React.useState<
-    { role: "user" | "assistant"; content: string }[]
-  >([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [chatHistory, setChatHistory] = React.useState<ChatMessage[]>([]);
+  const [isStreaming, setIsStreaming] = React.useState(false);
+  const [sessionId, setSessionId] = React.useState<string>("");
 
-  const toggleChat = () => setIsOpen((prev) => !prev);
+  // AbortController ref — used to cancel in-flight streams
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
-  const handleSendMessage = async (
-    e: React.FormEvent,
-    msgOverride?: string,
-  ) => {
-    e.preventDefault();
-    const msgToSend = msgOverride || message;
-    if (!msgToSend.trim()) return;
-
-    // Add user message to history
-    setChatHistory((prev) => [...prev, { role: "user", content: msgToSend }]);
-    setMessage("");
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msgToSend }),
-      });
-
-      const data = await response.json();
-
-      if (data.response) {
-        setChatHistory((prev) => [
-          ...prev,
-          { role: "assistant", content: data.response },
-        ]);
-      } else {
-        setChatHistory((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "Sorry, I encountered an error. Please try again.",
-          },
-        ]);
-      }
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      setChatHistory((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Sorry, something went wrong. Please check your connection.",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Auto-scroll to bottom of chat
+  // Scroll container ref
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Initialize session ID from localStorage
+  React.useEffect(() => {
+    let id = localStorage.getItem("portfolio_chat_session");
+    if (!id) {
+      id = uuidv4();
+      localStorage.setItem("portfolio_chat_session", id);
+    }
+    setSessionId(id);
+  }, []);
+
+  // Auto-scroll to bottom whenever chat updates
   React.useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [chatHistory, isLoading]);
+  }, [chatHistory, isStreaming]);
+
+  const toggleChat = () => setIsOpen((prev) => !prev);
+
+  // ─── Cancel any in-flight stream ──────────────────────────────────────
+  const cancelStream = React.useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+  }, []);
+
+  // ─── Send message handler ────────────────────────────────────────────
+  const handleSendMessage = React.useCallback(
+    async (e: React.FormEvent, msgOverride?: string) => {
+      e.preventDefault();
+      const msgToSend = (msgOverride || message).trim();
+      if (!msgToSend || !sessionId) return;
+
+      // If a stream is already running, abort it first
+      cancelStream();
+
+      // Add user message + empty assistant placeholder in one atomic update
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "user", content: msgToSend },
+        { role: "assistant", content: "" },
+      ]);
+      setMessage("");
+      setIsStreaming(true);
+
+      // Create a new AbortController for this request
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msgToSend, sessionId }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error("No reader available");
+
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+
+          // Append chunk to the LAST assistant message in history
+          setChatHistory((prev) => {
+            const updated = [...prev];
+            const lastIdx = updated.length - 1;
+            if (lastIdx >= 0 && updated[lastIdx].role === "assistant") {
+              updated[lastIdx] = {
+                ...updated[lastIdx],
+                content: updated[lastIdx].content + chunk,
+              };
+            }
+            return updated;
+          });
+        }
+      } catch (error: any) {
+        if (error.name === "AbortError") {
+          // Stream was intentionally cancelled — don't show error
+          return;
+        }
+        console.error("Chat error:", error);
+        setChatHistory((prev) => {
+          const updated = [...prev];
+          const lastIdx = updated.length - 1;
+          if (lastIdx >= 0 && updated[lastIdx].role === "assistant" && !updated[lastIdx].content) {
+            updated[lastIdx] = {
+              ...updated[lastIdx],
+              content: "Sorry, something went wrong. Please try again.",
+            };
+          }
+          return updated;
+        });
+      } finally {
+        setIsStreaming(false);
+        abortControllerRef.current = null;
+      }
+    },
+    [message, sessionId, cancelStream]
+  );
 
   return (
     <div
@@ -111,7 +173,7 @@ export function GlobalChatWidget() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                       </span>
-                      Online & Ready
+                      {isStreaming ? "Typing..." : "Online & Ready"}
                     </span>
                   </div>
                 </div>
@@ -148,7 +210,7 @@ export function GlobalChatWidget() {
                   <div className="flex flex-col gap-1 max-w-[85%]">
                     <div className="bg-secondary/40 backdrop-blur-md border border-white/5 p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm leading-relaxed">
                       <p>
-                        Hello! 👋 I'm here to answer questions about Sandeep's
+                        Hello! 👋 I&apos;m here to answer questions about Sandeep&apos;s
                         work, experience, and projects. Ask me anything!
                       </p>
                     </div>
@@ -163,63 +225,78 @@ export function GlobalChatWidget() {
 
                 {/* Chat History */}
                 <AnimatePresence mode="popLayout">
-                  {chatHistory.map((chat, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      className={`flex gap-3 ${chat.role === "user" ? "justify-end" : ""}`}
-                    >
-                      {chat.role === "assistant" && (
-                        <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
-                          <AvatarImage src="/profilePic.png" alt="AI" />
-                          <AvatarFallback className="text-[10px] bg-transparent">
-                            AI
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      <div
-                        className={`flex flex-col gap-1 max-w-[85%] ${chat.role === "user" ? "items-end" : ""}`}
+                  {chatHistory.map((chat, index) => {
+                    // Don't render an empty assistant placeholder while streaming dots are shown
+                    const isActiveStreamBubble =
+                      isStreaming &&
+                      chat.role === "assistant" &&
+                      index === chatHistory.length - 1 &&
+                      chat.content === "";
+
+                    if (isActiveStreamBubble) return null;
+
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        className={`flex gap-3 ${chat.role === "user" ? "justify-end" : ""}`}
                       >
+                        {chat.role === "assistant" && (
+                          <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
+                            <AvatarImage src="/profilePic.png" alt="AI" />
+                            <AvatarFallback className="text-[10px] bg-transparent">
+                              AI
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                         <div
-                          className={`p-3.5 rounded-2xl shadow-sm text-sm overflow-hidden backdrop-blur-sm ${
-                            chat.role === "user"
-                              ? "bg-secondary/20 border border-white/10 rounded-tr-none shadow-primary/20"
-                              : "bg-secondary/40 border border-white/5 rounded-tl-none"
-                          }`}
+                          className={`flex flex-col gap-1 max-w-[85%] ${chat.role === "user" ? "items-end" : ""}`}
                         >
-                          {chat.role === "assistant" ? (
-                            <MarkdownRender content={chat.content} />
-                          ) : (
-                            <p className="whitespace-pre-wrap leading-relaxed">
-                              {chat.content}
-                            </p>
-                          )}
+                          <div
+                            className={`p-3.5 rounded-2xl shadow-sm text-sm overflow-hidden backdrop-blur-sm ${
+                              chat.role === "user"
+                                ? "bg-secondary/20 border border-white/10 rounded-tr-none shadow-primary/20"
+                                : "bg-secondary/40 border border-white/5 rounded-tl-none"
+                            }`}
+                          >
+                            {chat.role === "assistant" ? (
+                              <MarkdownRender content={chat.content} />
+                            ) : (
+                              <p className="whitespace-pre-wrap leading-relaxed">
+                                {chat.content}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </AnimatePresence>
 
-                {isLoading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-3"
-                  >
-                    <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
-                      <AvatarImage src="/profilePic.png" alt="AI" />
-                      <AvatarFallback className="text-[10px] bg-transparent">
-                        AI
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="bg-secondary/40 border border-white/5 p-4 rounded-2xl rounded-tl-none shadow-sm text-sm flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
-                    </div>
-                  </motion.div>
-                )}
+                {/* Typing indicator — shown only while streaming AND the bubble is still empty */}
+                {isStreaming &&
+                  chatHistory.length > 0 &&
+                  chatHistory[chatHistory.length - 1].role === "assistant" &&
+                  chatHistory[chatHistory.length - 1].content === "" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex gap-3"
+                    >
+                      <Avatar className="h-8 w-8 border border-white/10 bg-linear-to-br from-primary/10 to-purple-500/10 mt-1 shadow-sm">
+                        <AvatarImage src="/profilePic.png" alt="AI" />
+                        <AvatarFallback className="text-[10px] bg-transparent">
+                          AI
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="bg-secondary/40 border border-white/5 p-4 rounded-2xl rounded-tl-none shadow-sm text-sm flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                        <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
+                      </div>
+                    </motion.div>
+                  )}
 
                 {/* Quick Questions (Only show if history is empty) */}
                 {chatHistory.length === 0 && (
@@ -231,9 +308,9 @@ export function GlobalChatWidget() {
                     <div className="flex flex-wrap gap-2">
                       {[
                         "What is your tech stack?",
-                        "Can you show me your resume?",
-                        "How can I hire you?",
                         "Tell me about your projects",
+                        "What skills do you have?",
+                        "How can I contact you?",
                       ].map((q, i) => (
                         <motion.button
                           key={i}
@@ -263,12 +340,25 @@ export function GlobalChatWidget() {
                     onChange={(e) => setMessage(e.target.value)}
                     className="flex-1 rounded-full bg-secondary text-foreground border-input focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-input pl-4 py-6 shadow-xs transition-all hover:bg-secondary/80 text-sm placeholder:text-muted-foreground"
                   />
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    {/* Stop button — visible while streaming */}
+                    {isStreaming && (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="h-9 w-9 rounded-full text-destructive hover:bg-destructive/10"
+                        onClick={cancelStream}
+                      >
+                        <Square className="h-4 w-4" />
+                        <span className="sr-only">Stop generating</span>
+                      </Button>
+                    )}
                     <Button
                       type="submit"
                       size="icon"
                       className={`h-9 w-9 cursor-pointer shrink-0 rounded-full shadow-md transition-all duration-300 ${message.trim() ? "bg-primary text-primary-foreground hover:bg-primary/90 scale-100" : "bg-muted text-muted-foreground scale-90 opacity-70"}`}
-                      disabled={isLoading || !message.trim()}
+                      disabled={!message.trim()}
                     >
                       <Send
                         className={`h-4 w-4 ${message.trim() ? "ml-0.5" : ""}`}

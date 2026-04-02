@@ -1,0 +1,61 @@
+﻿Connecting to Database...
+Fetching data from MongoDB...
+Generated 35 documents. Connecting to Pinecone...
+Upserting documents to Pinecone...
+Defaulting to 'auto' which will select the first provider available for the model, sorted by the user's order in https://hf.co/settings/inference-providers.
+Auto selected provider: hf-inference
+node.exe : PineconeArgumentError: 
+Must pass in at least 1 record to 
+upsert.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpec 
+   ified: (PineconeArgumen...cord to  
+   upsert.:String) [], RemoteExcept   
+ ion
+    + FullyQualifiedErrorId : NativeC 
+   ommandError
+ 
+    at UpsertCommand.validator 
+(C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@pineco
+ne-database\pinecone\src\data\vectors\
+upsert.ts:33:13)
+    at UpsertCommand.run 
+(C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@pineco
+ne-database\pinecone\src\data\vectors\
+upsert.ts:52:10)
+    at Index.upsert (C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@pineco
+ne-database\pinecone\src\data\index.ts
+:530:38)
+    at <anonymous> (C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@langch
+ain\pinecone\src\vectorstores.ts:344:2
+7)
+    at pRetry (C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@langch
+ain\core\src\utils\async_caller.ts:154
+:13)
+    at Object.pRetry 
+(C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\@langch
+ain\core\src\utils\p-retry\index.js:23
+6:28)
+    at async run (C:\Users\Sandeep 
+Singh\Documents\Coding\Web dev\major_p
+rojects\Portfolio\node_modules\p-queue
+\dist\index.js:163:29) {
+  cause: undefined
+}

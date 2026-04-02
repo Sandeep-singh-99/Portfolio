@@ -1,106 +1,172 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ConnectDB } from "../../../../lib/db";
 import Project from "../../../../models/project.model";
 import Skill from "../../../../models/skill.model";
 import About from "../../../../models/about.model";
 import Intro from "../../../../models/intro.model";
 import Certificate from "../../../../models/certificate.model";
-import User from "../../../../models/user.model";
+import { getVectorStore } from "../../../../lib/vectorStore";
+import { saveMessage, getChatHistory } from "../../../../lib/memory";
+import { systemPromptTemplate } from "../../../../lib/prompt";
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+// ─── Helper: Build structured context from DB + Pinecone ───────────────────
+async function buildRetrievedContext(message: string): Promise<string> {
+  await ConnectDB();
 
+  // Fetch lightweight DB summaries in parallel (only the fields the AI needs)
+  const [projects, skills, about, intro, certificates] = await Promise.all([
+    Project.find({}).select("projectName projectDesc projectTechStack githubLink liveLink").lean(),
+    Skill.find({}).select("skillName skillCategory").lean(),
+    About.findOne({}).select("desc").lean() as any,
+    Intro.findOne({}).select("name techStack desc").lean() as any,
+    Certificate.find({}).select("imageUrl").lean(),
+  ]);
+
+  // ── Format each section with explicit "None" when empty ──
+  const sections: string[] = [];
+
+  // Intro
+  if (intro) {
+    sections.push(
+      `## Introduction\n- Name: ${intro.name}\n- Tech Stack: ${(intro as any).techStack?.join(", ") || "N/A"}\n- Bio: ${intro.desc}`
+    );
+  } else {
+    sections.push("## Introduction\nNone");
+  }
+
+  // About
+  if (about) {
+    sections.push(`## About\n${about.desc}`);
+  } else {
+    sections.push("## About\nNone");
+  }
+
+  // Projects
+  if (projects.length > 0) {
+    const projectLines = projects.map((p: any) =>
+      `- **${p.projectName}**: ${p.projectDesc}\n  Tech: ${p.projectTechStack?.join(", ") || "N/A"} | GitHub: ${p.githubLink || "N/A"} | Live: ${p.liveLink || "N/A"}`
+    );
+    sections.push(`## Projects (${projects.length} total)\n${projectLines.join("\n")}`);
+  } else {
+    sections.push("## Projects\nNone");
+  }
+
+  // Skills
+  if (skills.length > 0) {
+    const grouped: Record<string, string[]> = {};
+    skills.forEach((s: any) => {
+      const cat = s.skillCategory || "Other";
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(s.skillName);
+    });
+    const skillLines = Object.entries(grouped).map(
+      ([cat, names]) => `- **${cat}**: ${names.join(", ")}`
+    );
+    sections.push(`## Skills\n${skillLines.join("\n")}`);
+  } else {
+    sections.push("## Skills\nNone");
+  }
+
+  // Certificates
+  if (certificates.length > 0) {
+    sections.push(`## Certificates\n${certificates.length} certificate(s) available in the portfolio.`);
+  } else {
+    sections.push("## Certificates\nNone");
+  }
+
+  let context = sections.join("\n\n");
+
+  // ── Augment with Pinecone RAG results (if available) ──
+  try {
+    const vectorStore = await getVectorStore();
+    const retriever = vectorStore.asRetriever({ k: 3 });
+    const docs = await retriever.invoke(message);
+    if (docs.length > 0) {
+      const ragContent = docs.map((doc: any) => doc.pageContent).join("\n\n");
+      context += `\n\n## Additional Relevant Details (from vector search)\n${ragContent}`;
+    }
+  } catch (e: any) {
+    // Pinecone may not be initialized yet — that's okay, we still have DB context
+    console.warn("Pinecone retrieval skipped:", e.message);
+  }
+
+  return context;
+}
+
+// ─── Main POST handler ────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
-    const { message } = await req.json();
+    const { message, sessionId } = await req.json();
 
-    if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    await ConnectDB();
+    if (!sessionId || typeof sessionId !== "string") {
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
+    }
 
-    // Fetch all context data in parallel
-    const [projects, skills, about, intro, certificates, user] =
-      await Promise.all([
-        Project.find({}).lean(),
-        Skill.find({}).lean(),
-        About.findOne({}).lean(),
-        Intro.findOne({}).lean(),
-        Certificate.find({}).lean(),
-        User.findOne({}).lean(),
-      ]);
+    // Basic prompt injection protection: limit length
+    const sanitizedMessage = message.trim().slice(0, 1000);
 
-    // Construct the system prompt with context
-    const context = `You are Sandeep Singh's professional portfolio assistant. Your goal is to represent Sandeep and answer questions about his work, skills, and experience with enthusiasm and expertise.
-    
-    Here is the context about Sandeep:
+    // Save user message
+    await saveMessage(sessionId, "user", sanitizedMessage);
 
-    **Introduction:**
-    ${JSON.stringify(intro, null, 2)}
+    // Initialize Gemini
+    const model = new ChatGoogleGenerativeAI({
+      model: "gemini-2.5-flash",
+      maxOutputTokens: 800,
+      apiKey: process.env["GOOGLE_API_KEY"] || "",
+    });
 
-    **About Me:**
-    ${JSON.stringify(about, null, 2)}
+    // Fetch conversation history (last 10 messages)
+    const history = await getChatHistory(sessionId, 10);
+    const historyString = history.length > 0
+      ? history.map((h) => `${h.role}: ${h.content}`).join("\n")
+      : "No previous conversation.";
 
-    **Skills:**
-    ${JSON.stringify(skills, null, 2)}
+    // Build the full context from DB + Pinecone
+    const retrievedContext = await buildRetrievedContext(sanitizedMessage);
 
-    **Projects:**
-    ${JSON.stringify(projects, null, 2)}
+    // Chain: prompt → model → string output
+    const chain = systemPromptTemplate.pipe(model).pipe(new StringOutputParser());
 
-    **Certificates:**
-    ${JSON.stringify(certificates, null, 2)}
+    // Stream the response
+    const stream = await chain.stream({
+      retrieved_context: retrievedContext,
+      chat_history: historyString,
+      message: sanitizedMessage,
+    });
 
-    **Contact/User Info:**
-    ${JSON.stringify(user, null, 2)}
+    // Build a ReadableStream that also captures the full response for DB storage
+    let fullResponse = "";
+    const encoder = new TextEncoder();
 
-    **Social Media & Links:**
-    - GitHub: https://github.com/Sandeep-singh-99
-    - LinkedIn: https://www.linkedin.com/in/sandeep-singh-7a0219320
-    - Email: sandeep.necoder@gmail.com
-    - Twitter: https://x.com/SinghNecoder
-    - Instagram: https://www.instagram.com/sandeep.necoder
-
-    **Instructions:**
-    - **Tone**: Friendly, professional, and confident. Avoid robotic or overly formal language.
-    - **Directness**: Do NOT start responses with "As an AI", "I am an AI", or similar meta-statements. Jump straight into the answer.
-    - **Perspective**: If the user asks about "your" skills, projects, or experience, assume they are asking about **Sandeep's**. Answer as if you are presenting his profile.
-    - **Formatting**: Use Markdown (bullet points, bold text) to make answers easy to read.
-    - **Unknowns**: If asked something completely unrelated to the portfolio/Sandeep, politely bring the conversation back to his professional profile.
-    - **Conciseness**: Keep answers short and punchy unless asked for details.
-    `;
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{ text: context }],
-        },
-        {
-          role: "model",
-          parts: [
-            {
-              text: "Understood. I am ready to answer questions about Sandeep Singh based on the provided context.",
-            },
-          ],
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: 500,
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            fullResponse += chunk;
+            controller.enqueue(encoder.encode(chunk));
+          }
+          // Save completed assistant response to DB (fire-and-forget)
+          saveMessage(sessionId, "assistant", fullResponse).catch(console.error);
+          controller.close();
+        } catch (e) {
+          controller.error(e);
+        }
       },
     });
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
-
-    return NextResponse.json({ response: text });
+    return new Response(readable, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-store",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
   } catch (error) {
     console.error("Chat API Error:", error);
     return NextResponse.json(
