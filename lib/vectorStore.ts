@@ -20,7 +20,7 @@ export const getVectorStore = async () => {
 export const retrieveContext = async (query:  string) => {
   try {
     const store = await getVectorStore();
-    const retriever = store.asRetriever({k: 4});
+    const retriever = store.asRetriever({k: 6});
 
     const docs = await retriever.invoke(query);
     
