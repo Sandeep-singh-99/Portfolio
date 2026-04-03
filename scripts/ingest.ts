@@ -1,77 +1,121 @@
-import { loadEnvConfig } from "@next/env";
+import mongoose from "mongoose";
+import "dotenv/config";
 import { Document } from "@langchain/core/documents";
+import { pinecone, indexName } from "../lib/pinecone";
+import { embeddings } from "../lib/embeddings";
+import About, { IAbout } from "../models/about.model";
+import Project, { IProject } from "../models/project.model";
+import Skill, { ISkill } from "../models/skill.model";
+import Intro, { IIntro } from "../models/intro.model";
+import { ConnectDB } from "../lib/db";
 
-const ingestData = async () => {
-  try {
-    loadEnvConfig(process.cwd());
-    const { ConnectDB } = await import("../lib/db");
-    const Project = (await import("../models/project.model")).default;
-    const Skill = (await import("../models/skill.model")).default;
-    const About = (await import("../models/about.model")).default;
-    const Intro = (await import("../models/intro.model")).default;
-    const { getVectorStore } = await import("../lib/vectorStore");
-    console.log("Connecting to Database...");
-    await ConnectDB();
-    
-    console.log("Fetching data from MongoDB...");
-    const [projects, skills, about, intro] = await Promise.all([
-      Project.find({}).lean(),
-      Skill.find({}).lean(),
-      About.findOne({}).lean(),
-      Intro.findOne({}).lean(),
+
+// ---------------------------
+// Pinecone initialization helper
+// ---------------------------
+async function initPinecone() {
+  console.log("Connected to Pinecone...");
+  return pinecone.Index(indexName);
+}
+
+// ---------------------------
+// Main ingestion function
+// ---------------------------
+async function ingest() {
+  await ConnectDB();
+  const index = await initPinecone();
+
+  const documents: Document[] = [];
+
+  // ---------------------------
+  // Fetch and process Projects
+  // ---------------------------
+  const projects = (await Project.find().sort({ priority: -1 }).lean()) as unknown as IProject[];
+  projects.forEach((proj) => {
+    const content = `
+                  Project: ${proj.projectName || "Untitled"}
+                  Description: ${proj.projectDesc || "No description"}
+                  Sub Description: ${proj.projectSubDesc || "N/A"}
+                  Tech Stack: ${proj.projectTechStack?.join(", ") || "N/A"}
+                  GitHub: ${proj.githubLink || "N/A"}
+                  Live: ${proj.liveLink || "N/A"}
+                `;
+    documents.push(
+      new Document({
+        pageContent: content.trim(),
+        metadata: { type: "project", id: proj._id?.toString() },
+      })
+    );
+  });
+
+  // ---------------------------
+  // Fetch and process Skills
+  // ---------------------------
+  const skills = (await Skill.find().sort({ priority: -1 }).lean()) as unknown as ISkill[];
+  skills.forEach((skill) => {
+    const content = `Skill: ${skill.skillName} | Category: ${skill.skillCategory}`;
+    documents.push(
+      new Document({
+        pageContent: content.trim(),
+        metadata: { type: "skill", id: skill._id?.toString() },
+      })
+    );
+  });
+
+  // ---------------------------
+  // Fetch and process Intro
+  // ---------------------------
+  const intros = (await Intro.find().lean()) as unknown as IIntro[];
+  intros.forEach((intro) => {
+    const content = `
+Intro: ${intro.name}
+Description: ${intro.desc}
+Tech Stack: ${intro.techStack?.join(", ") || "N/A"}
+Image: ${intro.image}
+File: ${intro.file}
+`;
+    documents.push(
+      new Document({
+        pageContent: content.trim(),
+        metadata: { type: "intro", id: intro._id?.toString() },
+      })
+    );
+  });
+
+  // ---------------------------
+  // Fetch and process About
+  // ---------------------------
+  const abouts = (await About.find().lean()) as unknown as IAbout[];
+  abouts.forEach((about) => {
+    const content = `About: ${about.desc}`;
+    documents.push(
+      new Document({
+        pageContent: content.trim(),
+        metadata: { type: "about", id: about._id?.toString() },
+      })
+    );
+  });
+
+  console.log(`Total documents to upsert: ${documents.length}`);
+
+  // ---------------------------
+  // Upsert to Pinecone
+  // ---------------------------
+  for (const doc of documents) {
+    const vector = await embeddings.embedQuery(doc.pageContent);
+    await index.upsert([
+      {
+        id: doc.metadata.id!,
+        values: vector,
+        metadata: doc.metadata,
+      },
     ]);
-
-    const documents: Document[] = [];
-
-    // Format Projects
-    if (projects && Array.isArray(projects)) {
-        projects.forEach((proj: any) => {
-          documents.push(new Document({
-            pageContent: `Project Title: ${proj.title || ''}\nDescription: ${proj.description || ''}\nTech Stack: ${proj.techStack ? proj.techStack.join(", ") : ''}`,
-            metadata: { type: "project", id: proj._id.toString(), title: proj.title || "Untitled" }
-          }));
-        });
-    }
-
-    // Format Skills
-    if (skills && Array.isArray(skills)) {
-        skills.forEach((skill: any) => {
-          const defaultPageContent = skill.name ? `Skill: ${skill.name}` : `Skill Data: ${JSON.stringify(skill)}`;
-          documents.push(new Document({
-            pageContent: defaultPageContent,
-            metadata: { type: "skill", id: skill._id.toString() }
-          }));
-        });
-    }
-
-    // Format About
-    if (about) {
-      documents.push(new Document({
-        pageContent: `About Sandeep: ${JSON.stringify(about)}`,
-        metadata: { type: "about" }
-      }));
-    }
-
-    // Format Intro
-    if (intro) {
-      documents.push(new Document({
-        pageContent: `Introduction: ${JSON.stringify(intro)}`,
-        metadata: { type: "intro" }
-      }));
-    }
-
-    console.log(`Generated ${documents.length} documents. Connecting to Pinecone...`);
-    const vectorStore = await getVectorStore();
-    
-    console.log("Upserting documents to Pinecone...");
-    await vectorStore.addDocuments(documents);
-    
-    console.log("Ingestion complete!");
-    process.exit(0);
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
   }
-};
 
-ingestData();
+  console.log("Ingestion complete!");
+  await mongoose.disconnect();
+}
+
+ingest().catch((err) => {
+  console.error("Ingestion failed:", err);
+});
