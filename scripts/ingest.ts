@@ -1,29 +1,21 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 import { Document } from "@langchain/core/documents";
-import { pinecone, indexName } from "../lib/pinecone";
 import { embeddings } from "../lib/embeddings";
 import About, { IAbout } from "../models/about.model";
 import Project, { IProject } from "../models/project.model";
 import Skill, { ISkill } from "../models/skill.model";
 import Intro, { IIntro } from "../models/intro.model";
 import { ConnectDB } from "../lib/db";
-
-
-// ---------------------------
-// Pinecone initialization helper
-// ---------------------------
-async function initPinecone() {
-  console.log("Connected to Pinecone...");
-  return pinecone.Index(indexName);
-}
+import { PineconeStore } from "@langchain/pinecone";
+import { pinecone, indexName } from "../lib/pinecone";
 
 // ---------------------------
 // Main ingestion function
 // ---------------------------
 async function ingest() {
   await ConnectDB();
-  const index = await initPinecone();
+  console.log("Connected to MongoDB...");
 
   const documents: Document[] = [];
 
@@ -33,17 +25,17 @@ async function ingest() {
   const projects = (await Project.find().sort({ priority: -1 }).lean()) as unknown as IProject[];
   projects.forEach((proj) => {
     const content = `
-                  Project: ${proj.projectName || "Untitled"}
-                  Description: ${proj.projectDesc || "No description"}
-                  Sub Description: ${proj.projectSubDesc || "N/A"}
-                  Tech Stack: ${proj.projectTechStack?.join(", ") || "N/A"}
-                  GitHub: ${proj.githubLink || "N/A"}
-                  Live: ${proj.liveLink || "N/A"}
-                `;
+Project: ${proj.projectName || "Untitled"}
+Description: ${proj.projectDesc || "No description"}
+Sub Description: ${proj.projectSubDesc || "N/A"}
+Tech Stack: ${proj.projectTechStack?.join(", ") || "N/A"}
+GitHub: ${proj.githubLink || "N/A"}
+Live: ${proj.liveLink || "N/A"}
+`.trim();
     documents.push(
       new Document({
-        pageContent: content.trim(),
-        metadata: { type: "project", id: proj._id?.toString() },
+        pageContent: content,
+        metadata: { type: "project", id: proj._id?.toString() || "" },
       })
     );
   });
@@ -56,8 +48,8 @@ async function ingest() {
     const content = `Skill: ${skill.skillName} | Category: ${skill.skillCategory}`;
     documents.push(
       new Document({
-        pageContent: content.trim(),
-        metadata: { type: "skill", id: skill._id?.toString() },
+        pageContent: content,
+        metadata: { type: "skill", id: skill._id?.toString() || "" },
       })
     );
   });
@@ -73,11 +65,11 @@ Description: ${intro.desc}
 Tech Stack: ${intro.techStack?.join(", ") || "N/A"}
 Image: ${intro.image}
 File: ${intro.file}
-`;
+`.trim();
     documents.push(
       new Document({
-        pageContent: content.trim(),
-        metadata: { type: "intro", id: intro._id?.toString() },
+        pageContent: content,
+        metadata: { type: "intro", id: intro._id?.toString() || "" },
       })
     );
   });
@@ -90,8 +82,8 @@ File: ${intro.file}
     const content = `About: ${about.desc}`;
     documents.push(
       new Document({
-        pageContent: content.trim(),
-        metadata: { type: "about", id: about._id?.toString() },
+        pageContent: content,
+        metadata: { type: "about", id: about._id?.toString() || "" },
       })
     );
   });
@@ -99,18 +91,18 @@ File: ${intro.file}
   console.log(`Total documents to upsert: ${documents.length}`);
 
   // ---------------------------
-  // Upsert to Pinecone
+  // Upsert to Pinecone via PineconeStore
+  // This stores pageContent in the metadata "text" field
+  // so PineconeStore retriever can reconstruct full documents
   // ---------------------------
-  for (const doc of documents) {
-    const vector = await embeddings.embedQuery(doc.pageContent);
-    await index.upsert([
-      {
-        id: doc.metadata.id!,
-        values: vector,
-        metadata: doc.metadata,
-      },
-    ]);
-  }
+  const pineconeIndex = pinecone.Index(indexName);
+  const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+    pineconeIndex,
+    maxConcurrency: 5,
+  });
+
+  console.log("Upserting documents to Pinecone via PineconeStore...");
+  await vectorStore.addDocuments(documents);
 
   console.log("Ingestion complete!");
   await mongoose.disconnect();
