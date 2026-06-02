@@ -5,12 +5,25 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // images: {
+  //    domains: ['res.cloudinary.com', "www.pexels.com", "images.pexels.com"],
+  // }
   images: {
-     domains: ['res.cloudinary.com', "www.pexels.com", "images.pexels.com"],
-  }
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.pexels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
