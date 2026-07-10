@@ -74,40 +74,37 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
       animate="show"
       className="flex flex-col gap-4"
     >
-      {/* Profile Image */}
+
       <motion.div
         variants={item}
-        className="h-32 w-32 relative rounded-full overflow-hidden bg-secondary border-2 border-primary/10 shadow-md"
-      >
-        <Image
-          src={intro.image}
-          alt={intro.name}
-          width={120}
-          height={120}
-          className="object-contain"
-          priority
-        />
-      </motion.div>
+        className="flex flex-row items-center gap-8">
+        <div className="relative h-24 w-24 md:h-28 md:w-28 shrink-0 overflow-hidden rounded-full">
+          <Image
+            src={intro.image}
+            alt={intro.name}
+            fill
+            priority
+            sizes="112px"
+            className="object-cover"
+          />
+        </div>
 
-      {/* Title + Typewriter */}
-      <motion.div
-        variants={item}
-        className=" md:flex md:items-center md:gap-2 space-y-2  flex-col md:flex-row"
-      >
-        <h1 className="md:text-6xl text-4xl font-semibold">
-          Hi, I'm <span className="">{intro.name}</span>
-        </h1>
-      </motion.div>
+        {/* Content */}
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Hi, I'm {intro.name}
+          </h1>
 
-      {/* Lazy loaded typewriter */}
-      <motion.div variants={item} className="min-h-[28px] md:min-h-[36px]">
-        <TypewriterClient words={intro.techStack} />
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground">
+            <div className="inline-flex items-center">
+              <TypewriterClient words={intro.techStack} />
+            </div>
+          </div>
+        </div>
       </motion.div>
-
-      {/* Description */}
       <motion.div variants={item}>
-        <div className="prose dark:prose-invert max-w-none">
-          <h2 className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">
+        <div className="prose dark:prose-invert max-w-none mt-5">
+          <h2 className="text-[15px] dark:text-gray-300 text-gray-700 opacity-80 leading-relaxed whitespace-pre-wrap">
             {intro.desc}
           </h2>
         </div>
