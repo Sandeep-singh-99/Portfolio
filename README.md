@@ -1,6 +1,6 @@
-# ⚡ Personal Portfolio Website
+# ⚡ AI-Powered Developer Portfolio & Admin CMS
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-15/16-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
@@ -8,238 +8,285 @@
 ![Pinecone](https://img.shields.io/badge/Pinecone-RAG-5B2D8E?style=for-the-badge&logo=pinecone)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-A modern, high-performance full-stack portfolio website built to showcase projects and skills with a premium user experience. Leveraging the power of **Next.js 15**, **Tailwind CSS 4**, and **MongoDB**, it features a secure admin panel, dynamic content management, immersive 3D elements, seamless animations, and a **production-grade AI assistant** powered by a RAG (Retrieval-Augmented Generation) pipeline.
+A modern, high-performance developer portfolio website integrated with a secure administrative Content Management System (CMS) and a production-grade AI chat assistant. Built using **Next.js**, **Tailwind CSS 4**, and **MongoDB**, the platform features smooth 3D elements, dynamic drag-and-drop reordering, and a vector-backed RAG (Retrieval-Augmented Generation) pipeline for context-aware portfolio assistance.
 
-![Project Screenshot](./screenshot/Screenshot%202025-12-03%20155917.png)
+---
 
 ## 📑 Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-- [Environment Variables](#-environment-variables)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
+- [✨ Features](#-features)
+- [🏗️ System Design Architecture](#-system-design-architecture)
+- [🔄 Application Workflows](#-application-workflows)
+- [🛠️ Tech Stack](#-tech-stack)
+- [📂 Project Structure](#-project-structure)
+- [🚀 Getting Started](#-getting-started)
+- [🔮 Future Roadmap: AI Agent + MCP](#-future-roadmap-ai-agent--mcp)
+- [🤝 Contributing](#-contributing)
+
+---
 
 ## ✨ Features
 
-### 👤 User Features
+### 👤 Public User Experience
+- **🎨 Modern & Responsive Design**: Styled using **Tailwind CSS 4** and **Shadcn/ui** for fluid, responsive layouts optimized for all screens.
+- **✨ Immersive Visuals**: Fluid animations powered by **Framer Motion** and responsive 3D elements utilizing **Three.js** (`@react-three/fiber` and `@react-three/drei`).
+- **🚀 Dynamic Content Showcase**: Projects, skills, intros, and certificates are served dynamically from a **MongoDB** database.
+- **🤖 Context-Aware AI Assistant (RAG)**: A floating interactive chat widget that:
+  - Answers questions accurately about projects, skills, education, and experiences.
+  - Employs **Retrieval-Augmented Generation (RAG)** using **Pinecone** vector database.
+  - Streams answers in real time with support for mid-stream cancellation via `AbortController`.
+  - Persists conversation context and history per session directly in MongoDB.
+  - Adheres to strict **anti-hallucination guardrails** defined in prompt templates.
+- **📧 Seamless Contact Form**: Direct email notifications using the **Resend API**.
 
-- **🎨 Modern & Responsive Design**: Crafted with **Tailwind CSS 4** and **Shadcn/ui** for a sleek, accessible, and fully responsive interface across all devices.
-- **🚀 Dynamic Project Showcase**: Projects are fetched dynamically from a **MongoDB** database, ensuring content is always up-to-date.
-- **✨ Immersive Animations**: Enhanced user experience with **Framer Motion** for smooth transitions and **Three.js** (@react-three/fiber) for 3D elements.
-- **📝 Rich Content**: Detailed project descriptions rendered using `@uiw/react-md-editor` with markdown support.
-- **📧 Contact Integration**: Fully functional contact form powered by **Resend** for direct email submissions.
-- **🔔 Real-time Notifications**: Interactive toast notifications using **Sonner**.
-- **🤖 AI Chat Assistant (RAG-Powered)**: Production-grade chatbot with:
-  - **RAG Pipeline**: Combines structured MongoDB context with **Pinecone** vector search for accurate, hallucination-free responses.
-  - **Real-time Streaming**: Responses are streamed token-by-token with support for **stream cancellation** via `AbortController`.
-  - **Conversation Memory**: Session-based chat history persisted in MongoDB for contextual multi-turn conversations.
-  - **Anti-Hallucination Guardrails**: Strict prompt engineering ensures the AI only answers from verified portfolio data.
-  - **Smart UI**: Typing indicators, suggested topics, markdown rendering, and a responsive floating widget.
+### 🛡️ Admin CMS Capabilities
+- **🔐 Secure Authentication**: Protected dashboard routes utilizing **NextAuth.js**.
+- **📊 Comprehensive CRUD Dashboards**: Complete management interface for updating introduction texts, project entries, skill sets, blogs, and certificates.
+- **✋ Drag & Drop Reordering**: Intuitive sorting of skills and projects powered by `@dnd-kit`.
+- **☁️ Cloud-Based Media Management**: Seamless image uploads and background cleanup using the **Cloudinary SDK**.
 
-### 🛡️ Admin Features
+---
 
-- **🔐 Secure Authentication**: Protected admin routes using **NextAuth.js** to ensure only authorized access.
-- **📊 Dashboard Overview**: comprehensive view of projects and content.
-- **🛠️ Project Management**: Full CRUD (Create, Read, Update, Delete) capabilities for managing portfolio projects.
-- **✋ Drag & Drop Reordering**: Intuitive **Drag and Drop** interface (powered by `@dnd-kit`) to easily reorder skills and projects, giving you full control over how content is displayed.
-- **☁️ Media Management**: Seamless image uploads and hosting via **Cloudinary**.
+## 🏗️ System Design Architecture
 
-## 🛠 Tech Stack
+The project is structured around a decoupled model where content creation, search indexation, and context-aware querying operate in harmony:
 
-### Frontend
+```mermaid
+graph TD
+    %% User/Client Interaction
+    User[Web Browser / Visitor] <-->|1. HTTP / SSE Stream| NextApp[Next.js App Router]
+    Admin[Admin Owner] <-->|Updates Content / Sorts| NextAdmin[Admin CMS Dashboard]
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Components**: [Shadcn/ui](https://ui.shadcn.com/) & [Radix UI](https://www.radix-ui.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/) & [Typewriter Effect](https://github.com/tameemsafi/typewriterjs)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Markdown**: [@uiw/react-md-editor](https://uiwjs.github.io/react-md-editor/)
+    %% Next.js Core Routes
+    subgraph NextServer [Next.js Backend Server]
+        NextApp -->|POST Chat Message| ChatAPI[Chat Route: api/chat/route.ts]
+        NextAdmin -->|CRUD Content| AdminAPIs[Admin API Routes]
+    end
 
-### Backend
+    %% RAG Pipeline Data Flow
+    subgraph RAG [RAG / LLM Pipeline]
+        ChatAPI -->|Session Retrieval| Memory[MongoDB Chat History]
+        ChatAPI -->|Vector Retrieval| VectorStore[Pinecone Vector Database]
+        ChatAPI -->|Prompt & Context| LLM[Google Gemini 2.5 Flash]
+    end
 
-- **API**: Next.js API Routes
-- **Database**: [MongoDB](https://www.mongodb.com/)
-- **ORM**: [Mongoose](https://mongoosejs.com/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+    %% Databases
+    subgraph Databases [Data Storage]
+        AdminAPIs <-->|Store / Fetch| MongoDB[(MongoDB Database)]
+        Memory <--> MongoDB
+        VectorStore <-->|Index Vectors| PineconeIndex[Pinecone Vector Index]
+    end
 
-### AI & RAG Pipeline
+    %% External Services
+    subgraph Services [External Services]
+        AdminAPIs <-->|Upload Media| Cloudinary[Cloudinary SDK]
+        NextApp -->|Send Emails| Resend[Resend API]
+        LLM <-->|API Calls| GeminiAPI[Google Generative AI]
+    end
 
-- **LLM**: [Google Gemini 2.5 Flash](https://ai.google.dev/) via [LangChain](https://js.langchain.com/)
-- **Vector Store**: [Pinecone](https://www.pinecone.io/) for semantic document retrieval
-- **Embeddings**: [HuggingFace Inference API](https://huggingface.co/) (`sentence-transformers/all-MiniLM-L6-v2`)
-- **Orchestration**: [LangChain.js](https://js.langchain.com/) — prompt templates, output parsers, streaming chains
-- **Memory**: MongoDB-backed session chat history
+    %% Ingestion Script
+    IngestScript[scripts/ingest.ts] -->|Reads Core Data| MongoDB
+    IngestScript -->|HF Embeddings| HF[HuggingFace Inference API]
+    HF -->|Generates Embeddings| IngestScript
+    IngestScript -->|Seeds/Updates| PineconeIndex
+```
 
-### Tools & Services
+---
 
-- **Image Hosting**: [Cloudinary](https://cloudinary.com/)
-- **Email Service**: [Resend](https://resend.com/)
-- **Drag & Drop**: [@dnd-kit](https://dndkit.com/)
-- **Date Handling**: [date-fns](https://date-fns.org/)
-- **Linting**: ESLint
+## 🔄 Application Workflows
+
+### 1. Ingestion / Search Indexing Workflow
+To make the AI Chat Assistant knowledgeable, project metadata must be embedded and indexed:
+1. **CMS Update**: The admin updates or adds a new project in the Admin dashboard.
+2. **Database Sync**: The data is persisted in **MongoDB**.
+3. **Ingestion Execution**: The administrator runs `npm run ingest` (which executes `scripts/ingest.ts`).
+4. **Embedding Generation**: The script pulls projects, skills, about descriptions, and bios from MongoDB, compiles them into text chunks, and sends them to the **HuggingFace Inference API** (`sentence-transformers/all-MiniLM-L6-v2`) to generate embeddings.
+5. **Vector Upsert**: The resulting vectors and raw text page contents are upserted into **Pinecone**.
+
+### 2. Hybrid RAG Chat Response Workflow
+When a visitor interacts with the floating AI Chat Widget:
+1. **Message Dispatch**: The client sends the prompt along with a unique `sessionId` to `api/chat/route.ts`.
+2. **Session Memory Retrieval**: The API fetches the last 10 chat messages associated with the `sessionId` from MongoDB to maintain conversation context.
+3. **Core DB Retrieval**: In parallel, the API queries MongoDB directly to fetch core portfolio structures (all projects, categories, skills, and intro bio) to guarantee the LLM gets absolute ground-truth structures.
+4. **Vector Retrieval**: The API queries Pinecone to fetch the top 6 semantically matching portfolio context documents related to the user's specific prompt.
+5. **Prompt Engineering & Grounding**: All pieces of data (MongoDB structures, Pinecone retrieved documents, and chat history) are formatted into the LangChain system prompt template.
+6. **LLM Chain & Streaming**: The prompt is processed by **Google Gemini 2.5 Flash**, and the response is streamed back to the client using Server-Sent Events (SSE). The assistant message is saved back to MongoDB upon completion.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | [Next.js 15/16](https://nextjs.org/) (App Router), [React 19](https://react.dev/), [Tailwind CSS 4](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/), [Three.js](https://threejs.org/) (`@react-three/fiber`), [Shadcn/ui](https://ui.shadcn.com/) |
+| **Backend** | Next.js Route Handlers, [NextAuth.js](https://next-auth.js.org/) (Security), [MongoDB](https://www.mongodb.com/) (Database), [Mongoose](https://mongoosejs.com/) (ODM) |
+| **AI & RAG** | [LangChain.js](https://js.langchain.com/) (Chains & Orchestration), [Pinecone](https://www.pinecone.io/) (Vector Database), [Google Gemini 2.5 Flash](https://ai.google.dev/) (LLM), [HuggingFace Inference API](https://huggingface.co/) (`all-MiniLM-L6-v2` embeddings) |
+| **Services & Tools**| [Cloudinary](https://cloudinary.com/) (Image hosting), [Resend](https://resend.com/) (Emailing), [@dnd-kit](https://dndkit.com/) (Drag-and-drop), ESLint, TSX |
+
+---
 
 ## 📂 Project Structure
 
 ```bash
 src/
 ├── app/
-│   ├── (admin)/       # Protected admin routes (Dashboard, Project/Skill Management)
-│   ├── (main)/        # Public facing routes (Home, Projects, Contact)
+│   ├── (admin)/       # Protected admin routes (Dashboard, Project & Skill CMS)
+│   ├── (main)/        # Public facing routes (Home, Projects list, Contact form)
 │   ├── api/
-│   │   ├── chat/      # AI chat endpoint (streaming + RAG)
-│   │   └── ...        # Other API routes (Projects, Skills, Auth, Email)
-│   ├── globals.css    # Global styles and Tailwind directives
-│   └── layout.tsx     # Root layout
+│   │   ├── chat/      # AI Chat endpoint (hybrid RAG + streaming output)
+│   │   └── ...        # Next.js API Routes (auth, projects, skills, email, upload)
+│   ├── globals.css    # Global CSS definitions & variables
+│   └── layout.tsx     # Root App Router Layout
 ├── components/
-│   ├── GlobalChatWidget.tsx  # Floating AI chat widget with streaming UI
-│   ├── MarkdownRender.tsx    # Markdown renderer for AI responses
-│   └── ...                   # Other UI components
-├── hooks/             # Custom React hooks
-├── types/             # TypeScript type definitions
-└── middleware.ts      # Authentication middleware
+│   ├── GlobalChatWidget.tsx # Floating AI chat sidebar/widget
+│   ├── MarkdownRender.tsx   # Custom markdown parser for streamed response output
+│   └── ...                  # Reusable UI parts (Shadcn/custom)
+├── hooks/             # Custom React state/utility hooks
+├── types/             # TypeScript interfaces
+└── middleware.ts      # Auth interceptor middleware
 
-lib/                   # Shared utilities
-├── db.ts              # MongoDB connection
-├── auth.ts            # NextAuth configuration
-├── prompt.ts          # AI system prompt template
-├── memory.ts          # Chat history persistence (MongoDB)
-├── embeddings.ts      # HuggingFace embedding model wrapper
-├── vectorStore.ts     # Pinecone vector store client
-├── pinecone.ts        # Pinecone client initialization
-└── delete-image.ts    # Cloudinary image cleanup
+lib/                   # Backend utilities
+├── db.ts              # Mongoose DB connector
+├── auth.ts            # NextAuth Configuration
+├── prompt.ts          # System prompt template with anti-hallucination instructions
+├── memory.ts          # Persistent chat history handlers
+├── embeddings.ts      # HuggingFace embed client wrapper
+├── vectorStore.ts     # Pinecone DB vector retriever wrappers
+├── pinecone.ts        # Pinecone Client initialization
+└── delete-image.ts    # Cloudinary asset purge helper
 
-models/                # Mongoose schemas
-├── project.model.ts   # Portfolio projects
-├── skill.model.ts     # Skills & categories
-├── about.model.ts     # About section
-├── intro.model.ts     # Introduction / bio
-├── certificate.model.ts # Certificates
-├── chatMessage.model.ts # AI chat conversation history
-├── blog.model.ts      # Blog posts
-└── user.model.ts      # Admin users
+models/                # Mongoose Models
+├── user.model.ts      # Admin User accounts
+├── intro.model.ts     # Title, short description and key details
+├── about.model.ts     # Detailed bio text
+├── skill.model.ts     # Tech skills tagged with categories
+├── project.model.ts   # Featured projects with links and tags
+├── certificate.model.ts # Course completion credentials
+├── chatMessage.model.ts # Persisted chat conversation sessions
+└── blog.model.ts      # Custom blog posts
 
 scripts/
-└── ingest.ts          # Data ingestion pipeline (MongoDB → Pinecone)
+└── ingest.ts          # Data sync pipeline (MongoDB -> HuggingFace -> Pinecone Store)
 ```
+
+---
 
 ## 🚀 Getting Started
 
-Follow these instructions to set up the project locally.
+Follow these steps to spin up the codebase in your local development environment.
 
-### 1. Clone the Repository
+### Prerequisites
+- Node.js (v18.x or higher)
+- MongoDB Database Instance (Local or MongoDB Atlas)
+- Pinecone Index (Vector Dimension: 384 for `all-MiniLM-L6-v2`)
 
+### 1. Clone & Install
 ```bash
 git clone https://github.com/your-username/your-repository-name.git
 cd your-repository-name
-```
-
-### 2. Install Dependencies
-
-```bash
 npm install
 ```
 
-### 3. Set Up Environment Variables
-
-Create a `.env` file in the root directory and add the following variables:
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory and configure it as follows:
 
 ```env
-# MongoDB
+# MongoDB Connection
 MONGODB_URI="your_mongodb_connection_string"
 
-# NextAuth.js
+# NextAuth Configuration
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your_nextauth_secret" # Generate using `openssl rand -base64 32`
+NEXTAUTH_SECRET="your_nextauth_secret_hash" # Generate using: openssl rand -base64 32
 
-# Cloudinary
-CLOUDINARY_CLOUD_NAME="your_cloud_name"
-CLOUDINARY_API_KEY="your_api_key"
-CLOUDINARY_API_SECRET="your_api_secret"
+# Cloudinary Integration (Image Uploads)
+CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name"
+CLOUDINARY_API_KEY="your_cloudinary_api_key"
+CLOUDINARY_API_SECRET="your_cloudinary_api_secret"
 
-# Resend (Email)
+# Resend API (Contact Form Emailer)
 RESEND_API_KEY="your_resend_api_key"
 
-# App
+# Base URL Configuration
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 
-# Google Gemini AI
+# AI Model Keys (Google Gemini)
 GOOGLE_API_KEY="your_google_api_key"
 
-# Pinecone (Vector Database for RAG)
+# Pinecone Credentials
 PINECONE_API_KEY="your_pinecone_api_key"
-PINECONE_INDEX_NAME="portfolio-ai"  # Default index name
+PINECONE_INDEX_NAME="portfolio-ai"
 
-# HuggingFace (Embeddings)
+# HuggingFace Credentials (For Embeddings Generation)
 HUGGINGFACE_API_KEY="your_huggingface_api_key"
 ```
 
-### 4. Ingest Data into Pinecone (Required for AI Chat)
-
-Run the ingestion script to index your MongoDB portfolio data into Pinecone for vector search:
-
+### 3. Run Ingestion Script
+Seed your vector store index with the portfolio data. Make sure some information has already been created in MongoDB before running:
 ```bash
 npx tsx scripts/ingest.ts
 ```
 
-> **Note**: Re-run this script whenever you add or update projects, skills, or profile data to keep the AI assistant's knowledge current.
-
-### 5. Run the Development Server
-
+### 4. Boot Dev Server
 ```bash
 npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000) inside your browser to inspect the result.
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+---
 
-## 📦 Deployment
+## 🔮 Future Roadmap: AI Agent + MCP
 
-The application is optimized for deployment on **Vercel**.
+> [!NOTE]
+> The current system leverages a static **Retrieval-Augmented Generation (RAG)** pipeline. While effective for simple question-answering, it lacks active tool execution, multi-step planning, and dynamic contextual awareness.
 
-1.  Push your code to a GitHub repository.
-2.  Import the project into Vercel.
-3.  Add the environment variables in the Vercel dashboard.
-4.  Deploy!
-
-For more details, check the [Next.js Deployment Documentation](https://nextjs.org/docs/deployment).
-
-## 🧠 AI Assistant Architecture
-
-The AI chat assistant uses a **Retrieval-Augmented Generation (RAG)** architecture to provide accurate, context-aware responses:
+In the next phase of development, this workflow will be migrated to an autonomous **AI Agent + Model Context Protocol (MCP)** architecture:
 
 ```
-User Message
-    │
-    ▼
-┌─────────────────────────┐
-│  Structured DB Context  │──── MongoDB (Projects, Skills, About, Intro, Certificates)
-│  + Vector Search        │──── Pinecone (semantic similarity, top-3 docs)
-│  + Chat History         │──── MongoDB (last 10 messages per session)
-└─────────┬───────────────┘
-          │
-          ▼
-┌─────────────────────────┐
-│  LangChain Prompt       │──── System prompt with strict anti-hallucination rules
-│  → Gemini 2.5 Flash     │──── Streaming response via StringOutputParser
-│  → Client (SSE)         │──── Token-by-token streaming to browser
-└─────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│                   Future Agent UI                      │
+└──────────────────────────┬─────────────────────────────┘
+                           │ User Prompts / Tasks
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│                Autonomous AI Agent                     │
+│ (Planning Loop, Tool Call Parsing, State Management)  │
+└──────────────────────────┬─────────────────────────────┘
+                           │ MCP JSON-RPC Protocol
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│                   MCP Router / Hub                     │
+└─────┬────────────────────┬────────────────────┬────────┘
+      │                    │                    │
+      ▼                    ▼                    ▼
+┌───────────┐        ┌───────────┐        ┌───────────┐
+│ MongoDB   │        │ Filesystem│        │ Git /     │
+│ MCP Server│        │ MCP Server│        │ API Server│
+└───────────┘        └───────────┘        └───────────┘
 ```
 
-**Key design decisions:**
-- **Hybrid retrieval**: Structured DB queries provide complete, reliable data; Pinecone adds semantic search for nuanced questions.
-- **Strict grounding**: The system prompt enforces that the AI only uses portfolio data — no hallucinated facts.
-- **Stream cancellation**: Users can abort in-flight responses via the stop button (`AbortController`).
-- **Session persistence**: Chat history is stored in MongoDB with session IDs, enabling contextual multi-turn conversations.
+### 🎯 Key Migrations & Goals
+1. **Dynamic Tool Calling**:
+   Instead of injecting static text from the DB and vector search blindly into a single prompt, the LLM will act as an **AI Agent**. It will decide dynamically which tools to execute based on what the user asks (e.g., calling `query_projects_by_category` or `fetch_recent_blogs`).
+2. **Integrating Model Context Protocol (MCP)**:
+   - **MCP** is an open standard that enables LLMs to access data sources and tools securely.
+   - We will deploy custom **MCP Servers** connected directly to the codebase's subsystems:
+     - **Database MCP Server**: Exposes secure read/write queries to MongoDB for real-time querying without manual pipeline code in our API routes.
+     - **Filesystem MCP Server**: Allows the agent to inspect project documentation, assets, or markdown files directly.
+     - **GitHub MCP Server**: Fetches live commit histories, repository statistics, and star counts dynamically during chat.
+3. **Expanded Agentic Actions**:
+   The agent will gain the ability to perform complex workflows. Examples:
+   - *“Schedule a meeting with me next Monday”* -> Agent triggers a Calendly/Google Calendar MCP tool.
+   - *“Add a new project from this description”* -> Agent runs validation tools and invokes the DB MCP Server to write the entry directly (with admin approval).
+   - *“Build a custom resume PDF highlighting my React experience”* -> Agent compiles a custom resume using styling templates and exports it.
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature/YourFeature`).
-3.  Commit your changes (`git commit -m 'Add some feature'`).
-4.  Push to the branch (`git push origin feature/YourFeature`).
-5.  Open a Pull Request.
+1. Fork the Project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
