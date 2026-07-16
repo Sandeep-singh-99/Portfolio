@@ -31,12 +31,12 @@ A modern, high-performance developer portfolio website integrated with a secure 
 - **🎨 Modern & Responsive Design**: Styled using **Tailwind CSS 4** and **Shadcn/ui** for fluid, responsive layouts optimized for all screens.
 - **✨ Immersive Visuals**: Fluid animations powered by **Framer Motion** and responsive 3D elements utilizing **Three.js** (`@react-three/fiber` and `@react-three/drei`).
 - **🚀 Dynamic Content Showcase**: Projects, skills, intros, and certificates are served dynamically from a **MongoDB** database.
-- **🤖 Context-Aware AI Assistant (RAG)**: A floating interactive chat widget that:
-  - Answers questions accurately about projects, skills, education, and experiences.
-  - Employs **Retrieval-Augmented Generation (RAG)** using **Pinecone** vector database.
-  - Streams answers in real time with support for mid-stream cancellation via `AbortController`.
-  - Persists conversation context and history per session directly in MongoDB.
-  - Adheres to strict **anti-hallucination guardrails** defined in prompt templates.
+- **🤖 Intelligent AI Assistant**: A floating interactive chat widget that:
+  - **Hybrid Intent Detection**: Detects user query intent (Fast Path: rule-based keywords | Slow Path: Gemini 2.5 Flash semantic classification) to filter out greetings, projects, skills, contact info, bio, or general chats.
+  - **Dynamic Metadata Filtering**: Uses query intent to filter Pinecone search results by category (`project`, `skill`, `contact`, etc.) and dynamically adjusts search depth (`k`) for summaries vs. specific items.
+  - **Real-Time Streaming**: Streams answers token-by-token with support for mid-stream cancellation via `AbortController`.
+  - **Persistent Session Memory**: Persists conversation context and history per session directly in MongoDB.
+  - **Anti-Hallucination Guardrails**: Employs strict system prompts ensuring answers are grounded only in verified portfolio context.
 - **📧 Seamless Contact Form**: Direct email notifications using the **Resend API**.
 
 ### 🛡️ Admin CMS Capabilities
@@ -44,12 +44,13 @@ A modern, high-performance developer portfolio website integrated with a secure 
 - **📊 Comprehensive CRUD Dashboards**: Complete management interface for updating introduction texts, project entries, skill sets, blogs, and certificates.
 - **✋ Drag & Drop Reordering**: Intuitive sorting of skills and projects powered by `@dnd-kit`.
 - **☁️ Cloud-Based Media Management**: Seamless image uploads and background cleanup using the **Cloudinary SDK**.
+- **⚡ Web-Based Vector Ingestion**: Rebuild, purge, and seed the Pinecone vector index dynamically via `/api/ingest` HTTP GET requests.
 
 ---
 
 ## 🏗️ System Design Architecture
 
-The project is structured around a decoupled model where content creation, search indexation, and context-aware querying operate in harmony:
+The project is structured around an intent-routed search model where client queries are classified before performing Pinecone queries:
 
 ```mermaid
 graph TD
@@ -61,13 +62,17 @@ graph TD
     subgraph NextServer [Next.js Backend Server]
         NextApp -->|POST Chat Message| ChatAPI[Chat Route: api/chat/route.ts]
         NextAdmin -->|CRUD Content| AdminAPIs[Admin API Routes]
+        NextAdmin -->|HTTP GET Seed| IngestAPI[Ingest Route: api/ingest/route.ts]
     end
 
-    %% RAG Pipeline Data Flow
-    subgraph RAG [RAG / LLM Pipeline]
-        ChatAPI -->|Session Retrieval| Memory[MongoDB Chat History]
-        ChatAPI -->|Vector Retrieval| VectorStore[Pinecone Vector Database]
-        ChatAPI -->|Prompt & Context| LLM[Google Gemini 2.5 Flash]
+    %% Intent Routing & RAG
+    subgraph AIWorkflow [AI Workflow & Routing]
+        ChatAPI -->|1. Parse Message| Intent[Intent Detector: lib/intent.ts]
+        Intent -->|Rule-based OR LLM Classifier| IntentType{Query Intent}
+        IntentType -->|project/skill/about/etc.| Filter[Apply Metadata Filter & K]
+        ChatAPI -->|2. Query Index with Filter| VectorStore[Pinecone Vector Database]
+        ChatAPI -->|3. Get History| Memory[MongoDB Chat History]
+        ChatAPI -->|4. Generate Response| LLM[Google Gemini 2.5 Flash]
     end
 
     %% Databases
@@ -84,11 +89,14 @@ graph TD
         LLM <-->|API Calls| GeminiAPI[Google Generative AI]
     end
 
-    %% Ingestion Script
-    IngestScript[scripts/ingest.ts] -->|Reads Core Data| MongoDB
-    IngestScript -->|HF Embeddings| HF[HuggingFace Inference API]
-    HF -->|Generates Embeddings| IngestScript
-    IngestScript -->|Seeds/Updates| PineconeIndex
+    %% Ingestion Sync
+    IngestAPI -->|Clear & Pull Core Data| MongoDB
+    IngestAPI -->|HF Lazy Embeddings| HF[HuggingFace Inference API]
+    HF -->|all-MiniLM-L6-v2| IngestAPI
+    IngestAPI -->|Embed Summaries & Data| PineconeIndex
+
+    IngestScript[scripts/ingest.ts] -->|CLI Sync Fallback| MongoDB
+    IngestScript -->|HF Embeddings| PineconeIndex
 ```
 
 ---
@@ -97,20 +105,27 @@ graph TD
 
 ### 1. Ingestion / Search Indexing Workflow
 To make the AI Chat Assistant knowledgeable, project metadata must be embedded and indexed:
-1. **CMS Update**: The admin updates or adds a new project in the Admin dashboard.
+1. **CMS Update**: The admin updates or adds content in the Admin dashboard.
 2. **Database Sync**: The data is persisted in **MongoDB**.
-3. **Ingestion Execution**: The administrator runs `npm run ingest` (which executes `scripts/ingest.ts`).
-4. **Embedding Generation**: The script pulls projects, skills, about descriptions, and bios from MongoDB, compiles them into text chunks, and sends them to the **HuggingFace Inference API** (`sentence-transformers/all-MiniLM-L6-v2`) to generate embeddings.
-5. **Vector Upsert**: The resulting vectors and raw text page contents are upserted into **Pinecone**.
+3. **Index Generation & Seeding**:
+   - **Method A (HTTP Web Ingestion)**: The admin requests the `/api/ingest` endpoint. The route validates or builds the Pinecone index, clears old data to prevent stale duplicates, compiles MongoDB records into document chunks, generates embeddings using HuggingFace (`sentence-transformers/all-MiniLM-L6-v2`), and uploads them.
+   - **Method B (CLI Script)**: The administrator runs `npx tsx scripts/ingest.ts` directly from the command line.
+4. **Structured Summaries**: The ingestion process automatically injects pre-compiled overview documents (e.g., "Projects Overview & Summary" and "Skills Overview & Summary") to ensure aggregate count and listing queries return accurate stats.
+5. **Static Contact Ingestion**: Embedded contact channels and social profiles are seeded as dedicated index documents for contact-intent queries.
 
-### 2. Hybrid RAG Chat Response Workflow
+### 2. Intent-Guided RAG Chat Response Workflow
 When a visitor interacts with the floating AI Chat Widget:
 1. **Message Dispatch**: The client sends the prompt along with a unique `sessionId` to `api/chat/route.ts`.
 2. **Session Memory Retrieval**: The API fetches the last 10 chat messages associated with the `sessionId` from MongoDB to maintain conversation context.
-3. **Core DB Retrieval**: In parallel, the API queries MongoDB directly to fetch core portfolio structures (all projects, categories, skills, and intro bio) to guarantee the LLM gets absolute ground-truth structures.
-4. **Vector Retrieval**: The API queries Pinecone to fetch the top 6 semantically matching portfolio context documents related to the user's specific prompt.
-5. **Prompt Engineering & Grounding**: All pieces of data (MongoDB structures, Pinecone retrieved documents, and chat history) are formatted into the LangChain system prompt template.
-6. **LLM Chain & Streaming**: The prompt is processed by **Google Gemini 2.5 Flash**, and the response is streamed back to the client using Server-Sent Events (SSE). The assistant message is saved back to MongoDB upon completion.
+3. **Intent Detection**: The message passes through a hybrid classifier:
+   - **Fast Path**: Resolves greetings, contact information, identity, bios, skills, and projects instantly using keyword pre-filtering rules.
+   - **Slow Path**: Falls back to calling **Gemini 2.5 Flash** as a zero-temperature semantic classifier to categorize the message.
+4. **Dynamic Metadata Filtering**:
+   - If the intent matches `project`, `skill`, `about`, `intro`, or `contact`, the API configures a Pinecone metadata filter targeting that specific document type.
+   - The lookup depth `k` is adjusted dynamically: `k=8` for broad listing queries (like *"list all projects"*), `k=1` for single-document profile queries, and `k=3` for general similarity matching.
+5. **Context Retrieval**: The API queries Pinecone using the lazy-loaded HuggingFace embeddings client with the calculated filter and `k`.
+6. **Prompt Engineering & Grounding**: All pieces of data (retrieved Pinecone segments and chat history) are formatted into the LangChain system prompt template.
+7. **LLM Chain & Streaming**: The prompt is processed by **Google Gemini 2.5 Flash**, and the response is streamed back to the client using Server-Sent Events (SSE). The assistant response is saved back to MongoDB upon completion.
 
 ---
 
@@ -121,7 +136,7 @@ When a visitor interacts with the floating AI Chat Widget:
 | **Frontend** | [Next.js 15/16](https://nextjs.org/) (App Router), [React 19](https://react.dev/), [Tailwind CSS 4](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/), [Three.js](https://threejs.org/) (`@react-three/fiber`), [Shadcn/ui](https://ui.shadcn.com/) |
 | **Backend** | Next.js Route Handlers, [NextAuth.js](https://next-auth.js.org/) (Security), [MongoDB](https://www.mongodb.com/) (Database), [Mongoose](https://mongoosejs.com/) (ODM) |
 | **AI & RAG** | [LangChain.js](https://js.langchain.com/) (Chains & Orchestration), [Pinecone](https://www.pinecone.io/) (Vector Database), [Google Gemini 2.5 Flash](https://ai.google.dev/) (LLM), [HuggingFace Inference API](https://huggingface.co/) (`all-MiniLM-L6-v2` embeddings) |
-| **Services & Tools**| [Cloudinary](https://cloudinary.com/) (Image hosting), [Resend](https://resend.com/) (Emailing), [@dnd-kit](https://dndkit.com/) (Drag-and-drop), ESLint, TSX |
+| **Services & Tools**| [Cloudinary](https://cloudinary.com/) (Image hosting), [Resend](https://resend.com/) (Emailing), [@dnd-kit](https://dndkit.com/) (Drag-and-drop sorting), ESLint, TSX |
 
 ---
 
@@ -133,7 +148,8 @@ src/
 │   ├── (admin)/       # Protected admin routes (Dashboard, Project & Skill CMS)
 │   ├── (main)/        # Public facing routes (Home, Projects list, Contact form)
 │   ├── api/
-│   │   ├── chat/      # AI Chat endpoint (hybrid RAG + streaming output)
+│   │   ├── chat/      # AI Chat endpoint (hybrid RAG with Intent Routing & SSE streaming)
+│   │   ├── ingest/    # HTTP Vector Store synchronization endpoint (Clear -> Seed Index)
 │   │   └── ...        # Next.js API Routes (auth, projects, skills, email, upload)
 │   ├── globals.css    # Global CSS definitions & variables
 │   └── layout.tsx     # Root App Router Layout
@@ -150,9 +166,10 @@ lib/                   # Backend utilities
 ├── auth.ts            # NextAuth Configuration
 ├── prompt.ts          # System prompt template with anti-hallucination instructions
 ├── memory.ts          # Persistent chat history handlers
-├── embeddings.ts      # HuggingFace embed client wrapper
-├── vectorStore.ts     # Pinecone DB vector retriever wrappers
-├── pinecone.ts        # Pinecone Client initialization
+├── intent.ts          # Hybrid Intent Classifier (Rule-based + LLM Fallback)
+├── embeddings.ts      # Lazy-loaded HuggingFace embed client wrapper
+├── vectorStore.ts     # Pinecone DB vector retriever wrappers (with metadata filters)
+├── pinecone.ts        # Pinecone Client initialization & index checker
 └── delete-image.ts    # Cloudinary asset purge helper
 
 models/                # Mongoose Models
@@ -166,7 +183,7 @@ models/                # Mongoose Models
 └── blog.model.ts      # Custom blog posts
 
 scripts/
-└── ingest.ts          # Data sync pipeline (MongoDB -> HuggingFace -> Pinecone Store)
+└── ingest.ts          # Data sync CLI pipeline (MongoDB -> HuggingFace -> Pinecone Store)
 ```
 
 ---
@@ -220,11 +237,19 @@ PINECONE_INDEX_NAME="portfolio-ai"
 HUGGINGFACE_API_KEY="your_huggingface_api_key"
 ```
 
-### 3. Run Ingestion Script
-Seed your vector store index with the portfolio data. Make sure some information has already been created in MongoDB before running:
-```bash
-npx tsx scripts/ingest.ts
-```
+### 3. Run Ingestion / Vector Seeding
+To index your database content into the Pinecone vector database, choose one of the following methods:
+
+* **Method A (Web Route)**: Run the server (`npm run dev`) and visit:
+  ```
+  http://localhost:3000/api/ingest
+  ```
+  This will dynamically build/reset the Pinecone index and seed the data, outputting JSON stats upon completion.
+
+* **Method B (CLI Command)**: Run the ingestion script directly:
+  ```bash
+  npx tsx scripts/ingest.ts
+  ```
 
 ### 4. Boot Dev Server
 ```bash
