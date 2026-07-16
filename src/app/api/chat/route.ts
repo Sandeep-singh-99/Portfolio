@@ -1,84 +1,10 @@
 import { NextRequest } from "next/server";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { ConnectDB } from "../../../../lib/db";
-import Project from "../../../../models/project.model";
-import Skill from "../../../../models/skill.model";
-import About from "../../../../models/about.model";
-import Intro from "../../../../models/intro.model";
 import { retrieveContext } from "../../../../lib/vectorStore";
 import { saveMessage, getChatHistory } from "../../../../lib/memory";
 import { systemPromptTemplate } from "../../../../lib/prompt";
-
-// ─── Build complete portfolio context from DB + RAG ───────────────────
-async function buildPortfolioContext(query: string): Promise<string> {
-  await ConnectDB();
-
-  const [projects, skills, about, intro] = await Promise.all([
-    Project.find({}).select("projectName projectDesc projectTechStack githubLink liveLink").sort({ priority: -1 }).lean(),
-    Skill.find({}).select("skillName skillCategory").sort({ priority: -1 }).lean(),
-    About.findOne({}).select("desc").lean() as any,
-    Intro.findOne({}).select("name techStack desc").lean() as any,
-  ]);
-
-  const sections: string[] = [];
-
-  // Intro (name, bio, etc.)
-  if (intro) {
-    sections.push(
-      `## Introduction\n- Name: ${intro.name}\n- Tech Stack: ${intro.techStack?.join(", ") || "N/A"}\n- Bio: ${intro.desc}`
-    );
-  } else {
-    sections.push("## Introduction\nNone");
-  }
-
-  // About
-  if (about) {
-    sections.push(`## About\n${about.desc}`);
-  } else {
-    sections.push("## About\nNone");
-  }
-
-  // All Projects
-  if (projects.length > 0) {
-    const projectLines = projects.map((p: any) =>
-      `- **${p.projectName}**: ${p.projectDesc}\n  Tech: ${p.projectTechStack?.join(", ") || "N/A"} | GitHub: ${p.githubLink || "N/A"} | Live: ${p.liveLink || "N/A"}`
-    );
-    sections.push(`## Projects (${projects.length} total)\n${projectLines.join("\n")}`);
-  } else {
-    sections.push("## Projects\nNone");
-  }
-
-  // All Skills grouped by category
-  if (skills.length > 0) {
-    const grouped: Record<string, string[]> = {};
-    skills.forEach((s: any) => {
-      const cat = s.skillCategory || "Other";
-      if (!grouped[cat]) grouped[cat] = [];
-      grouped[cat].push(s.skillName);
-    });
-    const skillLines = Object.entries(grouped).map(
-      ([cat, names]) => `- **${cat}**: ${names.join(", ")}`
-    );
-    sections.push(`## Skills\n${skillLines.join("\n")}`);
-  } else {
-    sections.push("## Skills\nNone");
-  }
-
-  let context = sections.join("\n\n");
-
-  // Supplement with RAG for detailed/specific queries
-  try {
-    const ragContext = await retrieveContext(query);
-    if (ragContext && ragContext !== "No relevant data found in portfolio") {
-      context += `\n\n## Additional Details (from vector search)\n${ragContext}`;
-    }
-  } catch (e: any) {
-    console.warn("RAG retrieval skipped:", e.message);
-  }
-
-  return context;
-}
+import { detectIntent } from "../../../../lib/intent";
 
 // ─── Main POST handler ────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
@@ -91,14 +17,57 @@ export async function POST(req: NextRequest) {
 
     const cleanMessage = message.trim().slice(0, 1000);
 
-    // Save user message
+    // Save user message in MongoDB chat memory
     await saveMessage(sessionId, "user", cleanMessage);
 
-    // Get memory
+    // Fetch conversation memory from MongoDB
     const history = await getChatHistory(sessionId);
 
-    // Hybrid context: DB core data + RAG supplementary
-    const retrievedContext = await buildPortfolioContext(cleanMessage);
+    // Detect user query intent (hybrid keyword + LLM classification)
+    const intent = await detectIntent(cleanMessage);
+    console.log(`[RAG Router] Query: "${cleanMessage}" | Intent: "${intent}"`);
+
+    // Determine metadata filter and retrieval size based on intent
+    let filter: Record<string, any> | undefined = undefined;
+    let k = 3;
+
+    const isListOrCountQuery = cleanMessage.includes("all") || 
+                               cleanMessage.includes("list") || 
+                               cleanMessage.includes("how many") || 
+                               cleanMessage.includes("total") ||
+                               cleanMessage.includes("count") ||
+                               cleanMessage.includes("summary");
+
+    switch (intent) {
+      case "project":
+        filter = { type: "project" };
+        k = isListOrCountQuery ? 8 : 3;
+        break;
+      case "skill":
+        filter = { type: "skill" };
+        k = isListOrCountQuery ? 8 : 3;
+        break;
+      case "contact":
+        filter = { type: "contact" };
+        k = 1; // Retrieve single compiled contact info document
+        break;
+      case "intro":
+        filter = { type: "intro" };
+        k = 1; // Retrieve introduction document
+        break;
+      case "about":
+        filter = { type: "about" };
+        k = 1; // Retrieve biography document
+        break;
+      case "general":
+      default:
+        filter = undefined; // Search all document types
+        k = 3;
+        break;
+    }
+
+    // Retrieve context dynamically from Pinecone with metadata filter
+    const retrievedContext = await retrieveContext(cleanMessage, { filter, k });
 
     // Gemini model
     const model = new ChatGoogleGenerativeAI({
@@ -131,7 +100,7 @@ export async function POST(req: NextRequest) {
             await new Promise((r) => setTimeout(r, 0));
           }
 
-          // Save assistant message
+          // Save assistant message to MongoDB memory
           saveMessage(sessionId, "assistant", fullResponse).catch(console.error);
 
           controller.close();
@@ -147,8 +116,12 @@ export async function POST(req: NextRequest) {
         "Cache-Control": "no-cache",
       },
     });
-  } catch (error) {
-    console.error(error);
-    return new Response("Server Error", { status: 500 });
+  } catch (error: any) {
+    console.error("[Chat API Error]:", error);
+    const errMsg = error?.message || "";
+    if (errMsg.includes("PINECONE_API_KEY") || errMsg.includes("HUGGINGFACE_API_KEY") || errMsg.includes("GOOGLE_API_KEY")) {
+      return new Response(`Configuration Error: ${errMsg}. Please ensure it is set in your .env file.`, { status: 500 });
+    }
+    return new Response(`Server Error: ${errMsg}`, { status: 500 });
   }
 }

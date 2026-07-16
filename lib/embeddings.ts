@@ -30,11 +30,27 @@ export class HuggingFaceInferenceEmbeddings extends Embeddings {
   }
 }
 
-if (!process.env.HUGGINGFACE_API_KEY) {
-  throw new Error("Missing HUGGINGFACE_API_KEY in environment");
-}
+// Lazy proxy object for HuggingFaceInferenceEmbeddings to avoid module evaluation errors
+export const embeddings = {
+  embedDocuments: (texts: string[]) => {
+    if (!process.env.HUGGINGFACE_API_KEY) {
+      throw new Error("Missing HUGGINGFACE_API_KEY in environment");
+    }
+    const client = new HuggingFaceInferenceEmbeddings({
+      apiKey: process.env.HUGGINGFACE_API_KEY,
+      model: "sentence-transformers/all-MiniLM-L6-v2",
+    });
+    return client.embedDocuments(texts);
+  },
+  embedQuery: (text: string) => {
+    if (!process.env.HUGGINGFACE_API_KEY) {
+      throw new Error("Missing HUGGINGFACE_API_KEY in environment");
+    }
+    const client = new HuggingFaceInferenceEmbeddings({
+      apiKey: process.env.HUGGINGFACE_API_KEY,
+      model: "sentence-transformers/all-MiniLM-L6-v2",
+    });
+    return client.embedQuery(text);
+  }
+} as unknown as HuggingFaceInferenceEmbeddings;
 
-export const embeddings = new HuggingFaceInferenceEmbeddings({
-  apiKey: process.env.HUGGINGFACE_API_KEY,
-  model: "sentence-transformers/all-MiniLM-L6-v2",
-});

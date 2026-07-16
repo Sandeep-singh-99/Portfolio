@@ -17,20 +17,28 @@ export const getVectorStore = async () => {
   return cachedStore;
 };
 
-export const retrieveContext = async (query:  string) => {
+export interface RetrieveContextOptions {
+  filter?: Record<string, any>;
+  k?: number;
+}
+
+export const retrieveContext = async (query: string, options?: RetrieveContextOptions) => {
   try {
     const store = await getVectorStore();
-    const retriever = store.asRetriever({k: 6});
+    const k = options?.k !== undefined ? options?.k : 3;
+    const filter = options?.filter;
 
-    const docs = await retriever.invoke(query);
+    const docs = await store.similaritySearch(query, k, filter);
     
     if (!docs || docs.length === 0) {
-      return "No relevant data found in portfolio"
+      return "No relevant data found in portfolio";
     }
 
     return docs.map((doc) => doc.pageContent).join("\n\n");
 
   } catch (error) {
-    return "No relevant data found in portfolio"
+    console.error("Vector search retrieval failed:", error);
+    return "No relevant data found in portfolio";
   }
-}
+};
+
