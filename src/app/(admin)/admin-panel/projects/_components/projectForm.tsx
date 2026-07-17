@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
 import { toast } from "sonner";
+import MermaidCode from "@/components/MermaidCode";
 
 export default function ProjectForm() {
   const [productName, setProductName] = useState("");
@@ -25,7 +26,6 @@ export default function ProjectForm() {
   const [projectDesc, setProjectDesc] = useState("");
   const [projectSubDesc, setProjectSubDesc] = useState("");
   const [priority, setPriority] = useState<number>(0);
-
 
   const handleDescriptionChange = (value?: string) => {
     setProjectDesc(value || "");
@@ -189,6 +189,11 @@ export default function ProjectForm() {
                 value={projectDesc}
                 onChange={handleDescriptionChange}
                 height={400}
+                previewOptions={{
+                  components: {
+                    code: MermaidCode,
+                  },
+                }}
               />
             </div>
           </div>
