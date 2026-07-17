@@ -121,9 +121,11 @@ const levelMap: Record<ContributionLevel, CalendarContribution['level']> = {
   FOURTH_QUARTILE: 4,
 };
 
-const USERNAME = 'ramxcodes';
+interface GithubActivityProps {
+  username?: string;
+}
 
-export default function GithubActivity() {
+export default function GithubActivity({ username = 'ramxcodes' }: GithubActivityProps) {
   const { resolvedTheme } = useTheme();
   const [data, setData] = useState<CalendarContribution[]>([]);
   const [total, setTotal] = useState(0);
@@ -134,7 +136,7 @@ export default function GithubActivity() {
     async function fetchData() {
       try {
         const res = await fetch(
-          `https://github-contributions-api.deno.dev/${USERNAME}.json`
+          `https://github-contributions-api.deno.dev/${username}.json`
         );
         if (!res.ok) throw new Error('Fetch failed');
 

@@ -14,8 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
-import { toast } from "sonner";
 import MermaidCode from "@/components/MermaidCode";
+import { toast } from "sonner";
 
 export default function ProjectForm() {
   const [productName, setProductName] = useState("");

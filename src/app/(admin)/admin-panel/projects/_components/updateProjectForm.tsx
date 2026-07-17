@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
+import MermaidCode from "@/components/MermaidCode";
 import { toast } from "sonner";
 import { NotebookPen } from "lucide-react";
 
@@ -245,6 +246,11 @@ export default function ProjectForm({ id }: { id?: string }) {
                 value={formData.projectDesc}
                 onChange={handleDescriptionChange}
                 height={400}
+                previewOptions={{
+                  components: {
+                    code: MermaidCode,
+                  },
+                }}
               />
             </div>
           </div>

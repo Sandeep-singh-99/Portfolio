@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -1372,4 +1373,39 @@ body[data-color-mode*="light"] {
 }
 .token.entity {
   cursor: help;
+}
+
+/* Hide default markdown pre wrappers and copy button for mermaid charts */
+pre:has(.language-mermaid) {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+pre:has(.language-mermaid) button,
+pre:has(.language-mermaid) [class*="copy"] {
+  display: none !important;
+}
+
+/* Optimize global markdown prose layout spacing for compact rendering */
+.prose p {
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  margin-top: 20px !important;
+  margin-bottom: 12px !important;
+}
+
+.prose ul, .prose ol {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.prose img {
+  margin: 0 !important;
+  display: inline-block !important;
 }
