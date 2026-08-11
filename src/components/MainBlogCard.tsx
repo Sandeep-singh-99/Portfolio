@@ -52,7 +52,7 @@ const MainBlogCard: React.FC<MainBlogCardProps> = ({
         <CardContent className="p-3 flex flex-col space-y-2 flex-grow">
           {/* Header: Title */}
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight line-clamp-1">
               {title}
             </h2>
           </div>
