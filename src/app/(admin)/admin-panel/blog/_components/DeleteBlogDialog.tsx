@@ -35,11 +35,12 @@ export default function DeleteBlogDialog({
         method: "DELETE",
       });
 
+      const data = await response.json().catch(() => ({}));
       if (response.ok) {
         toast.success("Blog deleted successfully");
         router.refresh();
       } else {
-        toast.error("Failed to delete blog");
+        toast.error(data.error || "Failed to delete blog");
       }
     } catch (error) {
       console.error("Error deleting blog:", error);

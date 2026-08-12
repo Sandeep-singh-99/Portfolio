@@ -4,11 +4,11 @@ import Certificate from "../../../../../models/certificate.model";
 import { DeleteImage } from "../../../../../lib/delete-image";
 import { revalidatePath } from "next/cache";
 
-export async function DELETE(req: NextRequest,  { params }: { params: { id: string }}) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         await ConnectDB();
 
-        const { id } = params;
+        const { id } = await params;
 
         const certificate = await Certificate.findById(id);
 

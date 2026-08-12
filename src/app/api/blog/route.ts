@@ -25,39 +25,72 @@ async function uploadToCloudinary(file: File, type: "image" | "auto"): Promise<[
 }
 
 
+export async function GET() {
+  try {
+    await ConnectDB();
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    return NextResponse.json({ data: blogs }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
-    try {
-        await ConnectDB();
+  try {
+    await ConnectDB();
 
-        const formData = await req.formData();
-        const title = formData.get("title") as string;
-        const image = formData.get("image") as File;
-        const content = formData.get("content") as string;
-        const tags = formData.get("tags") as string;
+    const formData = await req.formData();
+    const title = formData.get("title") as string;
+    const image = formData.get("image") as File | null;
+    const content = formData.get("content") as string;
+    const tags = formData.get("tags") as string;
 
-        if (!title || !content || !tags) {
-            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
-        }
-
-        if (image.size > 10 * 1024 * 1024) {
-            return NextResponse.json({ error: "Image size exceeds 10MB" }, { status: 400 });
-        }
-
-        const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");
-
-        const newBlog = await Blog.create({
-            title,
-            image: imageUrl,
-            imagePublicId,
-            content,
-            tags: tags.split(",").map((tag: string) => tag.trim()),
-        })
-
-        revalidatePath("/")
-
-        return NextResponse.json({ data: newBlog }, { status: 200 })
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to create Blog"}, {status: 500})
-        
+    if (!title || !content || !tags) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
+
+    if (!image || typeof image === "string" || image.size === 0) {
+      return NextResponse.json(
+        { error: "Thumbnail image is required" },
+        { status: 400 }
+      );
+    }
+
+    if (image.size > 10 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Image size exceeds 10MB" },
+        { status: 400 }
+      );
+    }
+
+    const [imageUrl, imagePublicId] = await uploadToCloudinary(image, "image");
+
+    const newBlog = await Blog.create({
+      title,
+      image: imageUrl,
+      imagePublicId,
+      content,
+      tags: tags.split(",").map((tag: string) => tag.trim()).filter(Boolean),
+    });
+
+    revalidatePath("/admin-panel/blog");
+    revalidatePath("/blog");
+    revalidatePath("/blog/all-blogs");
+    revalidatePath("/");
+
+    return NextResponse.json({ data: newBlog }, { status: 201 });
+  } catch (error: any) {
+    console.error("Error creating blog:", error);
+    return NextResponse.json(
+      { error: error?.message || "Failed to create Blog" },
+      { status: 500 }
+    );
+  }
 }

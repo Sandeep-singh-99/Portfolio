@@ -6,11 +6,14 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-export const DeleteImage = async (publicId: string) => {
-  return new Promise((resolve, reject) => {
+export const DeleteImage = async (publicId?: string) => {
+  if (!publicId) return "ok";
+
+  return new Promise((resolve) => {
     cloudinary.uploader.destroy(publicId, (error, result) => {
       if (error) {
-        return reject(error.message);
+        console.error("Cloudinary delete error:", error);
+        return resolve("ok");
       }
       if (result?.result === "ok" || result?.result === "not found") {
         return resolve("ok");

@@ -18,11 +18,14 @@ import { toast } from "sonner";
 import { Loader, Pencil } from "lucide-react";
 import { IBlog } from "../../../../../../models/blog.model";
 
+import { useRouter } from "next/navigation";
+
 interface BlogFormProps {
   blog?: IBlog;
 }
 
 export default function BlogForm({ blog }: BlogFormProps) {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -31,20 +34,29 @@ export default function BlogForm({ blog }: BlogFormProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (blog) {
-      setTitle(blog.title);
-      setTags(blog.tags.join(", "));
-      setContent(blog.content);
+    if (open) {
+      if (blog) {
+        setTitle(blog.title || "");
+        setTags(blog.tags ? blog.tags.join(", ") : "");
+        setContent(blog.content || "");
+        setImage(null);
+      } else {
+        setTitle("");
+        setTags("");
+        setImage(null);
+        setContent("");
+      }
     }
-  }, [blog]);
+  }, [blog, open]);
 
   const handleContentChange = (value?: string) => {
     setContent(value || "");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
+
     if (!title || !tags || !content || (!blog && !image)) {
       toast.error("Please fill in all fields.");
       setLoading(false);
@@ -78,6 +90,7 @@ export default function BlogForm({ blog }: BlogFormProps) {
           setContent("");
         }
         setOpen(false);
+        router.refresh();
       } else {
         toast.error(result.error || "Failed to save Blog");
       }

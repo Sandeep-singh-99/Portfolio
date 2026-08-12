@@ -6,12 +6,12 @@ import { revalidatePath } from "next/cache";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await ConnectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     const skill = await Skill.findById(id);
 

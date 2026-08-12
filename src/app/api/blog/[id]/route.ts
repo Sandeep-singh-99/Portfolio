@@ -33,11 +33,11 @@ async function uploadToCloudinary(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await ConnectDB();
-    const { id } = params;
+    const { id } = await params;
 
     const blog = await Blog.findById(id);
 
@@ -57,12 +57,12 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await ConnectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     const blog = await Blog.findById(id);
 
@@ -70,27 +70,26 @@ export async function DELETE(
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
-    const deleteImage = await DeleteImage(blog.imagePublicId);
-
-    if (deleteImage !== "ok") {
-      return NextResponse.json(
-        { error: "Failed to delete image" },
-        { status: 500 }
-      );
+    if (blog.imagePublicId) {
+      await DeleteImage(blog.imagePublicId);
     }
 
     await Blog.findByIdAndDelete(id);
 
     revalidatePath("/admin-panel/blog");
+    revalidatePath("/blog");
+    revalidatePath("/blog/all-blogs");
+    revalidatePath(`/blog/${id}`);
     revalidatePath("/");
 
     return NextResponse.json(
       { message: "Blog deleted successfully" },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error deleting blog:", error);
     return NextResponse.json(
-      { error: "Failed to delete Blog" },
+      { error: error?.message || "Failed to delete Blog" },
       { status: 500 }
     );
   }
@@ -98,11 +97,11 @@ export async function DELETE(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await ConnectDB();
-    const { id } = params;
+    const { id } = await params;
 
     const blogExists = await Blog.findById(id);
 
@@ -114,15 +113,17 @@ export async function PATCH(
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
     const tags = formData.get("tags") as string;
-    const image = formData.get("image") as File;
+    const image = formData.get("image") as File | null;
 
     let updatedBlogData: any = {
       ...(title && { title }),
       ...(content && { content }),
-      ...(tags && { tags: tags.split(",").map((tag: string) => tag.trim()) }),
+      ...(tags && {
+        tags: tags.split(",").map((tag: string) => tag.trim()).filter(Boolean),
+      }),
     };
 
-    if (image) {
+    if (image && typeof image !== "string" && image.size > 0) {
       if (image.size > 10 * 1024 * 1024) {
         return NextResponse.json(
           { error: "Image size exceeds 10MB" },
@@ -130,13 +131,8 @@ export async function PATCH(
         );
       }
 
-      const deleteImage = await DeleteImage(blogExists.imagePublicId);
-
-      if (deleteImage !== "ok") {
-        return NextResponse.json(
-          { error: "Failed to delete old image" },
-          { status: 500 }
-        );
+      if (blogExists.imagePublicId) {
+        await DeleteImage(blogExists.imagePublicId);
       }
 
       const [imageUrl, imagePublicId] = await uploadToCloudinary(
@@ -151,18 +147,24 @@ export async function PATCH(
       };
     }
 
-    await Blog.findByIdAndUpdate(id, updatedBlogData);
+    const updatedBlog = await Blog.findByIdAndUpdate(id, updatedBlogData, {
+      new: true,
+    });
 
     revalidatePath("/admin-panel/blog");
+    revalidatePath("/blog");
+    revalidatePath("/blog/all-blogs");
+    revalidatePath(`/blog/${id}`);
     revalidatePath("/");
 
     return NextResponse.json(
-      { data: updatedBlogData, message: "Blog updated successfully" },
+      { data: updatedBlog, message: "Blog updated successfully" },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error updating blog:", error);
     return NextResponse.json(
-      { error: "Failed to update Blog" },
+      { error: error?.message || "Failed to update Blog" },
       { status: 500 }
     );
   }
