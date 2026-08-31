@@ -43,6 +43,7 @@
     "framer-motion": "^12.23.24",
     "github-calendar": "^2.3.4",
     "github-contributions-canvas": "^0.8.0",
+    "gsap": "^3.15.0",
     "langchain": "^1.2.39",
     "lucide-react": "^0.525.0",
     "mermaid": "^11.16.0",

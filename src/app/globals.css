@@ -152,7 +152,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground relative font-sans h-screen overflow-x-hidden;
+    @apply bg-background text-foreground relative font-sans min-h-screen overflow-x-hidden;
   }
 }
 @keyframes fadeInUp {
