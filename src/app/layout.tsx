@@ -10,7 +10,7 @@ import NavBar from "@/components/navbar";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  // weight: ["400", "700"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
