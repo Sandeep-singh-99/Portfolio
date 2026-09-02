@@ -45,12 +45,12 @@ export default function NavBar() {
   return (
     <div
       className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-3xl
-      px-4 py-3 rounded-2xl
-      border transition-all duration-300
+      px-4 py-2.5 rounded-full md:rounded-2xl
+      border transition-all duration-300 backdrop-blur-md select-none
       ${
         isScrolled
-          ? "bg-white/70 dark:bg-zinc-900/70 border-zinc-300/20 dark:border-zinc-700/50 shadow-md backdrop-blur-md"
-          : "bg-transparent border-transparent shadow-none"
+          ? "bg-white/50 dark:bg-black/50 border-zinc-200/60 dark:border-zinc-800/60 shadow-lg backdrop-blur-lg"
+          : "bg-white/30 dark:bg-black/30 border-zinc-200/30 dark:border-zinc-800/40 shadow-sm"
       }`}
     >
       <div className="flex items-center justify-between">
