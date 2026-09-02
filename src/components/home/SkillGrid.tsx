@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ISkill } from "../../models/skill.model";
+import { ISkill } from "../../../models/skill.model";
 
 export default function SkillGrid({ skills }: { skills: ISkill[] }) {
   // Group & sort logic (same solid foundation)

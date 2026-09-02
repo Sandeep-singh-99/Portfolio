@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
-import MermaidCode from "@/components/MermaidCode";
+import MermaidCode from "@/components/editor/MermaidCode";
 import { toast } from "sonner";
 import { NotebookPen } from "lucide-react";
 

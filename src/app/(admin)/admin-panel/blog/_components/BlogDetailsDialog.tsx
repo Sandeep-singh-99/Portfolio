@@ -12,7 +12,7 @@ import { Eye } from "lucide-react";
 import { IBlog } from "../../../../../../models/blog.model";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { MarkdownRender } from "@/components/MarkdownRender";
+import { MarkdownRender } from "@/components/editor/MarkdownRender";
 
 interface BlogDetailsDialogProps {
   blog: IBlog;

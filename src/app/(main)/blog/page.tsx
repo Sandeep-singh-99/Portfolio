@@ -1,7 +1,7 @@
 import React from "react";
 import { ConnectDB } from "../../../../lib/db";
 import Blog, { IBlog } from "../../../../models/blog.model";
-import MainBlogCard from "@/components/MainBlogCard";
+import MainBlogCard from "@/components/home/MainBlogCard";
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";

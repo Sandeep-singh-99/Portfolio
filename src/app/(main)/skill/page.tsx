@@ -10,7 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const SkillGrid = dynamic(() => import("@/components/SkillGrid"), {
+const SkillGrid = dynamic(() => import("@/components/home/SkillGrid"), {
   loading: () => (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {[...Array(8)].map((_, i) => (

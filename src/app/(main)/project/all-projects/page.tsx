@@ -1,5 +1,5 @@
 import React from "react";
-import ProjectCard from "@/components/ProjectCard";
+import ProjectCard from "@/components/home/ProjectCard";
 import Link from "next/link";
 import { ArrowLeft, Grid, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";

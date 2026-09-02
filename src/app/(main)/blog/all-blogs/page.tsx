@@ -1,5 +1,5 @@
 import React from "react";
-import MainBlogCard from "@/components/MainBlogCard";
+import MainBlogCard from "@/components/home/MainBlogCard";
 import { ConnectDB } from "../../../../../lib/db";
 import Blog, { IBlog } from "../../../../../models/blog.model";
 import { Separator } from "@/components/ui/separator";

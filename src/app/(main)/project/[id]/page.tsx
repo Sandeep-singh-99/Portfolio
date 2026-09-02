@@ -5,7 +5,7 @@ import Project, { IProject } from "../../../../../models/project.model";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
-import { MarkdownRender } from "@/components/MarkdownRender";
+import { MarkdownRender } from "@/components/editor/MarkdownRender";
 
 async function fetchProject(id: string): Promise<IProject | null> {
   await ConnectDB();

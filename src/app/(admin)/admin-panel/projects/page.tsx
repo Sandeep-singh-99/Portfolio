@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import ProjectForm from "./_components/projectForm";
 import { ConnectDB } from "../../../../../lib/db";
 import Project from "../../../../../models/project.model";
-import { MarkdownRender } from "@/components/MarkdownRender";
+import { MarkdownRender } from "@/components/editor/MarkdownRender";
 import Image from "next/image";
 import DeleteProject from "./_components/deleteProject";
 import UpdateProjectForm from "./_components/updateProjectForm";

@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/admin/sidebar";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import AdminHeader from "@/components/AdminHeader";
+import AdminHeader from "@/components/admin/AdminHeader";
 
 export default function SubLayout({ children }: { children: React.ReactNode }) {
   const session = useSession();

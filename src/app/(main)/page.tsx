@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
 import IntroPage from "./intro/page";
-import { AuroraBackground } from "@/components/AuroraBackground";
 
 const SkillPage = dynamic(() => import("./skill/page"));
 const AboutPage = dynamic(() => import("./about/page"));
@@ -16,7 +15,7 @@ export default function Home() {
       <ProjectPage />
       <SkillPage />
       <AboutPage />
-      {/* <GithubPage /> */}
+      <GithubPage />
       <CertificatePage />
       <BlogPage />
     </div>

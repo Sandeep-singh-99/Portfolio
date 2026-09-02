@@ -1,7 +1,7 @@
 import React from "react";
 import { ConnectDB } from "../../../../lib/db";
 import About, { IAbout } from "../../../../models/about.model";
-import AboutSection from "@/components/AboutSection";
+import AboutSection from "@/components/home/AboutSection";
 
 async function fetchAbout(): Promise<IAbout | null> {
   await ConnectDB();

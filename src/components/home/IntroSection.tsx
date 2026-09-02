@@ -15,7 +15,7 @@ import {
 import { motion, Variants } from "framer-motion";
 
 const TypewriterClient = dynamic(
-  () => import("@/components/TypewriterClient"),
+  () => import("@/components/home/TypewriterClient"),
   {
     ssr: false,
   }

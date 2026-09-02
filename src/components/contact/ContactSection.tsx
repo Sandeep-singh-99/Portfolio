@@ -7,8 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader, Send } from "lucide-react";
 import { toast } from "sonner";
-import { Separator } from "./ui/separator";
-import { Label } from "./ui/label";
+import { Separator } from "../ui/separator";
+import { Label } from "../ui/label";
 
 export default function ContactSection() {
   const [isLoading, setIsLoading] = useState(false);

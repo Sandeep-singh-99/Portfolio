@@ -1,7 +1,7 @@
 import React from "react";
 import { ConnectDB } from "../../../../lib/db";
 import Intro, { IIntro } from "../../../../models/intro.model";
-import IntroSection from "@/components/IntroSection";
+import IntroSection from "@/components/home/IntroSection";
 
 async function fetchIntro(): Promise<IIntro | null> {
   await ConnectDB();

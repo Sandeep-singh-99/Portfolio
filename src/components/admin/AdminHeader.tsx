@@ -1,6 +1,6 @@
 import React from 'react'
-import { SidebarTrigger } from './ui/sidebar'
-import { ModeToggle } from './ModeToggle'
+import { SidebarTrigger } from '../ui/sidebar'
+import { ModeToggle } from '../ModeToggle'
 
 export default function AdminHeader() {
   return (

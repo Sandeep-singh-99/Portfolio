@@ -1,7 +1,7 @@
 import React from "react";
 import { ConnectDB } from "../../../../../lib/db";
 import Blog, { IBlog } from "../../../../../models/blog.model";
-import { MarkdownRender } from "@/components/MarkdownRender";
+import { MarkdownRender } from "@/components/editor/MarkdownRender";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";

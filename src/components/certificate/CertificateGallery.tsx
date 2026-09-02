@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
 import CertificateCard from "./CertificateCard";
-import { ICertificate } from "../../models/certificate.model";
+import { ICertificate } from "../../../models/certificate.model";
 
 interface CertificateGalleryProps {
   certificates: ICertificate[];

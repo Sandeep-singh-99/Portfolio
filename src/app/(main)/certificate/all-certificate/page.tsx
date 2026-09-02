@@ -3,7 +3,7 @@ import { ConnectDB } from "../../../../../lib/db";
 import Certificate, {
   ICertificate,
 } from "../../../../../models/certificate.model";
-import CertificateGallery from "@/components/CertificateGallery";
+import CertificateGallery from "@/components/certificate/CertificateGallery";
 import { Separator } from "@/components/ui/separator";
 
 async function fetchCertificates(): Promise<ICertificate[]> {
