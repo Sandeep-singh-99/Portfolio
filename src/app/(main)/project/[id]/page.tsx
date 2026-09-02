@@ -63,6 +63,8 @@ export default async function ProjectPageById({
               fill
               className="object-cover"
               priority
+              loading="eager"
+              sizes="(max-width: 1024px) 100vw, 1024px"
             />
           </div>
 

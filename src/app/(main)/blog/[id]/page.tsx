@@ -61,6 +61,8 @@ export default async function BlogPageById({
               fill
               className="object-cover"
               priority
+              loading="eager"
+              sizes="(max-width: 1024px) 100vw, 1024px"
             />
           </div>
 

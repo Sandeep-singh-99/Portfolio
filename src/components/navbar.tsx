@@ -62,6 +62,7 @@ export default function NavBar() {
             width={30}
             height={30}
             priority
+            loading="eager"
             className="rounded-full w-10 h-10 object-contain"
           />
         </Link>

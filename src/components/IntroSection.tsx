@@ -84,7 +84,8 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             alt={intro.name}
             fill
             priority
-            sizes="112px"
+            loading="eager"
+            sizes="(max-width: 768px) 96px, 112px"
             className="object-cover"
           />
         </div>

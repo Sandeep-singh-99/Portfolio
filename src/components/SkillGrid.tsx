@@ -75,6 +75,7 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
                       src={skill.skillImage}
                       alt={skill.skillName}
                       fill
+                      sizes="32px"
                       className="object-contain p-1"
                     />
                   </div>

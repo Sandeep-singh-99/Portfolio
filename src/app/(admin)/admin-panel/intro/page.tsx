@@ -60,6 +60,8 @@ export default async function IntroPage() {
                         fill
                         className="object-cover"
                         priority
+                        loading="eager"
+                        sizes="(max-width: 768px) 100vw, 40vw"
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full text-muted-foreground">
