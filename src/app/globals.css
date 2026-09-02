@@ -69,6 +69,7 @@
 }
 
 :root {
+  --dot-ink: 115 115 115;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -104,6 +105,7 @@
 }
 
 .dark {
+  --dot-ink: 255 255 255;
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
@@ -192,6 +194,14 @@
   animation: none;
   mix-blend-mode: normal;
   display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
 }
 
 /*

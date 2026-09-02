@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 import { GlobalChatWidget } from "@/components/GlobalChatWidget";
+import NavBar from "@/components/navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -87,7 +88,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased min-h-screen bg-slate-50 dark:bg-[#030712]`}>
+      <body className={`${inter.className} antialiased min-h-screen bg-slate-50 dark:bg-black`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -95,6 +96,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Toaster richColors />
+          <NavBar />
           {children}
           <GlobalChatWidget />
           <Analytics />

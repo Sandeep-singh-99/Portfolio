@@ -81,48 +81,9 @@ export default function NavBar() {
           </nav>
 
           <button
-            onClick={(e) => {
-              const newTheme = theme === "dark" ? "light" : "dark";
-
-              // @ts-ignore
-              if (!document.startViewTransition) {
-                setTheme(newTheme);
-                return;
-              }
-
-              const x = e.clientX;
-              const y = e.clientY;
-              const right = window.innerWidth - x;
-              const bottom = window.innerHeight - y;
-              const maxRadius = Math.hypot(
-                Math.max(x, right),
-                Math.max(y, bottom)
-              );
-
-              // @ts-ignore
-              const transition = document.startViewTransition(() => {
-                setTheme(newTheme);
-              });
-
-              transition.ready.then(() => {
-                const clipPath = [
-                  `circle(0px at ${x}px ${y}px)`,
-                  `circle(${maxRadius}px at ${x}px ${y}px)`,
-                ];
-
-                document.documentElement.animate(
-                  {
-                    clipPath: clipPath,
-                  },
-                  {
-                    duration: 1000,
-                    easing: "ease-in-out",
-                    pseudoElement: "::view-transition-new(root)",
-                  }
-                );
-              });
-            }}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="cursor-pointer px-4 relative flex items-center justify-center"
+            aria-label="Toggle theme"
           >
             <motion.div
               initial={{ rotate: 0, scale: 1 }}
