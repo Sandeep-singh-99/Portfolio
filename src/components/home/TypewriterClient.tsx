@@ -6,30 +6,30 @@ interface TypewriterClientProps {
   words: string[];
 }
 
-// text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-600 via-gray-500 to-gray-400 dark:from-gray-300 dark:via-gray-400 dark:to-gray-600
-
 export default function TypewriterClient({ words }: TypewriterClientProps) {
+  if (!words || words.length === 0) return null;
+
   return (
-    <h2 className="text-sx dark:text-gray-300 text-gray-700">
+    <span className="inline-block font-mono text-sm sm:text-base font-medium text-muted-foreground">
       <Typewriter
         options={{
           loop: true,
-          delay: 100,
-          deleteSpeed: 50,
+          delay: 80,
+          deleteSpeed: 40,
           cursor: "|",
-          cursorClassName: "animate-blink",
+          cursorClassName: "text-primary/70 font-light",
         }}
         onInit={(typewriter) => {
           words.forEach((text) => {
             typewriter
               .typeString(text)
-              .pauseFor(1000)
+              .pauseFor(1500)
               .deleteAll()
-              .pauseFor(500);
+              .pauseFor(400);
           });
           typewriter.start();
         }}
       />
-    </h2>
+    </span>
   );
 }
