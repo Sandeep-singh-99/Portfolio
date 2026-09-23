@@ -1,10 +1,26 @@
 import React from "react";
+import type { Metadata } from "next";
 import { ConnectDB } from "../../../../../lib/db";
 import Certificate, {
   ICertificate,
 } from "../../../../../models/certificate.model";
 import CertificateGallery from "@/components/certificate/CertificateGallery";
 import { Separator } from "@/components/ui/separator";
+
+export const metadata: Metadata = {
+  title: "Certificates",
+  description:
+    "Professional certifications, licenses, and technical credentials earned by Sandeep Singh in web development and computer science.",
+  openGraph: {
+    title: "Certificates | Sandeep Singh",
+    description:
+      "Professional certifications and technical credentials earned by Sandeep Singh.",
+    url: "https://sandeep-singh.com/certificate/all-certificate",
+  },
+  alternates: {
+    canonical: "https://sandeep-singh.com/certificate/all-certificate",
+  },
+};
 
 async function fetchCertificates(): Promise<ICertificate[]> {
   await ConnectDB();

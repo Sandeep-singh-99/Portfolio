@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import ProjectCard from "@/components/home/ProjectCard";
 import Link from "next/link";
 import { ArrowLeft, Grid, MoveRight } from "lucide-react";
@@ -6,6 +7,21 @@ import { Button } from "@/components/ui/button";
 import { ConnectDB } from "../../../../../lib/db";
 import Project, { IProject } from "../../../../../models/project.model";
 import { Separator } from "@/components/ui/separator";
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description:
+    "Explore web development and software engineering projects built by Sandeep Singh using Next.js, React, Node.js, and TypeScript.",
+  openGraph: {
+    title: "Projects | Sandeep Singh",
+    description:
+      "Explore web development and software engineering projects built by Sandeep Singh.",
+    url: "https://sandeep-singh.com/project/all-projects",
+  },
+  alternates: {
+    canonical: "https://sandeep-singh.com/project/all-projects",
+  },
+};
 
 async function fetchProjects(): Promise<IProject[]> {
   await ConnectDB();

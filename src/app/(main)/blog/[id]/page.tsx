@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { ConnectDB } from "../../../../../lib/db";
 import Blog, { IBlog } from "../../../../../models/blog.model";
 import { MarkdownRender } from "@/components/editor/MarkdownRender";
@@ -20,6 +21,54 @@ async function fetchBlog(id: string): Promise<IBlog | null> {
     console.error("Error fetching blog:", error);
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const blog = await fetchBlog(id);
+
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog post could not be found.",
+    };
+  }
+
+  const title = `${blog.title} | Blog`;
+  const snippet = blog.content
+    ? blog.content.slice(0, 160).replace(/[#*`\n]/g, " ").trim() + "..."
+    : `Read ${blog.title} by Sandeep Singh.`;
+
+  return {
+    title,
+    description: snippet,
+    keywords: [
+      blog.title,
+      ...(blog.tags || []),
+      "Sandeep Singh",
+      "Web Development Blog",
+    ],
+    openGraph: {
+      title,
+      description: snippet,
+      type: "article",
+      url: `https://sandeep-singh.com/blog/${id}`,
+      images: blog.image ? [{ url: blog.image, alt: blog.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: snippet,
+      images: blog.image ? [blog.image] : [],
+    },
+    alternates: {
+      canonical: `https://sandeep-singh.com/blog/${id}`,
+    },
+  };
 }
 
 export default async function BlogPageById({

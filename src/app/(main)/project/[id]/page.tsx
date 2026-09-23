@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { ConnectDB } from "../../../../../lib/db";
 import Project, { IProject } from "../../../../../models/project.model";
 
@@ -21,6 +22,56 @@ async function fetchProject(id: string): Promise<IProject | null> {
     console.error("Error fetching project:", error);
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const project = await fetchProject(id);
+
+  if (!project) {
+    return {
+      title: "Project Not Found",
+      description: "The requested project could not be found.",
+    };
+  }
+
+  const title = `${project.projectName} | Projects`;
+  const description =
+    project.projectSubDesc ||
+    `Details about ${project.projectName}, built with ${project.projectTechStack?.join(", ") || "modern tech"}.`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      project.projectName,
+      ...(project.projectTechStack || []),
+      "Sandeep Singh",
+      "Full Stack Project",
+    ],
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `https://sandeep-singh.com/project/${id}`,
+      images: project.projectImage
+        ? [{ url: project.projectImage, alt: project.projectName }]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: project.projectImage ? [project.projectImage] : [],
+    },
+    alternates: {
+      canonical: `https://sandeep-singh.com/project/${id}`,
+    },
+  };
 }
 
 export default async function ProjectPageById({

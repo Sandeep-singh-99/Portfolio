@@ -65,6 +65,9 @@ export const metadata: Metadata = {
     images: ["/profilePic.png"],
     creator: "@Sandeep_singh_99",
   },
+  alternates: {
+    canonical: "https://sandeep-singh.com",
+  },
   icons: {
     icon: "/favicon.ico",
   },
@@ -81,6 +84,39 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://sandeep-singh.com/#person",
+      name: "Sandeep Singh",
+      url: "https://sandeep-singh.com",
+      image: "https://sandeep-singh.com/profilePic.png",
+      jobTitle: "Full Stack Developer",
+      sameAs: [
+        "https://github.com/Sandeep-singh-99",
+        "https://www.linkedin.com/in/sandeep-singh-7a0219320",
+        "https://x.com/SinghNecoder",
+        "https://www.instagram.com/sandeep.necoder",
+      ],
+      description:
+        "Full Stack Developer specializing in Next.js, React, Node.js, and TypeScript.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://sandeep-singh.com/#website",
+      url: "https://sandeep-singh.com",
+      name: "Sandeep Singh Portfolio",
+      description:
+        "Portfolio of Sandeep Singh - Full Stack Developer specializing in Next.js, React, and Node.js.",
+      publisher: {
+        "@id": "https://sandeep-singh.com/#person",
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -88,6 +124,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${inter.className} antialiased min-h-screen bg-slate-50 dark:bg-black`}>
         <ThemeProvider
           attribute="class"

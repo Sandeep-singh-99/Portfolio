@@ -1,0 +1,19 @@
+# Sandeep Singh - Portfolio & Technical Profile
+
+> Full Stack Developer specializing in modern web technologies, AI-powered applications, Next.js, React, Node.js, and TypeScript.
+
+- Website: https://sandeep-singh.com
+- GitHub: https://github.com/Sandeep-singh-99
+- LinkedIn: https://www.linkedin.com/in/sandeep-singh-7a0219320
+- Contact: https://sandeep-singh.com/contact
+
+## Core Technical Skills
+- **Frontend**: Next.js (App Router), React 19, TypeScript, Tailwind CSS, Framer Motion, HTML5, CSS3
+- **Backend & Cloud**: Node.js, Express, MongoDB, RESTful APIs, LangChain, Pinecone, NextAuth
+- **Developer Tools**: Git, GitHub, Turbopack, VS Code, Vercel
+
+## Key Sections
+- [Projects](https://sandeep-singh.com/project/all-projects): Production applications, web tools, and full-stack software.
+- [Blog](https://sandeep-singh.com/blog/all-blogs): Technical tutorials, engineering guides, and web development insights.
+- [Certificates](https://sandeep-singh.com/certificate/all-certificate): Verified course completions and technical credentials.
+- [Contact](https://sandeep-singh.com/contact): Direct form and communication channels.
