@@ -72,8 +72,22 @@ export function InteractiveDots({
     let previous = 0;
     let elapsed = 0;
     let visible = true;
+    let isDark = document.documentElement.classList.contains("dark");
     let lightSprites: HTMLCanvasElement[] = [];
     let darkSprites: HTMLCanvasElement[] = [];
+
+    // Observe class change on documentElement to avoid querying DOM 60 times/sec
+    const themeObserver = new MutationObserver(() => {
+      isDark = document.documentElement.classList.contains("dark");
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const createSpritesForInk = (ink: { r: number; g: number; b: number }, baseAlpha: number) => {
       return Array.from({ length: SPRITE_STEPS }, (_, step) => {
@@ -113,14 +127,16 @@ export function InteractiveDots({
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
       dots.length = 0;
-      const cols = Math.floor(width / SPACING);
-      const rows = Math.floor(height / SPACING);
-      const insetX = (width - (cols - 1) * SPACING) / 2;
-      const insetY = (height - (rows - 1) * SPACING) / 2;
+      // Responsive dot spacing: reduces heavy CPU particle iterations on mobile
+      const spacing = width < 640 ? 18 : 14;
+      const cols = Math.floor(width / spacing);
+      const rows = Math.floor(height / spacing);
+      const insetX = (width - (cols - 1) * spacing) / 2;
+      const insetY = (height - (rows - 1) * spacing) / 2;
       for (let row = 0; row < rows; row += 1) {
         for (let col = 0; col < cols; col += 1) {
-          const ox = insetX + SPACING * col;
-          const oy = insetY + SPACING * row;
+          const ox = insetX + spacing * col;
+          const oy = insetY + spacing * row;
           dots.push({ ox, oy, x: ox, y: oy, vx: 0, vy: 0, glow: 0 });
         }
       }
@@ -133,7 +149,7 @@ export function InteractiveDots({
       // Clamped so a backgrounded tab does not resume with one huge step.
       const dt = Math.min(0.05, Math.max(0, (now - previous) / 1000));
       previous = now;
-      if (!visible || document.hidden || dt === 0) return;
+      if (!visible || document.hidden || dt === 0 || prefersReducedMotion) return;
 
       elapsed += dt;
       ctx.clearRect(0, 0, width, height);
@@ -142,7 +158,6 @@ export function InteractiveDots({
       const glowLerp = 1 - Math.pow(DAMPING, 60 * dt);
       const damping = Math.pow(DAMPING, 60 * dt);
 
-      const isDark = document.documentElement.classList.contains("dark");
       const activeSprites = isDark ? darkSprites : lightSprites;
 
       for (let i = ripples.length - 1; i >= 0; i -= 1) {
@@ -261,6 +276,7 @@ export function InteractiveDots({
       cancelAnimationFrame(frame);
       resizeWatcher.disconnect();
       viewWatcher.disconnect();
+      themeObserver.disconnect();
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerleave", onLeave);

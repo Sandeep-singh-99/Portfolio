@@ -5,10 +5,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // images: {
-  //    domains: ['res.cloudinary.com', "www.pexels.com", "images.pexels.com"],
-  // }
+  compress: true,
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
         protocol: "https",

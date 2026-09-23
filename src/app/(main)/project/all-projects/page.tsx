@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 async function fetchProjects(): Promise<IProject[]> {
   await ConnectDB();
   const projects = await Project.find()

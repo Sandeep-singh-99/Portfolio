@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 async function fetchBlogs(): Promise<IBlog[]> {
   await ConnectDB();
   const blogs = await Blog.find().sort({ createdAt: -1 }).lean<IBlog[]>();

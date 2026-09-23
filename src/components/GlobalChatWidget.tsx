@@ -3,15 +3,20 @@
 import * as React from "react";
 import { MessageCircle, X, Send, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { v4 as uuidv4 } from "uuid";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MarkdownRender } from "./editor/MarkdownRender";
 
-
+const MarkdownRender = dynamic(
+  () => import("./editor/MarkdownRender").then((mod) => mod.MarkdownRender),
+  {
+    ssr: false,
+    loading: () => <div className="h-5 w-32 bg-muted animate-pulse rounded" />,
+  }
+);
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -35,7 +40,10 @@ export function GlobalChatWidget() {
   React.useEffect(() => {
     let id = localStorage.getItem("portfolio_chat_session");
     if (!id) {
-      id = uuidv4();
+      id =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Math.random().toString(36).slice(2);
       localStorage.setItem("portfolio_chat_session", id);
     }
     setSessionId(id);

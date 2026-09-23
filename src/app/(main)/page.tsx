@@ -8,6 +8,8 @@ const CertificatePage = dynamic(() => import("./certificate/page"));
 const GithubPage = dynamic(() => import("./github/page"));
 const BlogPage = dynamic(() => import("./blog/page"));
 
+export const revalidate = 3600;
+
 export default function Home() {
   return (
     <div className="py-10 space-y-10">

@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 async function fetchCertificates(): Promise<ICertificate[]> {
   await ConnectDB();
   const certificates = await Certificate.find()
