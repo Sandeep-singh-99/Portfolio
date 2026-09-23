@@ -86,8 +86,9 @@ export default function ContactSection() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
-                  <Label className="text-sm font-medium">Name *</Label>
+                  <Label htmlFor="contact-name" className="text-sm font-medium">Name *</Label>
                   <Input
+                    id="contact-name"
                     type="text"
                     name="name"
                     placeholder="Your full name"
@@ -95,8 +96,9 @@ export default function ContactSection() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label className="text-sm font-medium">Phone *</Label>
+                  <Label htmlFor="contact-phone" className="text-sm font-medium">Phone *</Label>
                   <Input
+                    id="contact-phone"
                     type="tel"
                     name="phone"
                     placeholder="+1 (123) xxx-xxxx"
@@ -105,8 +107,9 @@ export default function ContactSection() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <Label className="text-sm font-medium">Email *</Label>
+                <Label htmlFor="contact-email" className="text-sm font-medium">Email *</Label>
                 <Input
+                  id="contact-email"
                   type="email"
                   name="email"
                   placeholder="your.email@example.com"
@@ -114,8 +117,9 @@ export default function ContactSection() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label className="text-sm font-medium">Message *</Label>
+                <Label htmlFor="contact-message" className="text-sm font-medium">Message *</Label>
                 <Textarea
+                  id="contact-message"
                   name="message"
                   placeholder="Tell me about your project or just say hello..."
                   className="h-32"
@@ -125,6 +129,7 @@ export default function ContactSection() {
               <Button
                 type="submit"
                 disabled={isLoading}
+                aria-label="Send message"
                 className="font-semibold w-40 cursor-pointer"
               >
                 {isLoading && <Loader className="animate-spin" />}

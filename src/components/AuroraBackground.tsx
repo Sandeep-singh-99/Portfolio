@@ -272,7 +272,7 @@ export function InteractiveDots({
     <div
       ref={hostRef}
       className={`fixed inset-0 top-0 left-0 right-0 bottom-0 w-full h-full min-h-screen min-h-[100dvh] -z-10 pointer-events-none overflow-hidden bg-slate-50 dark:bg-black transition-colors duration-500 select-none ${className}`}
-      aria-label="Interactive dot field"
+      aria-hidden="true"
     >
       <canvas ref={canvasRef} aria-hidden className="block h-full w-full absolute inset-0" />
       <div className="absolute inset-0 z-20 bg-gradient-to-b from-slate-50/50 via-transparent to-slate-50/70 dark:from-black/40 dark:via-transparent dark:to-black/60 pointer-events-none" />

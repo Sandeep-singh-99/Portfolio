@@ -40,11 +40,11 @@ export default async function BlogPage() {
       </div>
 
       <div className="text-center mt-10">
-        <Link href="/blog/all-blogs">
-          <Button variant="outline" className=" hover:bg-white cursor-pointer ">
+        <Button asChild variant="outline" className="hover:bg-white cursor-pointer">
+          <Link href="/blog/all-blogs">
             Show all blogs <MoveRight />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </div>
   );

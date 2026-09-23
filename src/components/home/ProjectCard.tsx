@@ -65,9 +65,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <CardContent className="p-3 flex flex-col space-y-2 flex-grow">
           {/* Header: Title & Links */}
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+            <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
               {projectName}
-            </h2>
+            </h3>
 
             <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
               <TooltipProvider>
@@ -78,6 +78,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                         href={liveLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Live demo for ${projectName}`}
                         className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                       >
                         <Globe size={20} strokeWidth={1.5} />
@@ -95,6 +96,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                         href={githubLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`GitHub repository for ${projectName}`}
                         className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                       >
                         <Github size={20} strokeWidth={1.5} />
@@ -116,9 +118,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           {/* Tech Stack */}
           <div className="mt-2">
-            <h3 className="text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
+            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
               Technologies
-            </h3>
+            </span>
             <div className="flex flex-wrap gap-2">
               {projectTechStack.slice(0, 3).map((tech, index) => (
                 <div
@@ -153,6 +155,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
             <Link
               href={`/project/${_id}`}
+              aria-label={`View details for ${projectName}`}
               className="
                 flex items-center gap-1 
                 text-sm font-medium text-zinc-600 dark:text-zinc-400 

@@ -43,7 +43,7 @@ export default function NavBar() {
   ];
 
   return (
-    <div
+    <header
       className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-3xl
       px-4 py-2.5 rounded-full md:rounded-2xl
       border transition-all duration-300 backdrop-blur-md select-none
@@ -55,10 +55,10 @@ export default function NavBar() {
     >
       <div className="flex items-center justify-between">
         {/* Logo */}
-        <Link href={"/"} className="flex items-center">
+        <Link href={"/"} className="flex items-center" aria-label="Sandeep Singh Home">
           <Image
             src={"/profilePic.png"}
-            alt="Profile Picture"
+            alt="Sandeep Singh"
             width={30}
             height={30}
             priority
@@ -69,7 +69,7 @@ export default function NavBar() {
 
         {/* Theme toggle + Mobile menu icon */}
         <div className="flex items-center gap-4">
-          <nav className="hidden md:flex space-x-6 text-sm font-medium">
+          <nav aria-label="Primary navigation" className="hidden md:flex space-x-6 text-sm font-medium">
             {links.map((link) => (
               <Link
                 key={link.title}
@@ -97,8 +97,11 @@ export default function NavBar() {
 
           {/* Menu icon (mobile only) */}
           <button
-            className="md:hidden text-zinc-700 dark:text-zinc-200"
+            className="md:hidden text-zinc-700 dark:text-zinc-200 cursor-pointer"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -107,7 +110,11 @@ export default function NavBar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-3 flex flex-col items-center space-y-2 text-sm font-medium">
+        <nav
+          id="mobile-nav"
+          aria-label="Mobile navigation"
+          className="md:hidden mt-3 flex flex-col items-center space-y-2 text-sm font-medium"
+        >
           {links.map((link) => (
             <Link
               key={link.title}
@@ -118,8 +125,8 @@ export default function NavBar() {
               {link.title}
             </Link>
           ))}
-        </div>
+        </nav>
       )}
-    </div>
+    </header>
   );
 }

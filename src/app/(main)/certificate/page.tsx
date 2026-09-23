@@ -46,11 +46,11 @@ export default async function CertificatePage() {
       <CertificateGallery certificates={certificates} limit={3} />
 
       <div className="text-center mt-10">
-        <Link href="/certificate/all-certificate">
-          <Button variant="outline" className=" hover:bg-white cursor-pointer ">
+        <Button asChild variant="outline" className="hover:bg-white cursor-pointer">
+          <Link href="/certificate/all-certificate">
             Show all Certificates <MoveRight />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
     </div>
   );

@@ -15,7 +15,9 @@ export default function AboutSection({ about }: { about: IAbout }) {
       >
         <div className="flex flex-col mb-2">
           <p className="text-sm dark:text-gray-400 text-gray-700">About</p>
-          <h2 className="md:text-xl text-xl font-bold">Me</h2>
+          <h2 className="md:text-xl text-xl font-bold">
+            <span className="sr-only">About </span>Me
+          </h2>
         </div>
         <div className="prose dark:prose-invert max-w-none">
           <p className="md:text-lg text-sm opacity-80 leading-relaxed whitespace-pre-wrap">

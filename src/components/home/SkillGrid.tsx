@@ -55,9 +55,9 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
             transition={{ duration: 0.5, delay: catIndex * 0.1 }}
             className="mb-8"
           >
-            <h2 className="md:text-xl text-lg font-bold text-zinc-800 dark:text-white mb-6 capitalize flex items-center gap-2">
+            <h3 className="md:text-xl text-lg font-bold text-zinc-800 dark:text-white mb-6 capitalize flex items-center gap-2">
               {category}
-            </h2>
+            </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {categorySkills.map((skill, index) => (
                 <div
@@ -81,9 +81,9 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
                   </div>
 
                   {/* Skill Name */}
-                  <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                     {skill.skillName}
-                  </h2>
+                  </span>
                 </div>
               ))}
             </div>

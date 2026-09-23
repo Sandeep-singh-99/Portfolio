@@ -39,7 +39,7 @@ export default async function ProjectPageById({
             404 – Project Not Found
           </h1>
           <Link
-            href="/projects"
+            href="/project/all-projects"
             className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline font-medium"
           >
             <ArrowLeft size={20} />
@@ -80,6 +80,7 @@ export default async function ProjectPageById({
                   href={project.liveLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`View live website for ${project.projectName}`}
                   className="flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-medium hover:scale-105 transition-transform"
                 >
                   <ExternalLink size={18} />
@@ -92,6 +93,7 @@ export default async function ProjectPageById({
                   href={project.githubLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`View source code for ${project.projectName} on GitHub`}
                   className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-800 text-white rounded-full font-medium hover:scale-105 transition-transform border border-zinc-800 dark:border-zinc-700"
                 >
                   <Github size={18} />

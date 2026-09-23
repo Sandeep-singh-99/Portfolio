@@ -140,28 +140,29 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         variants={item}
         className="flex flex-wrap items-center gap-3 pt-1"
       >
-        <Link href="/contact">
-          <Button className="h-10 px-5 rounded-full font-medium gap-2 shadow-xs hover:shadow-sm cursor-pointer group transition-all">
+        <Button asChild className="h-10 px-5 rounded-full font-medium gap-2 shadow-xs hover:shadow-sm cursor-pointer group transition-all">
+          <Link href="/contact">
             <span>Get in touch</span>
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
 
-        <a
-          href={intro.file}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block"
+        <Button
+          asChild
+          variant="outline"
+          className="h-10 px-5 rounded-full font-medium gap-2 border-border/80 hover:bg-accent/60 cursor-pointer transition-all group"
         >
-          <Button
-            variant="outline"
-            className="h-10 px-5 rounded-full font-medium gap-2 border-border/80 hover:bg-accent/60 cursor-pointer transition-all group"
+          <a
+            href={intro.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View Resume / CV (opens in a new tab)"
           >
             <FileText className="size-4" />
             <span>Resume / CV</span>
             <ExternalLink className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Button>
-        </a>
+          </a>
+        </Button>
 
         <div className="hidden sm:block h-5 w-px bg-border/60 mx-1" />
 

@@ -11,8 +11,8 @@ const GithubActivity = dynamic(() => import("@/components/home/GithubActivity"),
 
 export default function GithubPage() {
   return (
-    <main className="">
+    <section aria-label="GitHub Activity">
       <GithubActivity username="Sandeep-singh-99" />
-    </main>
+    </section>
   );
 }

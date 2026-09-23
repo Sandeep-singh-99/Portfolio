@@ -155,7 +155,12 @@ export function GlobalChatWidget() {
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="mb-0 sm:mb-2 w-full h-full sm:w-auto sm:h-auto"
           >
-            <div className="w-full h-full sm:w-[450px] sm:h-[600px] sm:max-h-[80vh] shadow-2xl border-0 sm:border border-white/10 rounded-none sm:rounded-2xl overflow-hidden flex flex-col bg-background/95 sm:bg-background/60 backdrop-blur-xl ring-0 sm:ring-1 ring-white/5">
+            <div
+              role="dialog"
+              aria-modal="false"
+              aria-label="Chat with Sandeep's Assistant"
+              className="w-full h-full sm:w-[450px] sm:h-[600px] sm:max-h-[80vh] shadow-2xl border-0 sm:border border-white/10 rounded-none sm:rounded-2xl overflow-hidden flex flex-col bg-background/95 sm:bg-background/60 backdrop-blur-xl ring-0 sm:ring-1 ring-white/5"
+            >
               {/* Header */}
               <div className="bg-secondary/50 border-b border-border/50 p-4 flex items-center justify-between select-none backdrop-blur-md">
                 <div className="flex items-center gap-4">
@@ -186,6 +191,7 @@ export function GlobalChatWidget() {
                   size="icon"
                   className="h-8 w-8 rounded-full hover:bg-background/20 text-muted-foreground hover:text-foreground transition-colors sm:hidden"
                   onClick={toggleChat}
+                  aria-label="Close chat"
                 >
                   <X className="h-5 w-5" />
                   <span className="sr-only">Close chat</span>
@@ -340,6 +346,7 @@ export function GlobalChatWidget() {
                     placeholder="Type a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    aria-label="Type your message"
                     className="flex-1 rounded-full bg-secondary text-foreground border-input focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-input pl-4 py-6 shadow-xs transition-all hover:bg-secondary/80 text-sm placeholder:text-muted-foreground"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -351,6 +358,7 @@ export function GlobalChatWidget() {
                         variant="ghost"
                         className="h-9 w-9 rounded-full text-destructive hover:bg-destructive/10"
                         onClick={cancelStream}
+                        aria-label="Stop generating response"
                       >
                         <Square className="h-4 w-4" />
                         <span className="sr-only">Stop generating</span>
@@ -359,6 +367,7 @@ export function GlobalChatWidget() {
                     <Button
                       type="submit"
                       size="icon"
+                      aria-label="Send message"
                       className={`h-9 w-9 cursor-pointer shrink-0 rounded-full shadow-md transition-all duration-300 ${message.trim() ? "bg-primary text-primary-foreground hover:bg-primary/90 scale-100" : "bg-muted text-muted-foreground scale-90 opacity-70"}`}
                       disabled={!message.trim()}
                     >
@@ -379,6 +388,8 @@ export function GlobalChatWidget() {
         onClick={toggleChat}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        aria-label={isOpen ? "Close chat" : "Chat with Sandeep's Assistant"}
+        aria-expanded={isOpen}
         className={`h-14 w-14 rounded-full shadow-2xl hover:shadow-primary/40 transition-all duration-300 bg-black dark:bg-secondary text-white z-50 flex items-center justify-center cursor-pointer ring-2 ring-white/10 ${isOpen ? "hidden sm:flex" : "flex"}`}
       >
         <AnimatePresence mode="wait" initial={false}>

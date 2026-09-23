@@ -18,6 +18,16 @@ export default function CertificateGallery({
 }: CertificateGalleryProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  // Close modal on Escape key press
+  React.useEffect(() => {
+    if (!selectedId) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedId(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedId]);
+
   const displayedCertificates = limit
     ? certificates.slice(0, limit)
     : certificates;
@@ -37,7 +47,12 @@ export default function CertificateGallery({
 
       <AnimatePresence>
         {selectedId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Certificate Preview"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -52,6 +67,7 @@ export default function CertificateGallery({
             >
               <button
                 onClick={() => setSelectedId(null)}
+                aria-label="Close certificate preview"
                 className="absolute -top-12 right-0 z-20 p-2 text-white hover:text-zinc-300 transition-colors cursor-pointer"
               >
                 <X size={32} />
@@ -65,7 +81,7 @@ export default function CertificateGallery({
                   return selectedCert ? (
                     <Image
                       src={selectedCert.imageUrl}
-                      alt="Certificate"
+                      alt="Enlarged certificate preview"
                       fill
                       className="object-contain"
                       sizes="100vw"

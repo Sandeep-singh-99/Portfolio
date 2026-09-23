@@ -138,7 +138,12 @@ export default function GithubActivity({
         </h2>
       </div>
 
-      <div className="w-full overflow-x-auto">
+      <div
+        className="w-full overflow-x-auto focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg"
+        role="region"
+        tabIndex={0}
+        aria-label="GitHub contribution calendar"
+      >
         <ActivityCalendar
           data={data}
           blockSize={12}

@@ -53,16 +53,16 @@ const MainBlogCard: React.FC<MainBlogCardProps> = ({
         <CardContent className="p-3 flex flex-col space-y-2 flex-grow">
           {/* Header: Title */}
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight line-clamp-1">
+            <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight line-clamp-1">
               {title}
-            </h2>
+            </h3>
           </div>
 
           {/* Tags */}
           <div className="mt-2">
-            <h3 className="text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
+            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
               Tags
-            </h3>
+            </span>
             <div className="flex flex-wrap gap-2">
               {tags.slice(0, 3).map((tag, index) => (
                 <div
@@ -97,6 +97,7 @@ const MainBlogCard: React.FC<MainBlogCardProps> = ({
 
             <Link
               href={`/blog/${_id}`}
+              aria-label={`Read article: ${title}`}
               className="
                 flex items-center gap-1 
                 text-sm font-medium text-zinc-600 dark:text-zinc-400 
