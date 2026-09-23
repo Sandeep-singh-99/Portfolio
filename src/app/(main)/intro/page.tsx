@@ -18,6 +18,8 @@ async function fetchIntro(): Promise<IIntro | null> {
   return null;
 }
 
+export const revalidate = 3600;
+
 export default async function IntroPage() {
   const intro = await fetchIntro();
 

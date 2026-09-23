@@ -18,6 +18,9 @@ const TypewriterClient = dynamic(
   () => import("@/components/home/TypewriterClient"),
   {
     ssr: false,
+    loading: () => (
+      <span className="text-muted-foreground">Full Stack Developer</span>
+    ),
   }
 );
 
@@ -57,41 +60,14 @@ const links = [
   },
 ];
 
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-};
-
 export default function IntroSection({ intro }: { intro: IIntro }) {
   return (
-    <motion.section
-      variants={container}
-      initial="hidden"
-      animate="show"
+    <section
       className="flex flex-col gap-6"
       aria-label="Introduction"
     >
-      {/* Top Header: Avatar + Info */}
-      <motion.div
-        variants={item}
+      {/* Top Header: Avatar + Info (Immediately visible for instant LCP) */}
+      <div
         className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6"
       >
         <div className="relative size-20 sm:size-24 shrink-0 rounded-full p-1 ring-1 ring-border/80 dark:ring-border/50 bg-background/50 shadow-xs">
@@ -126,18 +102,20 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             <TypewriterClient words={intro.techStack} />
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Bio / Description */}
-      <motion.div variants={item}>
+      {/* Bio / Description (Rendered immediately without opacity: 0 delay) */}
+      <div>
         <p className="text-base sm:text-lg text-muted-foreground/90 leading-relaxed font-normal whitespace-pre-wrap max-w-2xl text-pretty">
           {intro.desc}
         </p>
-      </motion.div>
+      </div>
 
-      {/* CTAs and Social Links */}
+      {/* CTAs and Social Links (Smooth entry) */}
       <motion.div
-        variants={item}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05 }}
         className="flex flex-wrap items-center gap-3 pt-1"
       >
         <Button asChild className="h-10 px-5 rounded-full font-medium gap-2 shadow-xs hover:shadow-sm cursor-pointer group transition-all">
@@ -188,6 +166,6 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
           ))}
         </div>
       </motion.div>
-    </motion.section>
+    </section>
   );
 }
