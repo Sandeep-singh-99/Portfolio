@@ -27,7 +27,7 @@ export default async function ProjectPage() {
           <h2 className="md:text-xl text-xl font-bold">Projects</h2>
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {projects.slice(0, 4).map((project) => (
+        {projects.slice(0, 4).map((project, index) => (
           <ProjectCard
             key={project._id}
             _id={project._id!}
@@ -37,6 +37,7 @@ export default async function ProjectPage() {
             projectTechStack={project.projectTechStack}
             githubLink={project.githubLink}
             liveLink={project.liveLink}
+            priority={index === 0}
           />
         ))}
       </div>

@@ -20,6 +20,7 @@ interface ProjectCardProps {
   projectTechStack: string[];
   githubLink?: string;
   liveLink?: string;
+  priority?: boolean;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -30,13 +31,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   projectTechStack,
   githubLink,
   liveLink,
+  priority = false,
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
+      initial={priority ? false : { opacity: 0, y: 20 }}
+      animate={priority ? { opacity: 1, y: 0 } : undefined}
+      whileInView={priority ? undefined : { opacity: 1, y: 0 }}
+      viewport={priority ? undefined : { once: true }}
+      transition={{ duration: 0.4 }}
       whileHover={{ y: -5 }}
       className="h-full"
     >
@@ -56,6 +59,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             src={projectImage}
             alt={projectName}
             fill
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />

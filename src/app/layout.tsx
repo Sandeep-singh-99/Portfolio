@@ -4,8 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
-import { GlobalChatWidget } from "@/components/GlobalChatWidget";
 import NavBar from "@/components/navbar";
+import LazyChatWidget from "@/components/LazyChatWidget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -142,7 +142,7 @@ export default function RootLayout({
           <Toaster richColors />
           <NavBar />
           {children}
-          <GlobalChatWidget />
+          <LazyChatWidget />
           <Analytics />
         </ThemeProvider>
       </body>

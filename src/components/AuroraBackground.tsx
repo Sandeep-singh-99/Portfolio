@@ -79,6 +79,7 @@ export function InteractiveDots({
     // Observe class change on documentElement to avoid querying DOM 60 times/sec
     const themeObserver = new MutationObserver(() => {
       isDark = document.documentElement.classList.contains("dark");
+      if (!isRunning) drawStaticFrame();
     });
     themeObserver.observe(document.documentElement, {
       attributes: true,
@@ -143,18 +144,60 @@ export function InteractiveDots({
       buildSprites();
     };
 
-    const tick = (now: number) => {
+    let isRunning = false;
+
+    const drawStaticFrame = () => {
+      if (!ctx || width === 0 || height === 0) return;
+      ctx.clearRect(0, 0, width, height);
+      const activeSprites = isDark ? darkSprites : lightSprites;
+      const baseSprite = activeSprites[0];
+      if (!baseSprite) return;
+      ctx.globalAlpha = isDark ? 0.45 : 0.55;
+      for (let i = 0; i < dots.length; i++) {
+        const dot = dots[i];
+        dot.x = dot.ox;
+        dot.y = dot.oy;
+        dot.vx = 0;
+        dot.vy = 0;
+        dot.glow = 0;
+        ctx.drawImage(
+          baseSprite,
+          dot.ox - DOT_SIZE / 2,
+          dot.oy - DOT_SIZE / 2,
+          DOT_SIZE,
+          DOT_SIZE
+        );
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const startLoop = () => {
+      if (isRunning || prefersReducedMotion || !visible || document.hidden) return;
+      isRunning = true;
+      previous = performance.now();
       frame = requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      if (!isRunning) return;
+      isRunning = false;
+      cancelAnimationFrame(frame);
+      drawStaticFrame();
+    };
+
+    const tick = (now: number) => {
+      if (!isRunning) return;
       if (!previous) previous = now;
-      // Clamped so a backgrounded tab does not resume with one huge step.
       const dt = Math.min(0.05, Math.max(0, (now - previous) / 1000));
       previous = now;
-      if (!visible || document.hidden || dt === 0 || prefersReducedMotion) return;
+      if (!visible || document.hidden || dt === 0 || prefersReducedMotion) {
+        stopLoop();
+        return;
+      }
 
       elapsed += dt;
       ctx.clearRect(0, 0, width, height);
 
-      // Frame-rate independent: same settle at 60Hz and 144Hz.
       const glowLerp = 1 - Math.pow(DAMPING, 60 * dt);
       const damping = Math.pow(DAMPING, 60 * dt);
 
@@ -164,6 +207,8 @@ export function InteractiveDots({
         ripples[i].time += dt;
         if (ripples[i].time > RIPPLE_LIFE) ripples.splice(i, 1);
       }
+
+      let isMoving = pointer.inside || ripples.length > 0;
 
       for (const dot of dots) {
         let fx = 0;
@@ -207,18 +252,23 @@ export function InteractiveDots({
         dot.y += dot.vy * dt * 60;
         dot.glow += (glowTarget - dot.glow) * glowLerp;
 
-        // A slow diagonal wave so the field is never entirely dead.
-        const shimmer =
-          (Math.sin(0.8 * elapsed + 0.015 * dot.ox + 0.02 * dot.oy) + 1) * 0.04;
-        const brightness = Math.min(1, dot.glow + shimmer);
+        if (
+          Math.abs(dot.x - dot.ox) > 0.08 ||
+          Math.abs(dot.vx) > 0.08 ||
+          dot.glow > 0.01
+        ) {
+          isMoving = true;
+        }
+
+        const brightness = Math.min(1, dot.glow);
         const spriteIdx = Math.min(
           SPRITE_STEPS - 1,
           Math.max(0, Math.floor((SPRITE_STEPS - 1) * brightness))
         );
         if (activeSprites[spriteIdx]) {
           ctx.globalAlpha = isDark
-            ? Math.min(1, 0.45 + shimmer + 0.55 * dot.glow)
-            : Math.min(1, 0.55 + shimmer + 0.45 * dot.glow);
+            ? Math.min(1, 0.45 + 0.55 * dot.glow)
+            : Math.min(1, 0.55 + 0.45 * dot.glow);
           ctx.drawImage(
             activeSprites[spriteIdx],
             dot.x - DOT_SIZE / 2,
@@ -230,6 +280,12 @@ export function InteractiveDots({
       }
 
       ctx.globalAlpha = 1;
+
+      if (!isMoving) {
+        stopLoop();
+      } else {
+        frame = requestAnimationFrame(tick);
+      }
     };
 
     const setPointer = (clientX: number, clientY: number) => {
@@ -237,6 +293,7 @@ export function InteractiveDots({
       pointer.x = clientX - rect.left;
       pointer.y = clientY - rect.top;
       pointer.inside = true;
+      startLoop();
     };
     const onMove = (event: PointerEvent) =>
       setPointer(event.clientX, event.clientY);
@@ -246,6 +303,7 @@ export function InteractiveDots({
       if (ripples.length > MAX_RIPPLES) {
         ripples.splice(0, ripples.length - MAX_RIPPLES);
       }
+      startLoop();
     };
     const onLeave = () => {
       pointer.inside = false;
@@ -254,23 +312,29 @@ export function InteractiveDots({
     };
 
     build();
+    drawStaticFrame();
 
-    const resizeWatcher = new ResizeObserver(build);
+    const resizeWatcher = new ResizeObserver(() => {
+      build();
+      if (!isRunning) drawStaticFrame();
+    });
     resizeWatcher.observe(host);
-    // Off-screen the loop keeps ticking but skips all the work.
+
     const viewWatcher = new IntersectionObserver(
       ([entry]) => {
         visible = entry?.isIntersecting ?? true;
+        if (!visible && isRunning) {
+          stopLoop();
+        }
       },
       { threshold: 0 }
     );
     viewWatcher.observe(host);
 
     window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointerleave", onLeave);
-    window.addEventListener("pointercancel", onLeave);
-    frame = requestAnimationFrame(tick);
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerleave", onLeave, { passive: true });
+    window.addEventListener("pointercancel", onLeave, { passive: true });
 
     return () => {
       cancelAnimationFrame(frame);
