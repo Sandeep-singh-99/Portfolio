@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     canonical: "https://sandeep-singh.com",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
   },
   robots: {
     index: true,
