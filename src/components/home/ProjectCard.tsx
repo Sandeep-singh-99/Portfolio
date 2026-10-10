@@ -1,13 +1,13 @@
 "use client";
+
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Github, Globe, ArrowRight } from "lucide-react";
+import { Github, ExternalLink, ArrowUpRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -35,65 +35,57 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   return (
     <motion.div
-      initial={priority ? false : { opacity: 0, y: 20 }}
+      initial={priority ? false : { opacity: 0, y: 16 }}
       animate={priority ? { opacity: 1, y: 0 } : undefined}
       whileInView={priority ? undefined : { opacity: 1, y: 0 }}
       viewport={priority ? undefined : { once: true }}
-      transition={{ duration: 0.4 }}
-      whileHover={{ y: -5 }}
+      transition={{ duration: 0.35 }}
+      whileHover={{ y: -3 }}
       className="h-full"
     >
-      <Card
+      <div
         className="
-          group relative flex flex-col overflow-hidden rounded-2xl 
-          border border-zinc-200 dark:border-[#1e2939]
-          bg-white dark:bg-[#171717] 
-          shadow-md hover:shadow-xl dark:shadow-none
+          group relative flex flex-col h-full overflow-hidden rounded-2xl
+          border border-zinc-200/90 dark:border-zinc-800/90
+          bg-white dark:bg-[#161618]
+          hover:border-zinc-300 dark:hover:border-zinc-700
+          shadow-sm hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-black/60
           transition-all duration-300
-          p-0
         "
       >
-        {/* Image Section */}
-        <div className="relative h-48 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-          <Image
-            src={projectImage}
-            alt={projectName}
-            fill
-            priority={priority}
-            loading={priority ? "eager" : "lazy"}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
+        {/* Clickable Image Section with Status Overlay */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+          <Link
+            href={`/project/${_id}`}
+            aria-label={`View details for ${projectName}`}
+            className="block h-full w-full"
+          >
+            <Image
+              src={projectImage}
+              alt={projectName}
+              fill
+              priority={priority}
+              loading={priority ? "eager" : "lazy"}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            />
+          </Link>
 
-        {/* Content */}
-        <CardContent className="p-3 flex flex-col space-y-2 flex-grow">
-          {/* Header: Title & Links */}
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
-              {projectName}
-            </h3>
+          {/* Top Status & Live Pill on Image */}
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white shadow-sm pointer-events-auto">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[10px] font-semibold tracking-wider uppercase">
+                {liveLink ? "Live" : "Project"}
+              </span>
+            </div>
 
-            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-              <TooltipProvider>
-                {liveLink && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <a
-                        href={liveLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Live demo for ${projectName}`}
-                        className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                      >
-                        <Globe size={20} strokeWidth={1.5} />
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Live Preview</p>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
+            {/* Quick Action Icons over image */}
+            <div className="flex items-center gap-1.5 pointer-events-auto">
+              <TooltipProvider delayDuration={150}>
                 {githubLink && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -102,77 +94,114 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`GitHub repository for ${projectName}`}
-                        className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                        className="
+                          p-1.5 rounded-full bg-black/60 backdrop-blur-md 
+                          text-white/80 hover:text-white hover:bg-black/85
+                          border border-white/10 transition-all duration-200
+                        "
                       >
-                        <Github size={20} strokeWidth={1.5} />
+                        <Github className="size-3.5" />
                       </a>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Source Code</p>
+                    <TooltipContent side="bottom" className="text-xs">
+                      View Source
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {liveLink && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={liveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Live demo for ${projectName}`}
+                        className="
+                          p-1.5 rounded-full bg-black/60 backdrop-blur-md 
+                          text-white/80 hover:text-white hover:bg-black/85
+                          border border-white/10 transition-all duration-200
+                        "
+                      >
+                        <ExternalLink className="size-3.5" />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      Live Preview
                     </TooltipContent>
                   </Tooltip>
                 )}
               </TooltipProvider>
             </div>
           </div>
+        </div>
 
-          {/* Description */}
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed line-clamp-3">
-            {projectSubDesc}
-          </p>
+        {/* Card Body */}
+        <div className="p-4 flex flex-col flex-grow space-y-3">
+          {/* Title Header */}
+          <div>
+            <Link
+              href={`/project/${_id}`}
+              className="inline-block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+            >
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 tracking-tight leading-snug">
+                {projectName}
+              </h3>
+            </Link>
 
-          {/* Tech Stack */}
-          <div className="mt-2">
-            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-500 mb-2 uppercase tracking-wider">
-              Technologies
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {projectTechStack.slice(0, 3).map((tech, index) => (
-                <div
-                  key={index}
-                  className="
-                    flex items-center justify-center
-                    px-2.5 py-1 rounded-md
-                    bg-zinc-100 dark:bg-zinc-800/50
-                    border border-zinc-200 dark:border-zinc-700/50
-                    text-xs font-medium text-zinc-700 dark:text-zinc-300
-                  "
-                >
-                  {tech}
-                </div>
-              ))}
-              {projectTechStack.length > 5 && (
-                <div className="text-xs text-zinc-500 flex items-center px-1">
-                  +{projectTechStack.length - 5}
-                </div>
-              )}
-            </div>
+            {/* Description */}
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed line-clamp-2 mt-1">
+              {projectSubDesc}
+            </p>
           </div>
 
-          {/* Footer */}
-          <div className="pt-4 mt-auto flex items-center justify-between">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">
-                {liveLink ? "Live Project" : "Completed"}
+          {/* Tech Stack Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {projectTechStack.slice(0, 4).map((tech, index) => (
+              <span
+                key={index}
+                className="
+                  px-2 py-0.5 rounded-md
+                  bg-zinc-100 dark:bg-zinc-800/70
+                  border border-zinc-200/80 dark:border-zinc-700/50
+                  text-[11px] font-medium text-zinc-700 dark:text-zinc-300
+                  transition-colors
+                "
+              >
+                {tech}
               </span>
-            </div>
+            ))}
+            {projectTechStack.length > 4 && (
+              <span className="text-[11px] font-medium text-zinc-400 dark:text-zinc-500 px-1">
+                +{projectTechStack.length - 4}
+              </span>
+            )}
+          </div>
+
+          {/* Card Footer: View Details CTA */}
+          <div className="pt-3 mt-auto border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+            <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium">
+              Case Study & Stack
+            </span>
 
             <Link
               href={`/project/${_id}`}
               aria-label={`View details for ${projectName}`}
               className="
-                flex items-center gap-1 
-                text-sm font-medium text-zinc-600 dark:text-zinc-400 
-                hover:text-zinc-900 dark:hover:text-white transition-colors
+                group/btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg
+                text-xs font-semibold
+                bg-zinc-100 hover:bg-zinc-900 hover:text-white
+                dark:bg-zinc-800/80 dark:hover:bg-white dark:hover:text-zinc-900
+                text-zinc-800 dark:text-zinc-200
+                transition-all duration-200
               "
             >
-              View Details
-              <ArrowRight size={16} />
+              <span>View Details</span>
+              <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </motion.div>
   );
 };
