@@ -151,10 +151,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
           {/* Footer */}
           <div className="pt-4 mt-auto flex items-center justify-between">
-            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-green-500/10 dark:bg-green-500/10 border border-green-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">
-                All Systems Operational
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">
+                {liveLink ? "Live Project" : "Completed"}
               </span>
             </div>
 
