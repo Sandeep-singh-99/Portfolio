@@ -96,13 +96,12 @@ export default function ContactSection() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="contact-phone" className="text-sm font-medium">Phone *</Label>
+                  <Label htmlFor="contact-phone" className="text-sm font-medium">Phone (Optional)</Label>
                   <Input
                     id="contact-phone"
                     type="tel"
                     name="phone"
                     placeholder="+1 (123) xxx-xxxx"
-                    required
                   />
                 </div>
               </div>

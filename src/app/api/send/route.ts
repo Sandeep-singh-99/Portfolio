@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         <h2>New Message from Acme Contact Form</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
         <p><strong>Message:</strong><br/>${message}</p>
       `,
     });
