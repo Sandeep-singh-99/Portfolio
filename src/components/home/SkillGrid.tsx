@@ -1,87 +1,107 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ISkill } from "../../../models/skill.model";
 
-export default function SkillGrid({ skills }: { skills: ISkill[] }) {
-  // Group & sort logic (same solid foundation)
-  const grouped = skills.reduce(
-    (acc, s) => {
-      const cat = (s.skillCategory || "Other").toLowerCase();
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(s);
-      return acc;
-    },
-    {} as Record<string, ISkill[]>
-  );
+const CATEGORY_ORDER = [
+  "frontend",
+  "backend",
+  "database",
+  "language",
+  "tools",
+  "other",
+];
 
-  const order = [
-    "frontend",
-    "backend",
-    "database",
-    "language",
-    "tools",
-    "other",
-  ];
-  const categories = Object.keys(grouped).sort((a, b) => {
-    const ia = order.indexOf(a);
-    const ib = order.indexOf(b);
-    return ia === -1 && ib === -1
-      ? a.localeCompare(b)
-      : ia === -1
-        ? 1
-        : ib === -1
-          ? -1
-          : ia - ib;
-  });
+const CATEGORY_TITLES: Record<string, string> = {
+  frontend: "Frontend",
+  backend: "Backend",
+  database: "Database",
+  language: "Languages",
+  tools: "Tools & DevOps",
+  other: "Other",
+};
+
+export default function SkillGrid({ skills }: { skills: ISkill[] }) {
+  // Group skills by category
+  const grouped = useMemo(() => {
+    return skills.reduce(
+      (acc, s) => {
+        const cat = (s.skillCategory || "other").toLowerCase().trim();
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(s);
+        return acc;
+      },
+      {} as Record<string, ISkill[]>
+    );
+  }, [skills]);
+
+  // Order categories
+  const categories = useMemo(() => {
+    return Object.keys(grouped).sort((a, b) => {
+      const ia = CATEGORY_ORDER.indexOf(a);
+      const ib = CATEGORY_ORDER.indexOf(b);
+      return ia === -1 && ib === -1
+        ? a.localeCompare(b)
+        : ia === -1
+          ? 1
+          : ib === -1
+            ? -1
+            : ia - ib;
+    });
+  }, [grouped]);
 
   return (
-    <section id="skills" className=" ">
-      {/* Category Sections */}
+    <div className="space-y-6">
       {categories.map((category, catIndex) => {
-        const categorySkills = skills.filter(
-          (skill) => skill.skillCategory === category
-        );
+        const categorySkills = grouped[category] || [];
         if (categorySkills.length === 0) return null;
+
+        const title =
+          CATEGORY_TITLES[category] ||
+          category.charAt(0).toUpperCase() + category.slice(1);
 
         return (
           <motion.div
             key={category}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: catIndex * 0.1 }}
-            className="mb-8"
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ duration: 0.35, delay: catIndex * 0.05 }}
+            className="space-y-2.5"
           >
-            <h3 className="md:text-xl text-lg font-bold text-zinc-800 dark:text-white mb-6 capitalize flex items-center gap-2">
-              {category}
+            {/* Category Subtitle */}
+            <h3 className="text-xs font-semibold tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
+              {title}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {categorySkills.map((skill, index) => (
-                <div
-                  key={skill._id}
-                  className="flex items-center justify-start space-x-3 px-4 py-3 rounded-xl
-                      border border-zinc-200 dark:border-zinc-800/50 
-                      bg-white dark:bg-zinc-900/50 border-dashed
-                      hover:border-blue-500/50 dark:hover:border-blue-500/50
-                      hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition-all duration-300
-                      shadow-sm hover:shadow-lg cursor-pointer group hover:scale-105"
-                >
-                  {/* Skill Icon */}
-                  <div className="relative w-8 h-8 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                    <Image
-                      src={skill.skillImage}
-                      alt={skill.skillName}
-                      fill
-                      sizes="32px"
-                      className="object-contain p-1"
-                    />
-                  </div>
 
-                  {/* Skill Name */}
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+            {/* Clean, Modern Pill Badges */}
+            <div className="flex flex-wrap gap-2">
+              {categorySkills.map((skill) => (
+                <div
+                  key={skill._id || skill.skillName}
+                  className="
+                    group inline-flex items-center gap-2 px-3 py-1.5 rounded-lg
+                    border border-zinc-200 dark:border-zinc-800
+                    bg-zinc-50/80 dark:bg-zinc-900/60
+                    hover:border-zinc-400 dark:hover:border-zinc-700
+                    hover:bg-white dark:hover:bg-zinc-850
+                    transition-all duration-200 cursor-default select-none
+                  "
+                >
+                  {skill.skillImage && (
+                    <div className="relative size-4 shrink-0 transition-transform duration-200 group-hover:scale-110">
+                      <Image
+                        src={skill.skillImage}
+                        alt={skill.skillName}
+                        fill
+                        sizes="16px"
+                        className="object-contain"
+                      />
+                    </div>
+                  )}
+                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors">
                     {skill.skillName}
                   </span>
                 </div>
@@ -90,6 +110,6 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
           </motion.div>
         );
       })}
-    </section>
+    </div>
   );
 }
