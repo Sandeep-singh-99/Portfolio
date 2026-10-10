@@ -15,9 +15,9 @@ export default function Home() {
     <div className="py-10 space-y-10">
       <IntroPage />
       <ProjectPage />
+      <GithubPage />
       <SkillPage />
       <AboutPage />
-      <GithubPage />
       <CertificatePage />
       <BlogPage />
     </div>
