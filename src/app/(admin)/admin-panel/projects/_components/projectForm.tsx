@@ -35,12 +35,10 @@ export default function ProjectForm() {
     e.preventDefault();
     if (
       !productName ||
-      !githubLink ||
-      !liveLink ||
       !projectTechStack ||
       !projectImage
     ) {
-      toast.error("Please fill in all fields.");
+      toast.error("Please fill in required fields (Name, Tech Stack, Image).");
       return;
     }
 
@@ -133,27 +131,25 @@ export default function ProjectForm() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="githubLink">Github Link</Label>
+                <Label htmlFor="githubLink">Github Link (Optional)</Label>
                 <Input
                   id="githubLink"
                   name="githubLink"
                   type="text"
                   value={githubLink}
                   onChange={(e) => setGithubLink(e.target.value)}
-                  placeholder="Enter Github link"
-                  required
+                  placeholder="Enter Github link (optional)"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="liveLink">Live Link</Label>
+                <Label htmlFor="liveLink">Live Link (Optional)</Label>
                 <Input
                   id="liveLink"
                   name="liveLink"
                   type="text"
                   value={liveLink}
                   onChange={(e) => setLiveLink(e.target.value)}
-                  placeholder="Enter live link"
-                  required
+                  placeholder="Enter live link (optional)"
                 />
               </div>
               <div className="grid gap-2">

@@ -31,8 +31,8 @@ interface Project {
   projectSubDesc: string;
   projectImage: string;
   projectTechStack: string[];
-  githubLink: string;
-  liveLink: string;
+  githubLink?: string;
+  liveLink?: string;
   createdAt: string;
 }
 
@@ -123,26 +123,30 @@ export function SortableProjectItem({ project }: SortableProjectItemProps) {
 
         <CardFooter className="pt-4 border-t bg-muted/20 flex justify-between items-center gap-2">
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-              <a
-                href={project.githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="View Code"
-              >
-                <Github className="h-4 w-4" />
-              </a>
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-              <a
-                href={project.liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Live Demo"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </Button>
+            {project.githubLink && project.githubLink.trim() !== "" && (
+              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                <a
+                  href={project.githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View Code"
+                >
+                  <Github className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
+            {project.liveLink && project.liveLink.trim() !== "" && (
+              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                <a
+                  href={project.liveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Live Demo"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
           </div>
           <div className="flex items-center text-xs text-muted-foreground">
             <Calendar className="mr-1 h-3 w-3" />

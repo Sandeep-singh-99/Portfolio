@@ -7,8 +7,8 @@ export interface IProject {
   projectSubDesc: string;
   projectImage: string;
   projectTechStack: string[];
-  githubLink: string;
-  liveLink: string;
+  githubLink?: string;
+  liveLink?: string;
   projectImagePublicId?: string;
   priority: number;
   createdAt: Date;
@@ -22,8 +22,8 @@ const projectSchema = new Schema<IProject>(
     projectSubDesc: { type: String, required: false },
     projectImage: { type: String, required: true },
     projectTechStack: { type: [String], required: true },
-    githubLink: { type: String, required: true },
-    liveLink: { type: String, required: true },
+    githubLink: { type: String, required: false, default: "" },
+    liveLink: { type: String, required: false, default: "" },
     priority: { type: Number, default: 0 },
     projectImagePublicId: { type: String, required: false },
   },

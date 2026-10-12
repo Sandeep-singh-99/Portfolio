@@ -28,8 +28,8 @@ interface Project {
   projectSubDesc: string;
   projectImage: string;
   projectTechStack: string[];
-  githubLink: string;
-  liveLink: string;
+  githubLink?: string;
+  liveLink?: string;
   createdAt: string;
   updatedAt: string;
 }

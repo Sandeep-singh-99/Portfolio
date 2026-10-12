@@ -87,8 +87,8 @@ export default function ProjectForm({ id }: { id?: string }) {
     const { projectName, githubLink, liveLink, projectTechStack, projectDesc } =
       formData;
 
-    if (!projectName || !githubLink || !liveLink || !projectTechStack) {
-      toast.error("Please fill in all required fields.");
+    if (!projectName || !projectTechStack) {
+      toast.error("Please fill in all required fields (Name, Tech Stack).");
       return;
     }
 
@@ -187,26 +187,26 @@ export default function ProjectForm({ id }: { id?: string }) {
               </div>
 
               <div>
-                <Label htmlFor="githubLink">GitHub Link</Label>
+                <Label htmlFor="githubLink">GitHub Link (Optional)</Label>
                 <Input
                   id="githubLink"
                   value={formData.githubLink}
                   onChange={(e) =>
                     setFormData({ ...formData, githubLink: e.target.value })
                   }
-                  required
+                  placeholder="Enter GitHub link (optional)"
                 />
               </div>
 
               <div>
-                <Label htmlFor="liveLink">Live Link</Label>
+                <Label htmlFor="liveLink">Live Link (Optional)</Label>
                 <Input
                   id="liveLink"
                   value={formData.liveLink}
                   onChange={(e) =>
                     setFormData({ ...formData, liveLink: e.target.value })
                   }
-                  required
+                  placeholder="Enter live link (optional)"
                 />
               </div>
 

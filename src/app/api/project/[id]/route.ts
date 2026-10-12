@@ -129,23 +129,23 @@ export async function PATCH(
     const projectDesc = formData.get("projectDesc") as string;
     const projectSubDesc = formData.get("projectSubDesc") as string;
     const projectTechStack = formData.get("projectTechStack") as string;
-    const githubLink = formData.get("githubLink") as string;
-    const liveLink = formData.get("liveLink") as string;
+    const githubLink = formData.get("githubLink");
+    const liveLink = formData.get("liveLink");
     const image = formData.get("projectImage") as File;
     const priority = formData.get("priority");
 
     let updatedProjectData: ProjectData = {
-      ...(projectName && { projectName }),
-      ...(projectDesc && { projectDesc }),
-      ...(projectSubDesc && { projectSubDesc }),
-      ...(projectTechStack && {
+      ...(projectName !== null && { projectName }),
+      ...(projectDesc !== null && { projectDesc }),
+      ...(projectSubDesc !== null && { projectSubDesc }),
+      ...(projectTechStack !== null && {
         projectTechStack: projectTechStack
           .split(",")
           .map((tech: string) => tech.trim()),
       }),
-      ...(githubLink && { githubLink }),
-      ...(liveLink && { liveLink }),
-      ...(priority && { priority: Number(priority) }),
+      ...(githubLink !== null && { githubLink: (githubLink as string).trim() }),
+      ...(liveLink !== null && { liveLink: (liveLink as string).trim() }),
+      ...(priority !== null && { priority: Number(priority) }),
     };
 
     if (image && image.size > 0) {

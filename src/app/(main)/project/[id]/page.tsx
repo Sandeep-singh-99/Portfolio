@@ -126,7 +126,7 @@ export default async function ProjectPageById({
             </h1>
 
             <div className="flex items-center justify-center gap-4 mt-8">
-              {project.liveLink && (
+              {project.liveLink && project.liveLink.trim() !== "" && (
                 <a
                   href={project.liveLink}
                   target="_blank"
@@ -139,7 +139,7 @@ export default async function ProjectPageById({
                 </a>
               )}
 
-              {project.githubLink && (
+              {project.githubLink && project.githubLink.trim() !== "" && (
                 <a
                   href={project.githubLink}
                   target="_blank"

@@ -33,14 +33,13 @@ export async function POST(req: NextRequest) {
         const projectName = formData.get("projectName") as string;
         const projectDesc = formData.get("projectDesc") as string;
         const projectSubDesc = formData.get("projectSubDesc") as string;
-        const projectTechStack = formData.get("projectTechStack") as string;
-        const githubLink = formData.get("githubLink") as string;
-        const liveLink = formData.get("liveLink") as string;
+        const githubLink = (formData.get("githubLink") as string) || "";
+        const liveLink = (formData.get("liveLink") as string) || "";
         const image = formData.get("projectImage") as File;
         const priority = Number(formData.get("priority")) || 0;
 
-        if (!projectName || !projectDesc || !projectTechStack || !githubLink || !liveLink) {
-            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+        if (!projectName || !projectDesc || !projectTechStack || !image) {
+            return NextResponse.json({ error: "Project name, description, tech stack, and image are required" }, { status: 400 });
         }
 
         if (image.size > 10 * 1024 * 1024) {
@@ -55,8 +54,8 @@ export async function POST(req: NextRequest) {
             projectSubDesc,
             projectImage: imageUrl,
             projectTechStack: projectTechStack.split(",").map((tech: string) => tech.trim()),
-            githubLink,
-            liveLink,
+            githubLink: githubLink.trim(),
+            liveLink: liveLink.trim(),
             projectImagePublicId: imagePublicId,
             priority,
         })

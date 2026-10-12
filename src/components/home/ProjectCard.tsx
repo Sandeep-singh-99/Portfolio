@@ -33,6 +33,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   liveLink,
   priority = false,
 }) => {
+  const hasGithub = Boolean(githubLink && githubLink.trim() !== "");
+  const hasLive = Boolean(liveLink && liveLink.trim() !== "");
+
   return (
     <motion.div
       initial={priority ? false : { opacity: 0, y: 16 }}
@@ -79,14 +82,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <span className="text-[10px] font-semibold tracking-wider uppercase">
-                {liveLink ? "Live" : "Project"}
+                {hasLive ? "Live" : "Project"}
               </span>
             </div>
 
             {/* Quick Action Icons over image */}
             <div className="flex items-center gap-1.5 pointer-events-auto">
               <TooltipProvider delayDuration={150}>
-                {githubLink && (
+                {hasGithub && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a
@@ -109,7 +112,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                   </Tooltip>
                 )}
 
-                {liveLink && (
+                {hasLive && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a
