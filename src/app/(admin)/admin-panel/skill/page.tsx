@@ -17,19 +17,24 @@ interface Skill {
   skillImage: string;
   skillImagePublicId: string;
   priority: number;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 async function fetchSkills(): Promise<Skill[]> {
   await ConnectDB();
-  const skills = await Skill.find().sort({ priority: 1 });
-  return skills.map((skill) => ({
-    ...skill.toObject(),
+  const skills = await Skill.find().sort({ priority: 1 }).lean();
+  return skills.map((skill: any) => ({
     id: skill._id.toString(),
-    createdAt: skill.createdAt,
-    updatedAt: skill.updatedAt,
+    skillCategory: skill.skillCategory,
+    skillName: skill.skillName,
+    skillImage: skill.skillImage,
+    skillImagePublicId: skill.skillImagePublicId,
+    priority: skill.priority ?? 0,
+    createdAt: skill.createdAt ? new Date(skill.createdAt).toISOString() : "",
+    updatedAt: skill.updatedAt ? new Date(skill.updatedAt).toISOString() : "",
+    __v: skill.__v ?? 0,
   }));
 }
 

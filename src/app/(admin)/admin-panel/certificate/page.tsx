@@ -19,8 +19,13 @@ import SortableCertificateList from "./_components/SortableCertificateList";
 
 async function fetchCertificateData() {
   await ConnectDB();
-  const data = await Certificate.find().sort({ priority: 1 });
-  return data;
+  const data = await Certificate.find().sort({ priority: 1 }).lean();
+  return data.map((cert: any) => ({
+    ...cert,
+    _id: cert._id.toString(),
+    createdAt: cert.createdAt ? new Date(cert.createdAt).toISOString() : "",
+    updatedAt: cert.updatedAt ? new Date(cert.updatedAt).toISOString() : "",
+  }));
 }
 
 export default async function CertificateAdminPage() {
