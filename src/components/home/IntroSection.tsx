@@ -105,11 +105,11 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
       </div>
 
       {/* Bio / Description (Rendered immediately without opacity: 0 delay) */}
-      <div>
+      {/* <div>
         <p className="text-base sm:text-lg text-muted-foreground/90 leading-relaxed font-normal whitespace-pre-wrap max-w-2xl text-pretty">
           {intro.desc}
         </p>
-      </div>
+      </div> */}
 
       {/* CTAs and Social Links (Smooth entry) */}
       <motion.div
@@ -168,4 +168,4 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
       </motion.div>
     </section>
   );
-}
+}
