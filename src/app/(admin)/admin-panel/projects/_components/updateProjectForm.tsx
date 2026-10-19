@@ -15,7 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
-import MermaidCode from "@/components/editor/MermaidCode";
+import { mdxPreviewComponents } from "@/components/mdx/MDXPreviewComponents";
+import { MDXToolbarHelper } from "@/components/mdx/MDXToolbarHelper";
 import { toast } from "sonner";
 import { NotebookPen } from "lucide-react";
 
@@ -241,15 +242,23 @@ export default function ProjectForm({ id }: { id?: string }) {
             </div>
 
             <div className="w-3/5 flex flex-col gap-2">
-              <Label htmlFor="projectDesc">Project Description</Label>
+              <Label htmlFor="projectDesc">
+                Project Description (MDX Supported)
+              </Label>
+              <MDXToolbarHelper
+                onInsert={(snippet) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    projectDesc: prev.projectDesc + snippet,
+                  }))
+                }
+              />
               <MDEditor
                 value={formData.projectDesc}
                 onChange={handleDescriptionChange}
                 height={400}
                 previewOptions={{
-                  components: {
-                    code: MermaidCode,
-                  },
+                  components: mdxPreviewComponents,
                 }}
               />
             </div>

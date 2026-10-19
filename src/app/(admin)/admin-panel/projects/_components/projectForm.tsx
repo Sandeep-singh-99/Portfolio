@@ -14,7 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MDEditor from "@uiw/react-md-editor";
-import MermaidCode from "@/components/editor/MermaidCode";
+import { mdxPreviewComponents } from "@/components/mdx/MDXPreviewComponents";
+import { MDXToolbarHelper } from "@/components/mdx/MDXToolbarHelper";
 import { toast } from "sonner";
 
 export default function ProjectForm() {
@@ -179,16 +180,17 @@ export default function ProjectForm() {
             </div>
             <div className="w-2/3 flex flex-col gap-2">
               <Label htmlFor="projectDesc" className="mt-4">
-                Project Description
+                Project Description (MDX Supported)
               </Label>
+              <MDXToolbarHelper
+                onInsert={(snippet) => setProjectDesc((prev) => prev + snippet)}
+              />
               <MDEditor
                 value={projectDesc}
                 onChange={handleDescriptionChange}
                 height={400}
                 previewOptions={{
-                  components: {
-                    code: MermaidCode,
-                  },
+                  components: mdxPreviewComponents,
                 }}
               />
             </div>

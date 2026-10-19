@@ -25,6 +25,17 @@ interface CodeProps {
   node?: any;
 }
 
+function extractText(node: any): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (!node) return "";
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (node.props && node.props.children) return extractText(node.props.children);
+  if (node.value && typeof node.value === "string") return node.value;
+  if (node.children && Array.isArray(node.children)) return node.children.map(extractText).join("");
+  return "";
+}
+
 export default function MermaidCode({ className, children, node }: CodeProps) {
   const id = useRef(`mermaid-${randomId()}`);
   const [container, setContainer] = useState<HTMLElement | null>(null);
@@ -35,7 +46,20 @@ export default function MermaidCode({ className, children, node }: CodeProps) {
   const isMermaid =
     className && className.toLowerCase().startsWith("language-mermaid");
 
-  const code = node ? getCodeString(node.children) : String(children);
+  let code = "";
+  if (typeof children === "string" && children.trim() && !children.includes("[object Object]")) {
+    code = children.trim();
+  } else if (node?.children) {
+    try {
+      code = getCodeString(node.children);
+    } catch {
+      code = "";
+    }
+  }
+  if (!code || code.includes("[object Object]")) {
+    code = extractText(children) || extractText(node);
+  }
+  code = code.trim();
 
   useEffect(() => {
     const currentContainer = container;

@@ -17,6 +17,8 @@ import MDEditor from "@uiw/react-md-editor";
 import { toast } from "sonner";
 import { Loader, Pencil } from "lucide-react";
 import { IBlog } from "../../../../../../models/blog.model";
+import { mdxPreviewComponents } from "@/components/mdx/MDXPreviewComponents";
+import { MDXToolbarHelper } from "@/components/mdx/MDXToolbarHelper";
 
 import { useRouter } from "next/navigation";
 
@@ -159,10 +161,19 @@ export default function BlogForm({ blog }: BlogFormProps) {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label>Blog Content</Label>
+              <div className="flex items-center justify-between">
+                <Label>Blog Content (MDX Supported)</Label>
+              </div>
+              <MDXToolbarHelper
+                onInsert={(snippet) => setContent((prev) => prev + snippet)}
+              />
               <MDEditor
                 value={content}
                 onChange={handleContentChange}
+                height={400}
+                previewOptions={{
+                  components: mdxPreviewComponents,
+                }}
               />
             </div>
           </div>

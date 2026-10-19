@@ -10,8 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const MarkdownRender = dynamic(
-  () => import("./editor/MarkdownRender").then((mod) => mod.MarkdownRender),
+const MDXClientPreview = dynamic(
+  () => import("@/components/mdx/MDXClientPreview").then((mod) => mod.MDXClientPreview),
   {
     ssr: false,
     loading: () => <div className="h-5 w-32 bg-muted animate-pulse rounded" />,
@@ -277,7 +277,7 @@ export function GlobalChatWidget() {
                             }`}
                           >
                             {chat.role === "assistant" ? (
-                              <MarkdownRender content={chat.content} />
+                              <MDXClientPreview content={chat.content} />
                             ) : (
                               <p className="whitespace-pre-wrap leading-relaxed">
                                 {chat.content}

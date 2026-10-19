@@ -6,7 +6,7 @@ import Project, { IProject } from "../../../../../models/project.model";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
-import { MarkdownRender } from "@/components/editor/MarkdownRender";
+import { MDXRender } from "@/components/mdx/MDXRender";
 
 async function fetchProject(id: string): Promise<IProject | null> {
   await ConnectDB();
@@ -172,8 +172,8 @@ export default async function ProjectPageById({
           </div>
 
           {/* Description */}
-          <article className="mt-20 prose prose-sm sm:prose-base dark:prose-invert max-w-none">
-            <MarkdownRender content={project.projectDesc} />
+          <article className="mt-16 max-w-none">
+            <MDXRender content={project.projectDesc} />
           </article>
         </div>
       </div>

@@ -12,7 +12,7 @@ import { Eye } from "lucide-react";
 import { IBlog } from "../../../../../../models/blog.model";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { MarkdownRender } from "@/components/editor/MarkdownRender";
+import { MDXClientPreview } from "@/components/mdx/MDXClientPreview";
 
 interface BlogDetailsDialogProps {
   blog: IBlog;
@@ -48,8 +48,8 @@ export default function BlogDetailsDialog({ blog }: BlogDetailsDialogProps) {
             ))}
           </div>
 
-          <div className="prose dark:prose-invert max-w-none">
-            <MarkdownRender content={blog.content} />
+          <div className="max-w-none">
+            <MDXClientPreview content={blog.content} />
           </div>
         </div>
       </DialogContent>

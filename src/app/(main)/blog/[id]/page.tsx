@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { ConnectDB } from "../../../../../lib/db";
 import Blog, { IBlog } from "../../../../../models/blog.model";
-import { MarkdownRender } from "@/components/editor/MarkdownRender";
+import { MDXRender } from "@/components/mdx/MDXRender";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -140,8 +140,8 @@ export default async function BlogPageById({
           </div>
 
           {/* Content */}
-          <article className="mt-20 prose prose-sm sm:prose-base dark:prose-invert max-w-none">
-            <MarkdownRender content={blog.content} />
+          <article className="mt-16 max-w-none">
+            <MDXRender content={blog.content} />
           </article>
         </div>
       </div>
