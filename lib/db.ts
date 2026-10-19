@@ -35,9 +35,6 @@ export const ConnectDB = async () => {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log("MongoDB connected successfully");
-      }
       return mongoose;
     });
   }

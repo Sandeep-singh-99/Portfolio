@@ -70,8 +70,6 @@ export default function GithubActivity({
 
         const json = await res.json();
 
-        console.log("GitHub API response:", json);
-
         if (!res.ok) {
           throw new Error(
             json?.error || "Failed to fetch GitHub activity"
@@ -92,8 +90,6 @@ export default function GithubActivity({
             level: levelMap[item.contributionLevel],
           })
         );
-
-        console.log("GitHub contribution days:", formatted.length);
 
         if (formatted.length === 0) {
           throw new Error("GitHub returned empty contribution data");

@@ -31,7 +31,6 @@ type FormDataType = {
 };
 
 export default function ProjectForm({ id }: { id?: string }) {
-  console.log("UpdateProjectForm initialized with ID:", id);
   const [formData, setFormData] = useState<FormDataType>({
     projectName: "",
     githubLink: "",
@@ -46,10 +45,8 @@ export default function ProjectForm({ id }: { id?: string }) {
 
   const fetchData = async () => {
     try {
-      console.log("Fetching data for project ID:", id);
       const response = await fetch(`/api/project/${id}`);
       const result = await response.json();
-      console.log("Fetched data:", result);
 
       if (response.ok) {
         const data = result.data;
@@ -83,7 +80,6 @@ export default function ProjectForm({ id }: { id?: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting update for project ID:", id);
 
     const { projectName, githubLink, liveLink, projectTechStack, projectDesc } =
       formData;

@@ -10,11 +10,9 @@ import { pinecone, indexName } from "../../../../lib/pinecone";
 
 export async function GET() {
   try {
-    console.log("Checking Pinecone index availability...");
     const existingIndexes = (await pinecone.listIndexes()).indexes || [];
     
     if (!existingIndexes.some((index) => index.name === indexName)) {
-      console.log(`Index "${indexName}" not found. Creating it now... (this takes ~30 seconds)`);
       await pinecone.createIndex({
         name: indexName,
         dimension: 768,
@@ -28,24 +26,19 @@ export async function GET() {
       });
       // Pause slightly for the index to become fully available
       await new Promise((resolve) => setTimeout(resolve, 15000));
-      console.log(`Index "${indexName}" successfully generated!`);
     }
 
     const pineconeIndex = pinecone.Index(indexName);
     
     // Clear index to avoid duplicates and purge outdated metadata schema
     try {
-      console.log("Clearing Pinecone index...");
       await pineconeIndex.deleteAll();
-      console.log("Pinecone index cleared successfully.");
     } catch (err: any) {
       console.warn("Could not clear index (index might be empty):", err.message);
     }
 
-    console.log("Connecting to Database...");
     await ConnectDB();
     
-    console.log("Fetching data from MongoDB...");
     const [projects, skills, about, intro] = await Promise.all([
       Project.find({}).sort({ priority: 1, createdAt: -1 }).lean() as Promise<any[]>,
       Skill.find({}).lean() as Promise<any[]>,
@@ -190,10 +183,7 @@ Resume / CV File: ${intro.file || ""}`;
       metadata: { type: "contact" }
     }));
 
-    console.log(`Generated ${documents.length} documents. Connecting to Pinecone...`);
     const vectorStore = await getVectorStore();
-    
-    console.log("Upserting documents to Pinecone...");
     await vectorStore.addDocuments(documents);
     
     return NextResponse.json({ success: true, count: documents.length });

@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
 
     // Detect user query intent (hybrid keyword + LLM classification)
     const intent = await detectIntent(cleanMessage);
-    console.log(`[RAG Router] Query: "${cleanMessage}" | Intent: "${intent}"`);
 
     // Determine metadata filter and retrieval size based on intent
     let filter: Record<string, any> | undefined = undefined;
@@ -74,7 +73,6 @@ export async function POST(req: NextRequest) {
         retrievedContext.trim() === "" ||
         retrievedContext.includes("No relevant data found"))
     ) {
-      console.log(`[RAG Router] Filter ${JSON.stringify(filter)} returned empty. Falling back to unfiltered search.`);
       retrievedContext = await retrieveContext(cleanMessage, { k: 4 });
     }
 
