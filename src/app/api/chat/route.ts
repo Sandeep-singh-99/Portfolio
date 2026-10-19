@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import Groq from "groq-sdk";
 import { retrieveContext } from "../../../../lib/vectorStore";
 import { saveMessage, getChatHistory } from "../../../../lib/memory";
 import { systemPromptTemplate } from "../../../../lib/prompt";
@@ -36,28 +35,27 @@ export async function POST(req: NextRequest) {
                                cleanMessage.includes("how many") || 
                                cleanMessage.includes("total") ||
                                cleanMessage.includes("count") ||
-                               cleanMessage.includes("summary");
+                               cleanMessage.includes("summary") ||
+                               cleanMessage.includes("projects") ||
+                               cleanMessage.includes("tell me about");
 
     switch (intent) {
       case "project":
         filter = { type: "project" };
-        k = isListOrCountQuery ? 8 : 3;
+        k = isListOrCountQuery ? 8 : 5;
         break;
       case "skill":
         filter = { type: "skill" };
-        k = isListOrCountQuery ? 8 : 3;
+        k = isListOrCountQuery ? 8 : 5;
         break;
       case "contact":
         filter = { type: "contact" };
         k = 1; // Retrieve single compiled contact info document
         break;
       case "intro":
-        filter = { type: "intro" };
-        k = 1; // Retrieve introduction document
-        break;
       case "about":
-        filter = { type: "about" };
-        k = 1; // Retrieve biography document
+        filter = { type: { $in: ["about", "intro"] } };
+        k = 2; // Retrieve both identity intro and biography documents
         break;
       case "general":
       default:
@@ -67,23 +65,51 @@ export async function POST(req: NextRequest) {
     }
 
     // Retrieve context dynamically from Pinecone with metadata filter
-    const retrievedContext = await retrieveContext(cleanMessage, { filter, k });
+    let retrievedContext = await retrieveContext(cleanMessage, { filter, k });
 
-    // Gemini model
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash",
-      maxOutputTokens: 800,
-      apiKey: process.env.GOOGLE_API_KEY!,
-    });
+    // Fallback: If filtered retrieval returned nothing, search all portfolio documents
+    if (
+      filter &&
+      (!retrievedContext ||
+        retrievedContext.trim() === "" ||
+        retrievedContext.includes("No relevant data found"))
+    ) {
+      console.log(`[RAG Router] Filter ${JSON.stringify(filter)} returned empty. Falling back to unfiltered search.`);
+      retrievedContext = await retrieveContext(cleanMessage, { k: 4 });
+    }
 
-    const chain = systemPromptTemplate
-      .pipe(model)
-      .pipe(new StringOutputParser());
-
-    const stream = await chain.stream({
+    // Format prompt template with retrieved context, history, and user message
+    const formattedPrompt = await systemPromptTemplate.format({
       retrieved_context: retrievedContext,
       chat_history: history,
       message: cleanMessage,
+    });
+
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      throw new Error("Missing GROQ_API_KEY in environment");
+    }
+
+    const groq = new Groq({ apiKey });
+
+    const modelName = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+
+    const completion = await groq.chat.completions.create({
+      model: modelName,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a professional AI assistant for Sandeep Singh's portfolio website. You answer questions accurately, politely, and concisely based strictly on his portfolio details.",
+        },
+        {
+          role: "user",
+          content: formattedPrompt,
+        },
+      ],
+      temperature: 0.5,
+      max_tokens: 1500,
+      stream: true,
     });
 
     let fullResponse = "";
@@ -92,12 +118,12 @@ export async function POST(req: NextRequest) {
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of stream) {
-            fullResponse += chunk;
-            controller.enqueue(encoder.encode(chunk));
-
-            // smoother streaming
-            await new Promise((r) => setTimeout(r, 0));
+          for await (const chunk of completion) {
+            const text = chunk.choices[0]?.delta?.content || "";
+            if (text) {
+              fullResponse += text;
+              controller.enqueue(encoder.encode(text));
+            }
           }
 
           // Save assistant message to MongoDB memory
@@ -119,8 +145,15 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("[Chat API Error]:", error);
     const errMsg = error?.message || "";
-    if (errMsg.includes("PINECONE_API_KEY") || errMsg.includes("HUGGINGFACE_API_KEY") || errMsg.includes("GOOGLE_API_KEY")) {
-      return new Response(`Configuration Error: ${errMsg}. Please ensure it is set in your .env file.`, { status: 500 });
+    if (
+      errMsg.includes("PINECONE_API_KEY") ||
+      errMsg.includes("GROQ_API_KEY") ||
+      errMsg.includes("GOOGLE_API_KEY")
+    ) {
+      return new Response(
+        `Configuration Error: ${errMsg}. Please ensure it is set in your .env file.`,
+        { status: 500 }
+      );
     }
     return new Response(`Server Error: ${errMsg}`, { status: 500 });
   }

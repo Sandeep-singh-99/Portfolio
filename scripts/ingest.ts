@@ -22,20 +22,22 @@ async function ingest() {
   // ---------------------------
   // Fetch and process Projects
   // ---------------------------
-  const projects = (await Project.find().sort({ priority: -1 }).lean()) as unknown as IProject[];
+  const projects = (await Project.find().sort({ priority: 1, createdAt: -1 }).lean()) as unknown as IProject[];
   projects.forEach((proj) => {
+    const id = proj._id?.toString() || "";
+    const summary = proj.projectSubDesc || proj.projectDesc?.replace(/<[^>]*>?/gm, "").slice(0, 300) || "No description";
     const content = `
 Project: ${proj.projectName || "Untitled"}
-Description: ${proj.projectDesc || "No description"}
-Sub Description: ${proj.projectSubDesc || "N/A"}
-Tech Stack: ${proj.projectTechStack?.join(", ") || "N/A"}
+Project Details: /project/${id}
 GitHub: ${proj.githubLink || "N/A"}
 Live: ${proj.liveLink || "N/A"}
+Summary: ${summary}
+Tech Stack: ${proj.projectTechStack?.join(", ") || "N/A"}
 `.trim();
     documents.push(
       new Document({
         pageContent: content,
-        metadata: { type: "project", id: proj._id?.toString() || "" },
+        metadata: { type: "project", id },
       })
     );
   });
@@ -60,11 +62,11 @@ Live: ${proj.liveLink || "N/A"}
   const intros = (await Intro.find().lean()) as unknown as IIntro[];
   intros.forEach((intro) => {
     const content = `
-Intro: ${intro.name}
-Description: ${intro.desc}
-Tech Stack: ${intro.techStack?.join(", ") || "N/A"}
-Image: ${intro.image}
-File: ${intro.file}
+Introduction & Identity of Sandeep Singh (Who is Sandeep / About Me / Intro):
+Name: ${intro.name}
+Role / Focus: ${intro.techStack?.join(", ") || "Full Stack Developer"}
+Bio / Overview: ${intro.desc}
+Resume / CV File: ${intro.file}
 `.trim();
     documents.push(
       new Document({
@@ -79,7 +81,8 @@ File: ${intro.file}
   // ---------------------------
   const abouts = (await About.find().lean()) as unknown as IAbout[];
   abouts.forEach((about) => {
-    const content = `About: ${about.desc}`;
+    const content = `About Sandeep Singh (About Me / Biography / Background / Story / Experience):
+${about.desc}`;
     documents.push(
       new Document({
         pageContent: content,
@@ -88,14 +91,95 @@ File: ${intro.file}
     );
   });
 
+  // ---------------------------
+  // Contact & Social Links
+  // ---------------------------
+  const contactContent = `Contact & Social Links for Sandeep Singh:
+- Email: sandeep.necoder@gmail.com
+- GitHub Profile: https://github.com/Sandeep-singh-99
+- LinkedIn Profile: https://www.linkedin.com/in/sandeep-singh-7a0219320
+- Twitter / X: https://x.com/SinghNecoder
+- Instagram: https://www.instagram.com/sandeep.necoder`;
+
+  documents.push(
+    new Document({
+      pageContent: contactContent,
+      metadata: { type: "contact", id: "contact-info" },
+    })
+  );
+
+  // Projects Summary
+  if (projects.length > 0) {
+    const latest4 = projects.slice(0, 4);
+    const latestSummaries = latest4
+      .map((p) => {
+        const id = p._id?.toString() || "";
+        const repo = p.githubLink ? ` | GitHub: ${p.githubLink}` : "";
+        const live = p.liveLink ? ` | Live: ${p.liveLink}` : "";
+        return `- ${p.projectName}: Details: /project/${id}${repo}${live}`;
+      })
+      .join("\n");
+
+    const allSummaries = projects
+      .map((p) => {
+        const id = p._id?.toString() || "";
+        const repo = p.githubLink ? ` | GitHub: ${p.githubLink}` : "";
+        const live = p.liveLink ? ` | Live: ${p.liveLink}` : "";
+        return `- ${p.projectName}: Details: /project/${id}${repo}${live}`;
+      })
+      .join("\n");
+
+    documents.push(
+      new Document({
+        pageContent: `Projects Overview & Summary:
+Sandeep Singh has a total of ${projects.length} projects.
+
+Latest 4 Projects:
+${latestSummaries}
+
+All Projects (${projects.length} total):
+${allSummaries}
+
+Full Projects Page: /project/all-projects`,
+        metadata: { type: "project", subtype: "summary" },
+      })
+    );
+  }
+
   console.log(`Total documents to upsert: ${documents.length}`);
 
   // ---------------------------
-  // Upsert to Pinecone via PineconeStore
-  // This stores pageContent in the metadata "text" field
-  // so PineconeStore retriever can reconstruct full documents
+  // Check & ensure Pinecone Index (768 dimensions for Gemini text-embedding-004)
   // ---------------------------
+  const existingIndexes = (await pinecone.listIndexes()).indexes || [];
+  if (!existingIndexes.some((index) => index.name === indexName)) {
+    console.log(`Index "${indexName}" not found. Creating it with 768 dimensions...`);
+    await pinecone.createIndex({
+      name: indexName,
+      dimension: 768,
+      metric: "cosine",
+      spec: {
+        serverless: {
+          cloud: "aws",
+          region: "us-east-1",
+        },
+      },
+    });
+    console.log("Waiting for index initialization...");
+    await new Promise((resolve) => setTimeout(resolve, 15000));
+    console.log(`Index "${indexName}" created successfully!`);
+  }
+
   const pineconeIndex = pinecone.Index(indexName);
+
+  try {
+    console.log("Clearing old Pinecone documents to purge outdated records...");
+    await pineconeIndex.deleteAll();
+    console.log("Pinecone index cleared successfully.");
+  } catch (err: any) {
+    console.warn("Could not clear index (might be empty):", err.message);
+  }
+
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex,
     maxConcurrency: 5,

@@ -1,56 +1,64 @@
 import { Embeddings } from "@langchain/core/embeddings";
-import { HfInference } from "@huggingface/inference";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export class HuggingFaceInferenceEmbeddings extends Embeddings {
-  private hf: HfInference;
+export class GeminiEmbeddings extends Embeddings {
+  private genAI: GoogleGenerativeAI;
   private model: string;
+  private dimension: number;
 
-  constructor(fields: { apiKey: string, model: string }) {
+  constructor(fields?: { apiKey?: string; model?: string; dimension?: number }) {
     super({});
-    this.hf = new HfInference(fields.apiKey);
-    this.model = fields.model;
+    const apiKey =
+      fields?.apiKey || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("Missing GOOGLE_API_KEY in environment");
+    }
+    this.genAI = new GoogleGenerativeAI(apiKey);
+    this.model = fields?.model || "gemini-embedding-001";
+    this.dimension = fields?.dimension || 768;
   }
 
   async embedDocuments(texts: string[]): Promise<number[][]> {
-    const res = await this.hf.featureExtraction({
-      model: this.model,
-      inputs: texts,
-    });
-    // featureExtraction for a list of strings usually returns an array of arrays
-    return res as unknown as number[][];
+    const generativeModel = this.genAI.getGenerativeModel({ model: this.model });
+    const batchSize = 50;
+    const allEmbeddings: number[][] = [];
+
+    for (let i = 0; i < texts.length; i += batchSize) {
+      const chunk = texts.slice(i, i + batchSize);
+      const res = await generativeModel.batchEmbedContents({
+        requests: chunk.map((text) => ({
+          content: {
+            role: "user",
+            parts: [{ text: text.replace(/\n/g, " ") }],
+          },
+          outputDimensionality: this.dimension,
+        })),
+      });
+
+      for (const item of res.embeddings) {
+        allEmbeddings.push(item.values);
+      }
+    }
+
+    return allEmbeddings;
   }
 
   async embedQuery(text: string): Promise<number[]> {
-    const res = await this.hf.featureExtraction({
-      model: this.model,
-      inputs: text,
-    });
-    // featureExtraction for a single string usually returns an array
-    return res as unknown as number[];
+    const generativeModel = this.genAI.getGenerativeModel({ model: this.model });
+    const res = await generativeModel.embedContent({
+      content: {
+        role: "user",
+        parts: [{ text: text.replace(/\n/g, " ") }],
+      },
+      outputDimensionality: this.dimension,
+    } as any);
+
+    return res.embedding.values;
   }
 }
 
-// Lazy proxy object for HuggingFaceInferenceEmbeddings to avoid module evaluation errors
+// Lazy proxy object for GeminiEmbeddings to avoid module evaluation errors during build
 export const embeddings = {
-  embedDocuments: (texts: string[]) => {
-    if (!process.env.HUGGINGFACE_API_KEY) {
-      throw new Error("Missing HUGGINGFACE_API_KEY in environment");
-    }
-    const client = new HuggingFaceInferenceEmbeddings({
-      apiKey: process.env.HUGGINGFACE_API_KEY,
-      model: "sentence-transformers/all-MiniLM-L6-v2",
-    });
-    return client.embedDocuments(texts);
-  },
-  embedQuery: (text: string) => {
-    if (!process.env.HUGGINGFACE_API_KEY) {
-      throw new Error("Missing HUGGINGFACE_API_KEY in environment");
-    }
-    const client = new HuggingFaceInferenceEmbeddings({
-      apiKey: process.env.HUGGINGFACE_API_KEY,
-      model: "sentence-transformers/all-MiniLM-L6-v2",
-    });
-    return client.embedQuery(text);
-  }
-} as unknown as HuggingFaceInferenceEmbeddings;
-
+  embedDocuments: (texts: string[]) => new GeminiEmbeddings().embedDocuments(texts),
+  embedQuery: (text: string) => new GeminiEmbeddings().embedQuery(text),
+} as unknown as GeminiEmbeddings;

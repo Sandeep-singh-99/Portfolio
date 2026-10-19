@@ -12,8 +12,8 @@ export async function detectIntent(query: string): Promise<IntentType> {
   const cleanQuery = query.toLowerCase().trim();
 
   // 1. Rule-based pre-filtering (Fast Path)
-  
-  // Greetings / General chit-chat
+
+  // Greetings / General chit-chat (exact match or simple greetings)
   if (
     cleanQuery === "hi" ||
     cleanQuery === "hello" ||
@@ -24,6 +24,33 @@ export async function detectIntent(query: string): Promise<IntentType> {
     cleanQuery === "sup"
   ) {
     return "general";
+  }
+
+  // Projects query - prioritize projects before general about!
+  if (
+    cleanQuery.includes("project") ||
+    cleanQuery.includes("portfolio") ||
+    cleanQuery.includes("apps") ||
+    cleanQuery.includes("websites you built") ||
+    cleanQuery.includes("what have you built") ||
+    cleanQuery.includes("what did you build") ||
+    cleanQuery.includes("show me your work") ||
+    cleanQuery.includes("your work")
+  ) {
+    return "project";
+  }
+
+  // Skills query - prioritize technical skills
+  if (
+    cleanQuery.includes("skill") ||
+    cleanQuery.includes("tech stack") ||
+    cleanQuery.includes("technologies") ||
+    cleanQuery.includes("frameworks") ||
+    cleanQuery.includes("languages") ||
+    cleanQuery.includes("what do you know") ||
+    cleanQuery.includes("what tools")
+  ) {
+    return "skill";
   }
 
   // Contact info query
@@ -38,55 +65,38 @@ export async function detectIntent(query: string): Promise<IntentType> {
     cleanQuery.includes("instagram") ||
     cleanQuery.includes("reach you") ||
     cleanQuery.includes("message you") ||
-    cleanQuery.includes("send message")
+    cleanQuery.includes("hire you") ||
+    cleanQuery.includes("get in touch")
   ) {
     return "contact";
   }
 
-  // Identity / Basic introduction query
+  // Identity, About & Biography query (About Sandeep Singh)
   if (
+    cleanQuery === "about" ||
+    cleanQuery === "about me" ||
+    cleanQuery === "about you" ||
+    cleanQuery === "about yourself" ||
+    cleanQuery === "who are you" ||
+    cleanQuery === "who is sandeep" ||
+    cleanQuery.includes("about me") ||
+    cleanQuery.includes("about you") ||
+    cleanQuery.includes("about sandeep") ||
+    cleanQuery.includes("tell me about yourself") ||
+    cleanQuery.includes("tell me about you") ||
+    cleanQuery.includes("tell me about sandeep") ||
     cleanQuery.includes("who are you") ||
     cleanQuery.includes("who is sandeep") ||
     cleanQuery.includes("your name") ||
     cleanQuery.includes("introduce yourself") ||
-    cleanQuery.includes("what is your name")
-  ) {
-    return "intro";
-  }
-
-  // Detailed about / Biography query
-  if (
-    cleanQuery.includes("about you") ||
-    cleanQuery.includes("tell me about yourself") ||
+    cleanQuery.includes("what is your name") ||
     cleanQuery.includes("your bio") ||
     cleanQuery.includes("background") ||
     cleanQuery.includes("education") ||
-    cleanQuery.includes("experience")
+    cleanQuery.includes("experience") ||
+    cleanQuery.includes("your story")
   ) {
     return "about";
-  }
-
-  // Skills query
-  if (
-    (cleanQuery.includes("skill") ||
-      cleanQuery.includes("tech stack") ||
-      cleanQuery.includes("technologies") ||
-      cleanQuery.includes("frameworks") ||
-      cleanQuery.includes("languages")) &&
-    !cleanQuery.includes("project")
-  ) {
-    return "skill";
-  }
-
-  // Projects query
-  if (
-    cleanQuery.includes("project") ||
-    cleanQuery.includes("portfolio") ||
-    cleanQuery.includes("apps") ||
-    cleanQuery.includes("websites you built") ||
-    cleanQuery.includes("what have you built")
-  ) {
-    return "project";
   }
 
   // 2. LLM-based categorization fallback (Slow Path)

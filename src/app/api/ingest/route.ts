@@ -17,7 +17,7 @@ export async function GET() {
       console.log(`Index "${indexName}" not found. Creating it now... (this takes ~30 seconds)`);
       await pinecone.createIndex({
         name: indexName,
-        dimension: 384,
+        dimension: 768,
         metric: "cosine",
         spec: {
           serverless: {
@@ -47,7 +47,7 @@ export async function GET() {
     
     console.log("Fetching data from MongoDB...");
     const [projects, skills, about, intro] = await Promise.all([
-      Project.find({}).lean() as Promise<any[]>,
+      Project.find({}).sort({ priority: 1, createdAt: -1 }).lean() as Promise<any[]>,
       Skill.find({}).lean() as Promise<any[]>,
       About.findOne({}).lean() as Promise<any>,
       Intro.findOne({}).lean() as Promise<any>,
@@ -58,28 +58,55 @@ export async function GET() {
     // 1. Ingest Projects
     if (projects && Array.isArray(projects)) {
       projects.forEach((proj: any) => {
+        const id = proj._id?.toString() || "";
+        const summary = proj.projectSubDesc || proj.projectDesc?.replace(/<[^>]*>?/gm, "").slice(0, 300) || "";
         const content = `Project Name: ${proj.projectName || "Untitled"}
-Description: ${proj.projectDesc || ""}
-Detailed/Sub Description: ${proj.projectSubDesc || ""}
-Tech Stack: ${proj.projectTechStack ? proj.projectTechStack.join(", ") : "N/A"}
+Project Details: /project/${id}
 GitHub Link: ${proj.githubLink || "N/A"}
-Live Link: ${proj.liveLink || "N/A"}`;
+Live Link: ${proj.liveLink || "N/A"}
+Summary: ${summary}
+Tech Stack: ${proj.projectTechStack ? proj.projectTechStack.join(", ") : "N/A"}`;
 
         documents.push(new Document({
           pageContent: content,
           metadata: { 
             type: "project", 
-            id: proj._id.toString(), 
+            id, 
             title: proj.projectName || "Untitled" 
           }
         }));
       });
 
       // Projects Summary document for count and list queries
-      const projectNames = projects.map((p: any) => p.projectName).join(", ");
+      const latest4 = projects.slice(0, 4);
+      const latestSummaries = latest4
+        .map((p: any) => {
+          const id = p._id?.toString() || "";
+          const repo = p.githubLink ? ` | GitHub: ${p.githubLink}` : "";
+          const live = p.liveLink ? ` | Live: ${p.liveLink}` : "";
+          return `- ${p.projectName}: Details: /project/${id}${repo}${live}`;
+        })
+        .join("\n");
+
+      const allSummaries = projects
+        .map((p: any) => {
+          const id = p._id?.toString() || "";
+          const repo = p.githubLink ? ` | GitHub: ${p.githubLink}` : "";
+          const live = p.liveLink ? ` | Live: ${p.liveLink}` : "";
+          return `- ${p.projectName}: Details: /project/${id}${repo}${live}`;
+        })
+        .join("\n");
+
       const summaryContent = `Projects Overview & Summary:
 Sandeep Singh has a total of ${projects.length} projects.
-Names of all projects: ${projectNames}.`;
+
+Latest 4 Projects:
+${latestSummaries}
+
+All Projects (${projects.length} total):
+${allSummaries}
+
+Full Projects Page: /project/all-projects`;
 
       documents.push(new Document({
         pageContent: summaryContent,
@@ -127,8 +154,8 @@ ${skillCategoriesSummary}`;
 
     // 3. Ingest About
     if (about) {
-      const content = `About Sandeep Singh:
-Biography / About: ${about.desc || ""}`;
+      const content = `About Sandeep Singh (About Me / Biography / Background / Story / Experience):
+${about.desc || ""}`;
 
       documents.push(new Document({
         pageContent: content,
@@ -138,10 +165,11 @@ Biography / About: ${about.desc || ""}`;
 
     // 4. Ingest Intro
     if (intro) {
-      const content = `Introduction / Identity:
-Name: ${intro.name || ""}
-Professional Bio: ${intro.desc || ""}
-Tech Stack Focus: ${intro.techStack ? intro.techStack.join(", ") : "N/A"}`;
+      const content = `Introduction & Identity of Sandeep Singh (Who is Sandeep / About Me / Intro):
+Name: ${intro.name || "Sandeep Singh"}
+Role / Focus: ${intro.techStack ? intro.techStack.join(", ") : "Full Stack Developer"}
+Bio / Overview: ${intro.desc || ""}
+Resume / CV File: ${intro.file || ""}`;
 
       documents.push(new Document({
         pageContent: content,
