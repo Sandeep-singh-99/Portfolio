@@ -1,12 +1,11 @@
-import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import IntroPage from "./intro/page";
 import ProjectPage from "./project/page";
-
-const SkillPage = dynamic(() => import("./skill/page"));
-const AboutPage = dynamic(() => import("./about/page"));
-const CertificatePage = dynamic(() => import("./certificate/page"));
-const GithubPage = dynamic(() => import("./github/page"));
-const BlogPage = dynamic(() => import("./blog/page"));
+import GithubPage from "./github/page";
+import SkillPage from "./skill/page";
+import AboutPage from "./about/page";
+import CertificatePage from "./certificate/page";
+import BlogPage from "./blog/page";
 
 export const revalidate = 3600;
 
@@ -15,11 +14,13 @@ export default function Home() {
     <div className="py-10 space-y-10">
       <IntroPage />
       <ProjectPage />
-      <GithubPage />
-      <SkillPage />
-      <AboutPage />
-      <CertificatePage />
-      <BlogPage />
+      <Suspense fallback={<div className="h-48 animate-pulse bg-muted rounded-xl" />}>
+        <GithubPage />
+        <SkillPage />
+        <AboutPage />
+        <CertificatePage />
+        <BlogPage />
+      </Suspense>
     </div>
   );
 }
