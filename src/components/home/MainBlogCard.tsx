@@ -21,11 +21,8 @@ const MainBlogCard: React.FC<MainBlogCardProps> = ({
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.35 }}
       whileHover={{ y: -3 }}
+      transition={{ duration: 0.2 }}
       className="h-full"
     >
       <div

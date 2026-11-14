@@ -4,25 +4,15 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Moon, Sun, Menu, X, Search, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, Menu, X, Search } from "lucide-react";
 import CommandMenu from "./CommandMenu";
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -39,14 +29,11 @@ export default function NavBar() {
   return (
     <>
       <header
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.75rem)] max-w-3xl
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.75rem)] max-w-3xl
         px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full
-        border transition-all duration-300 backdrop-blur-xl select-none
-        ${
-          isScrolled
-            ? "bg-white/70 dark:bg-zinc-950/70 border-zinc-200/80 dark:border-zinc-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
-            : "bg-white/45 dark:bg-zinc-950/45 border-zinc-200/40 dark:border-zinc-800/50 shadow-sm"
-        }`}
+        border border-zinc-200/80 dark:border-zinc-800/80
+        bg-white/70 dark:bg-zinc-950/70 backdrop-blur-xl select-none
+        shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
       >
         <div className="flex items-center justify-between gap-3">
           {/* Brand Logo / Text: "sandeep." */}
@@ -120,19 +107,11 @@ export default function NavBar() {
               className="size-8 rounded-full flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-200/80 dark:hover:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xs transition-all duration-150 cursor-pointer"
               aria-label="Toggle theme"
             >
-              <motion.div
-                key={theme}
-                initial={{ rotate: -45, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 45, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {theme === "dark" ? (
-                  <Moon size={14} className="text-zinc-200" />
-                ) : (
-                  <Sun size={14} className="text-zinc-700" />
-                )}
-              </motion.div>
+              {theme === "dark" ? (
+                <Moon size={14} className="text-zinc-200" />
+              ) : (
+                <Sun size={14} className="text-zinc-700" />
+              )}
             </button>
 
             {/* Mobile Hamburger Menu Button */}
@@ -148,38 +127,32 @@ export default function NavBar() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu with Framer Motion AnimatePresence */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.nav
-              id="mobile-nav"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              aria-label="Mobile navigation"
-              className="md:hidden mt-3 pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex flex-col space-y-1 overflow-hidden"
-            >
-              {links.map((link) => {
-                const isActive = pathname.startsWith(link.url);
-                return (
-                  <Link
-                    key={link.title}
-                    href={link.url}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full px-3 py-2 rounded-xl text-sm font-medium transition ${
-                      isActive
-                        ? "bg-zinc-200/70 dark:bg-zinc-800/70 text-zinc-900 dark:text-white"
-                        : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/40 dark:hover:bg-zinc-850/50"
-                    }`}
-                  >
-                    {link.title}
-                  </Link>
-                );
-              })}
-            </motion.nav>
-          )}
-        </AnimatePresence>
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <nav
+            id="mobile-nav"
+            aria-label="Mobile navigation"
+            className="md:hidden mt-3 pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex flex-col space-y-1 overflow-hidden"
+          >
+            {links.map((link) => {
+              const isActive = pathname.startsWith(link.url);
+              return (
+                <Link
+                  key={link.title}
+                  href={link.url}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`w-full px-3 py-2 rounded-xl text-sm font-medium transition ${
+                    isActive
+                      ? "bg-zinc-200/70 dark:bg-zinc-800/70 text-zinc-900 dark:text-white"
+                      : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/40 dark:hover:bg-zinc-850/50"
+                  }`}
+                >
+                  {link.title}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
       </header>
 
       {/* Command Menu Modal attached cleanly with navbar lifecycle */}

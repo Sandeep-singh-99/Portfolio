@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Github, ExternalLink, ArrowUpRight, Sparkles } from "lucide-react";
+import { Github, ExternalLink, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -38,12 +38,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <motion.div
-      initial={priority ? false : { opacity: 0, y: 16 }}
-      animate={priority ? { opacity: 1, y: 0 } : undefined}
-      whileInView={priority ? undefined : { opacity: 1, y: 0 }}
-      viewport={priority ? undefined : { once: true }}
-      transition={{ duration: 0.35 }}
       whileHover={{ y: -3 }}
+      transition={{ duration: 0.2 }}
       className="h-full"
     >
       <div

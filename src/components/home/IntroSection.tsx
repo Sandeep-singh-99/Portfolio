@@ -1,6 +1,6 @@
 "use client";
 
-import { IIntro } from "../../models/intro.model";
+import { IIntro } from "../../../models/intro.model";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ExternalLink, FileText } from "lucide-react";
@@ -12,7 +12,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { motion, Variants } from "framer-motion";
 
 const TypewriterClient = dynamic(
   () => import("@/components/home/TypewriterClient"),
@@ -94,7 +93,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            Hi, I'm {intro.name}
+            Hi, I&apos;m {intro.name}
           </h1>
 
           <div className="flex items-center gap-2 text-sm sm:text-base text-muted-foreground font-mono">
@@ -111,13 +110,8 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
         </p>
       </div> */}
 
-      {/* CTAs and Social Links (Smooth entry) */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.05 }}
-        className="flex flex-wrap items-center gap-3 pt-1"
-      >
+      {/* CTAs and Social Links */}
+      <div className="flex flex-wrap items-center gap-3 pt-1">
         <Button asChild className="h-10 px-5 rounded-full font-medium gap-2 shadow-xs hover:shadow-sm cursor-pointer group transition-all">
           <Link href="/contact">
             <span>Get in touch</span>
@@ -165,7 +159,7 @@ export default function IntroSection({ intro }: { intro: IIntro }) {
             </Tooltip>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

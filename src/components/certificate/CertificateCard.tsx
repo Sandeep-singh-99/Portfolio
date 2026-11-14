@@ -37,11 +37,8 @@ export default function CertificateCard({
           ? "cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl overflow-hidden"
           : ""
       }`}
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="relative aspect-[4/3] w-full bg-zinc-100 dark:bg-zinc-900 rounded-xl overflow-hidden">
         <Image

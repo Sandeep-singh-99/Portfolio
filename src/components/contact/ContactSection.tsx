@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -50,12 +49,7 @@ export default function ContactSection() {
 
   return (
     <div className="flex flex-col gap-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <div>
         <div className="flex flex-col items-center gap-4">
           <h1 className="md:text-4xl text-2xl font-extrabold text-zinc-900 dark:text-white">
             Contact
@@ -66,14 +60,9 @@ export default function ContactSection() {
         </div>
 
         <Separator className="w-full border border-zinc-200 dark:border-zinc-800 mt-10" />
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.12 }}
-      >
+      <div>
         <div className="px-5">
           <div className="flex flex-col gap-2">
             <h2 className="font-semibold">Send me a message</h2>
@@ -140,7 +129,7 @@ export default function ContactSection() {
             </form>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

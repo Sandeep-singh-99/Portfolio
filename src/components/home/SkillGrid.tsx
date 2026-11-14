@@ -2,7 +2,6 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ISkill } from "../../../models/skill.model";
 
 const CATEGORY_ORDER = [
@@ -54,7 +53,7 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
 
   return (
     <div className="space-y-6">
-      {categories.map((category, catIndex) => {
+      {categories.map((category) => {
         const categorySkills = grouped[category] || [];
         if (categorySkills.length === 0) return null;
 
@@ -63,12 +62,8 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
           category.charAt(0).toUpperCase() + category.slice(1);
 
         return (
-          <motion.div
+          <div
             key={category}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-30px" }}
-            transition={{ duration: 0.35, delay: catIndex * 0.05 }}
             className="space-y-2.5"
           >
             {/* Category Subtitle */}
@@ -107,7 +102,7 @@ export default function SkillGrid({ skills }: { skills: ISkill[] }) {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>
