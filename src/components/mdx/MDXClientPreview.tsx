@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { useTheme } from "next-themes";
 import { mdxPreviewComponents } from "./MDXPreviewComponents";
+import "@/styles/markdown-editor.css";
 
 interface MDXClientPreviewProps {
   content: string;

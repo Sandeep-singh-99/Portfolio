@@ -23,10 +23,28 @@ interface ChatMessage {
   content: string;
 }
 
-export function GlobalChatWidget() {
-  const [isOpen, setIsOpen] = React.useState(false);
+export interface GlobalChatWidgetProps {
+  initialOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function GlobalChatWidget({
+  initialOpen = false,
+  onClose,
+}: GlobalChatWidgetProps = {}) {
+  const [isOpen, setIsOpen] = React.useState(initialOpen);
   const [message, setMessage] = React.useState("");
-  const [chatHistory, setChatHistory] = React.useState<ChatMessage[]>([]);
+  const [chatHistory, setChatHistory] = React.useState<ChatMessage[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem("portfolio_chat_history");
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
   const [isStreaming, setIsStreaming] = React.useState(false);
   const [sessionId, setSessionId] = React.useState<string>("");
 
@@ -35,6 +53,24 @@ export function GlobalChatWidget() {
 
   // Scroll container ref
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Sync chatHistory with sessionStorage
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && chatHistory.length > 0) {
+      try {
+        sessionStorage.setItem("portfolio_chat_history", JSON.stringify(chatHistory));
+      } catch {}
+    }
+  }, [chatHistory]);
+
+  // Clean up on unmount
+  React.useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   // Initialize session ID from localStorage
   React.useEffect(() => {
@@ -56,7 +92,15 @@ export function GlobalChatWidget() {
     }
   }, [chatHistory, isStreaming]);
 
-  const toggleChat = () => setIsOpen((prev) => !prev);
+  const toggleChat = () => {
+    setIsOpen((prev) => {
+      const next = !prev;
+      if (!next && onClose) {
+        onClose();
+      }
+      return next;
+    });
+  };
 
   // ─── Cancel any in-flight stream ──────────────────────────────────────
   const cancelStream = React.useCallback(() => {
