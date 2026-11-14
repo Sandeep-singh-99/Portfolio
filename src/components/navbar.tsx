@@ -104,14 +104,17 @@ export default function NavBar() {
             {/* Dark / Light Mode Toggle Button */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="size-8 rounded-full flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-200/80 dark:hover:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xs transition-all duration-150 cursor-pointer"
+              className="relative size-8 rounded-full flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-200/80 dark:hover:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-800/90 shadow-2xs transition-all duration-150 active:scale-90 cursor-pointer overflow-hidden"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? (
-                <Moon size={14} className="text-zinc-200" />
-              ) : (
-                <Sun size={14} className="text-zinc-700" />
-              )}
+              <Sun
+                size={14}
+                className="rotate-0 scale-100 transition-transform duration-300 dark:-rotate-90 dark:scale-0 text-zinc-700 dark:text-zinc-400"
+              />
+              <Moon
+                size={14}
+                className="absolute rotate-90 scale-0 transition-transform duration-300 dark:rotate-0 dark:scale-100 text-zinc-700 dark:text-zinc-200"
+              />
             </button>
 
             {/* Mobile Hamburger Menu Button */}

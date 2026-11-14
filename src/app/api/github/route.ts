@@ -46,7 +46,7 @@ export async function GET() {
           login,
         },
       }),
-      cache: "no-store",
+      next: { revalidate: 3600 }, // Cache for 1 hour at edge
     });
 
     if (!res.ok) {
@@ -93,7 +93,7 @@ export async function GET() {
       {
         headers: {
           "Cache-Control":
-            "public, max-age=0, s-maxage=300, stale-while-revalidate=600",
+            "public, s-maxage=3600, stale-while-revalidate=86400",
         },
       }
     );

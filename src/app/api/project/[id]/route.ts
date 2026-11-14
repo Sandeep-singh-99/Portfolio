@@ -58,7 +58,14 @@ export async function GET(
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ data: projectId, status: 200 });
+    return NextResponse.json(
+      { data: projectId, status: 200 },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch project" },

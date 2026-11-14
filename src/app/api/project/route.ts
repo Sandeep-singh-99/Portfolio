@@ -25,6 +25,29 @@ async function uploadToCloudinary(file: File, type: "image" | "auto"): Promise<[
   });
 }
 
+export const revalidate = 3600;
+
+export async function GET() {
+  try {
+    await ConnectDB();
+    const projects = await Project.find().sort({ priority: 1, createdAt: -1 });
+
+    return NextResponse.json(
+      { data: projects },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch projects" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
     try {
         await ConnectDB();
@@ -33,6 +56,7 @@ export async function POST(req: NextRequest) {
         const projectName = formData.get("projectName") as string;
         const projectDesc = formData.get("projectDesc") as string;
         const projectSubDesc = formData.get("projectSubDesc") as string;
+        const projectTechStack = (formData.get("projectTechStack") as string) || "";
         const githubLink = (formData.get("githubLink") as string) || "";
         const liveLink = (formData.get("liveLink") as string) || "";
         const image = formData.get("projectImage") as File;

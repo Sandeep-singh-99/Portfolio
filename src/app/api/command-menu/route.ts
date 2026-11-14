@@ -4,7 +4,7 @@ import Intro from "../../../../models/intro.model";
 import Project from "../../../../models/project.model";
 import Blog from "../../../../models/blog.model";
 
-export const revalidate = 60; // Cache for 60 seconds
+export const revalidate = 3600; // Cache for 1 hour
 
 export async function GET() {
   try {
@@ -24,7 +24,7 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        resumeUrl: intro?.file || null,
+        resumeUrl: (intro as any)?.file || null,
         projects: (projects || []).map((p: any) => ({
           id: p._id?.toString(),
           title: p.projectName,
@@ -42,7 +42,7 @@ export async function GET() {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
         },
       }
     );

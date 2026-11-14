@@ -45,7 +45,14 @@ export async function GET(
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ data: blog, status: 200 });
+    return NextResponse.json(
+      { data: blog, status: 200 },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching blog:", error);
     return NextResponse.json(
