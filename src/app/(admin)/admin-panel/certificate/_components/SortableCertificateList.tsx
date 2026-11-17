@@ -18,7 +18,6 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableCertificateItem } from "./SortableCertificateItem";
 import { toast } from "sonner";
-import axios from "axios";
 
 interface Certificate {
   _id: string;
@@ -68,7 +67,12 @@ export default function SortableCertificateList({
   const updateOrder = async (items: Certificate[]) => {
     try {
       const certificateIds = items.map((item) => item._id);
-      await axios.put("/api/certificate/reorder", { certificateIds });
+      const res = await fetch("/api/certificate/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ certificateIds }),
+      });
+      if (!res.ok) throw new Error("Failed to update certificate order");
       toast.success("Certificate order updated");
     } catch (error) {
       console.error("Failed to update order:", error);

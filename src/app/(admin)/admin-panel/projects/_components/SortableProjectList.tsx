@@ -18,7 +18,6 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableProjectItem } from "./SortableProjectItem";
 import { toast } from "sonner";
-import axios from "axios";
 
 interface Project {
   _id: string;
@@ -74,7 +73,12 @@ export default function SortableProjectList({
   const updateOrder = async (items: Project[]) => {
     try {
       const projectIds = items.map((item) => item._id);
-      await axios.put("/api/project/reorder", { projectIds });
+      const res = await fetch("/api/project/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectIds }),
+      });
+      if (!res.ok) throw new Error("Failed to update project order");
       toast.success("Project order updated");
     } catch (error) {
       console.error("Failed to update order:", error);

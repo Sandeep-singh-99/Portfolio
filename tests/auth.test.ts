@@ -100,9 +100,9 @@ describe("NextAuth authOptions", () => {
     });
   });
 
-  describe("Admin Middleware protection", () => {
+  describe("Admin Proxy protection", () => {
     it("config matcher covers admin panel routes excluding login", async () => {
-      const { config } = await import("../src/middleware");
+      const { config } = await import("../src/proxy");
       expect(config.matcher).toContain("/admin-panel/((?!login).*)$");
     });
   });

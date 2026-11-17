@@ -18,7 +18,6 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableSkillItem } from "./SortableSkillItem";
 import { toast } from "sonner";
-import axios from "axios";
 import { Layers, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -108,7 +107,12 @@ export default function SortableSkillList({
   const updateOrder = async (items: Skill[]) => {
     try {
       const skillIds = items.map((item) => item.id);
-      await axios.put("/api/skill/reorder", { skillIds });
+      const res = await fetch("/api/skill/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ skillIds }),
+      });
+      if (!res.ok) throw new Error("Failed to update skill order");
       toast.success("Skill order updated");
     } catch (error) {
       console.error("Failed to update order:", error);
