@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cache } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,7 @@ import {
   MotionContainer,
 } from "./_components/ProjectClientActions";
 
-async function fetchProject(id: string): Promise<IProject | null> {
+const fetchProject = cache(async (id: string): Promise<IProject | null> => {
   await ConnectDB();
   try {
     const project = await Project.findById(id).lean<IProject>();
@@ -40,7 +40,7 @@ async function fetchProject(id: string): Promise<IProject | null> {
     console.error("Error fetching project:", error);
     return null;
   }
-}
+});
 
 interface AdjacentProject {
   _id: string;
@@ -49,41 +49,64 @@ interface AdjacentProject {
   projectImage: string;
 }
 
-async function fetchAdjacentProjects(currentId: string): Promise<{
+async function fetchAdjacentProjects(current: string | IProject): Promise<{
   prev: AdjacentProject | null;
   next: AdjacentProject | null;
 }> {
   await ConnectDB();
   try {
-    const all = await Project.find()
-      .select("projectName projectSubDesc projectImage priority createdAt")
-      .sort({ priority: 1, createdAt: -1 })
-      .lean<IProject[]>();
+    const currentProject =
+      typeof current === "string" ? await fetchProject(current) : current;
+    if (!currentProject) return { prev: null, next: null };
 
-    const index = all.findIndex((p) => p._id?.toString() === currentId);
-    if (index === -1) return { prev: null, next: null };
+    const priority = currentProject.priority ?? 0;
+    const createdAt = currentProject.createdAt
+      ? new Date(currentProject.createdAt)
+      : new Date(0);
 
-    const prev =
-      index > 0
+    const [prevDoc, nextDoc] = await Promise.all([
+      Project.findOne({
+        _id: { $ne: currentProject._id },
+        $or: [
+          { priority: { $lt: priority } },
+          { priority: priority, createdAt: { $gt: createdAt } },
+        ],
+      })
+        .select("projectName projectSubDesc projectImage")
+        .sort({ priority: -1, createdAt: 1 })
+        .limit(1)
+        .lean<IProject>(),
+      Project.findOne({
+        _id: { $ne: currentProject._id },
+        $or: [
+          { priority: { $gt: priority } },
+          { priority: priority, createdAt: { $lt: createdAt } },
+        ],
+      })
+        .select("projectName projectSubDesc projectImage")
+        .sort({ priority: 1, createdAt: -1 })
+        .limit(1)
+        .lean<IProject>(),
+    ]);
+
+    return {
+      prev: prevDoc
         ? {
-            _id: all[index - 1]._id!.toString(),
-            projectName: all[index - 1].projectName,
-            projectSubDesc: all[index - 1].projectSubDesc,
-            projectImage: all[index - 1].projectImage,
+            _id: prevDoc._id!.toString(),
+            projectName: prevDoc.projectName,
+            projectSubDesc: prevDoc.projectSubDesc,
+            projectImage: prevDoc.projectImage,
           }
-        : null;
-
-    const next =
-      index < all.length - 1
+        : null,
+      next: nextDoc
         ? {
-            _id: all[index + 1]._id!.toString(),
-            projectName: all[index + 1].projectName,
-            projectSubDesc: all[index + 1].projectSubDesc,
-            projectImage: all[index + 1].projectImage,
+            _id: nextDoc._id!.toString(),
+            projectName: nextDoc.projectName,
+            projectSubDesc: nextDoc.projectSubDesc,
+            projectImage: nextDoc.projectImage,
           }
-        : null;
-
-    return { prev, next };
+        : null,
+    };
   } catch (error) {
     console.error("Error fetching adjacent projects:", error);
     return { prev: null, next: null };
@@ -184,7 +207,7 @@ export default async function ProjectPageById({
     );
   }
 
-  const { prev, next } = await fetchAdjacentProjects(id);
+  const { prev, next } = await fetchAdjacentProjects(project);
 
   const hasLive = Boolean(project.liveLink && project.liveLink.trim() !== "");
   const hasGithub = Boolean(

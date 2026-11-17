@@ -19,7 +19,7 @@ export default function SubLayout({ children }: { children: React.ReactNode }) {
     }
 
     // If user is unauthenticated and trying to access any admin panel route, redirect to login
-    if (session.status === "unauthenticated" && pathname.startsWith("/admin-panel/intro")) {
+    if (session.status === "unauthenticated" && pathname !== "/admin-panel/login") {
       router.push("/admin-panel/login");
     }
   }, [session.status, pathname, router]);

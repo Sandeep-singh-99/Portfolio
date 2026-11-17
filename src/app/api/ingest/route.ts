@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { Document } from "@langchain/core/documents";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../../lib/auth";
 import { ConnectDB } from "../../../../lib/db";
 import Project from "../../../../models/project.model";
 import Skill from "../../../../models/skill.model";
@@ -8,8 +10,13 @@ import Intro from "../../../../models/intro.model";
 import { getVectorStore } from "../../../../lib/vectorStore";
 import { pinecone, indexName } from "../../../../lib/pinecone";
 
-export async function GET() {
+export async function POST() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const existingIndexes = (await pinecone.listIndexes()).indexes || [];
     
     if (!existingIndexes.some((index) => index.name === indexName)) {
@@ -28,15 +35,6 @@ export async function GET() {
       await new Promise((resolve) => setTimeout(resolve, 15000));
     }
 
-    const pineconeIndex = pinecone.Index(indexName);
-    
-    // Clear index to avoid duplicates and purge outdated metadata schema
-    try {
-      await pineconeIndex.deleteAll();
-    } catch (err: any) {
-      console.warn("Could not clear index (index might be empty):", err.message);
-    }
-
     await ConnectDB();
     
     const [projects, skills, about, intro] = await Promise.all([
@@ -47,6 +45,7 @@ export async function GET() {
     ]);
 
     const documents: Document[] = [];
+    const ids: string[] = [];
 
     // 1. Ingest Projects
     if (projects && Array.isArray(projects)) {
@@ -68,6 +67,7 @@ Tech Stack: ${proj.projectTechStack ? proj.projectTechStack.join(", ") : "N/A"}`
             title: proj.projectName || "Untitled" 
           }
         }));
+        ids.push(`project-${id}`);
       });
 
       // Projects Summary document for count and list queries
@@ -105,6 +105,7 @@ Full Projects Page: /project/all-projects`;
         pageContent: summaryContent,
         metadata: { type: "project", subtype: "summary" }
       }));
+      ids.push("project-summary");
     }
 
     // 2. Ingest Skills
@@ -120,6 +121,7 @@ Category: ${skill.skillCategory || "Other"}`;
             id: skill._id.toString() 
           }
         }));
+        ids.push(`skill-${skill._id.toString()}`);
       });
 
       // Skills Summary document for category grouping queries
@@ -143,6 +145,7 @@ ${skillCategoriesSummary}`;
         pageContent: summaryContent,
         metadata: { type: "skill", subtype: "summary" }
       }));
+      ids.push("skill-summary");
     }
 
     // 3. Ingest About
@@ -154,6 +157,7 @@ ${about.desc || ""}`;
         pageContent: content,
         metadata: { type: "about" }
       }));
+      ids.push("about-doc");
     }
 
     // 4. Ingest Intro
@@ -168,6 +172,7 @@ Resume / CV File: ${intro.file || ""}`;
         pageContent: content,
         metadata: { type: "intro" }
       }));
+      ids.push("intro-doc");
     }
 
     // 5. Ingest Contact & Social Links (Static Info)
@@ -182,9 +187,10 @@ Resume / CV File: ${intro.file || ""}`;
       pageContent: contactContent,
       metadata: { type: "contact" }
     }));
+    ids.push("contact-doc");
 
     const vectorStore = await getVectorStore();
-    await vectorStore.addDocuments(documents);
+    await vectorStore.addDocuments(documents, { ids });
     
     return NextResponse.json({ success: true, count: documents.length });
   } catch (error: any) {

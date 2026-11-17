@@ -16,11 +16,11 @@ export async function POST(req: NextRequest) {
 
     const cleanMessage = message.trim().slice(0, 1000);
 
+    // Fetch conversation memory from MongoDB prior to current turn
+    const history = await getChatHistory(sessionId);
+
     // Save user message in MongoDB chat memory
     await saveMessage(sessionId, "user", cleanMessage);
-
-    // Fetch conversation memory from MongoDB
-    const history = await getChatHistory(sessionId);
 
     // Detect user query intent (hybrid keyword + LLM classification)
     const intent = await detectIntent(cleanMessage);

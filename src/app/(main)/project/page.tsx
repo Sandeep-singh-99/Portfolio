@@ -10,6 +10,8 @@ async function fetchProjects(): Promise<IProject[]> {
   await ConnectDB();
   const projects = await Project.find()
     .sort({ priority: 1 })
+    .limit(4)
+    .select("-__v")
     .lean<IProject[]>();
   return projects.map((project) => ({
     ...project,
@@ -27,7 +29,7 @@ export default async function ProjectPage() {
           <h2 className="md:text-xl text-xl font-bold">Projects</h2>
         </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {projects.slice(0, 4).map((project, index) => (
+        {projects.map((project, index) => (
           <ProjectCard
             key={project._id}
             _id={project._id!}

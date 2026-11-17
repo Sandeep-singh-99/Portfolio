@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
         })
 
         revalidatePath("/admin-panel/projects");
+        revalidatePath("/project/all-projects");
         revalidatePath("/");
 
         return NextResponse.json({ data: newProject}, { status: 200 });

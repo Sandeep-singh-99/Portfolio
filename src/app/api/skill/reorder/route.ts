@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { ConnectDB } from "../../../../../lib/db";
 import Skill from "../../../../../models/skill.model";
 
@@ -21,6 +22,9 @@ export async function PUT(req: NextRequest) {
     });
 
     await Promise.all(updatePromises);
+
+    revalidatePath("/admin-panel/skill");
+    revalidatePath("/");
 
     return NextResponse.json(
       { message: "Skills reordered successfully" },

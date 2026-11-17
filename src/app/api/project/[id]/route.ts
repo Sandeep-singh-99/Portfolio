@@ -102,6 +102,7 @@ export async function DELETE(
     await Project.findByIdAndDelete(id);
 
     revalidatePath("/admin-panel/projects");
+    revalidatePath("/project/all-projects");
     revalidatePath("/");
 
     return NextResponse.json(
@@ -187,6 +188,7 @@ export async function PATCH(
     await Project.findByIdAndUpdate(id, updatedProjectData);
 
     revalidatePath("/admin-panel/projects");
+    revalidatePath("/project/all-projects");
     revalidatePath("/");
 
     return NextResponse.json(

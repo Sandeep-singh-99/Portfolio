@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cache } from "react";
 import type { Metadata } from "next";
 import { ConnectDB } from "../../../../../lib/db";
 import Blog, { IBlog } from "../../../../../models/blog.model";
@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-async function fetchBlog(id: string): Promise<IBlog | null> {
+const fetchBlog = cache(async (id: string): Promise<IBlog | null> => {
   await ConnectDB();
   try {
     const blog = await Blog.findById(id).lean<IBlog>();
@@ -21,7 +21,7 @@ async function fetchBlog(id: string): Promise<IBlog | null> {
     console.error("Error fetching blog:", error);
     return null;
   }
-}
+});
 
 export async function generateMetadata({
   params,

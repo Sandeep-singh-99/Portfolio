@@ -94,7 +94,7 @@ export default function MermaidCode({ className, children, node }: CodeProps) {
         mermaid.initialize({
           startOnLoad: false,
           theme: "dark",
-          securityLevel: "loose",
+          securityLevel: "strict",
         });
 
         const { svg, bindFunctions } = await mermaid.render(uniqueId, code);

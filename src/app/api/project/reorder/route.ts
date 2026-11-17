@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { ConnectDB } from "../../../../../lib/db";
 import Project from "../../../../../models/project.model";
 
@@ -21,6 +22,10 @@ export async function PUT(req: NextRequest) {
     });
 
     await Promise.all(updatePromises);
+
+    revalidatePath("/admin-panel/projects");
+    revalidatePath("/project/all-projects");
+    revalidatePath("/");
 
     return NextResponse.json(
       { message: "Projects reordered successfully" },
